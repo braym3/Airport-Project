@@ -5,6 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
 
 @Entity // tells spring it's a table
 @Table(name = "flights")
@@ -12,17 +15,19 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)    // makes it auto-increment
     private Long id;
-    private String airline_iata, dep_iata, dep_terminal, dep_gate, arr_iata, arr_termial, arr_gate, status, aircraft_icao, flight_number, flight_iata, dep_time, arr_time;
+    private String airline_iata, dep_iata, dep_terminal, dep_gate, arr_iata, arr_terminal, arr_gate, status, aircraft_icao, flight_number, flight_iata;
     private double duration;
 
+    private LocalDateTime dep_time, arr_time;
+
     // constructor without id
-    public Flight(String airline_iata, String dep_iata, String dep_terminal, String dep_gate, String arr_iata, String arr_termial, String arr_gate, String status, String aircraft_icao, String flight_number, String flight_iata, String dep_time, String arr_time, double duration) {
+    public Flight(String airline_iata, String dep_iata, String dep_terminal, String dep_gate, String arr_iata, String arr_terminal, String arr_gate, String status, String aircraft_icao, String flight_number, String flight_iata, LocalDateTime dep_time, LocalDateTime arr_time, double duration) {
         this.airline_iata = airline_iata;
         this.dep_iata = dep_iata;
         this.dep_terminal = dep_terminal;
         this.dep_gate = dep_gate;
         this.arr_iata = arr_iata;
-        this.arr_termial = arr_termial;
+        this.arr_terminal = arr_terminal;
         this.arr_gate = arr_gate;
         this.status = status;
         this.aircraft_icao = aircraft_icao;
@@ -34,14 +39,14 @@ public class Flight {
     }
 
     // constructor with id
-    public Flight(Long id, String airline_iata, String dep_iata, String dep_terminal, String dep_gate, String arr_iata, String arr_termial, String arr_gate, String status, String aircraft_icao, String flight_number, String flight_iata, String dep_time, String arr_time, double duration) {
+    public Flight(Long id, String airline_iata, String dep_iata, String dep_terminal, String dep_gate, String arr_iata, String arr_terminal, String arr_gate, String status, String aircraft_icao, String flight_number, String flight_iata, LocalDateTime dep_time, LocalDateTime arr_time, double duration) {
         this.id = id;
         this.airline_iata = airline_iata;
         this.dep_iata = dep_iata;
         this.dep_terminal = dep_terminal;
         this.dep_gate = dep_gate;
         this.arr_iata = arr_iata;
-        this.arr_termial = arr_termial;
+        this.arr_terminal = arr_terminal;
         this.arr_gate = arr_gate;
         this.status = status;
         this.aircraft_icao = aircraft_icao;
@@ -105,12 +110,12 @@ public class Flight {
         this.arr_iata = arr_iata;
     }
 
-    public String getArr_termial() {
-        return arr_termial;
+    public String getArr_terminal() {
+        return arr_terminal;
     }
 
-    public void setArr_termial(String arr_termial) {
-        this.arr_termial = arr_termial;
+    public void setArr_terminal(String arr_terminal) {
+        this.arr_terminal = arr_terminal;
     }
 
     public String getArr_gate() {
@@ -153,19 +158,19 @@ public class Flight {
         this.flight_iata = flight_iata;
     }
 
-    public String getDep_time() {
+    public LocalDateTime getDep_time() {
         return dep_time;
     }
 
-    public void setDep_time(String dep_time) {
+    public void setDep_time(LocalDateTime dep_time) {
         this.dep_time = dep_time;
     }
 
-    public String getArr_time() {
+    public LocalDateTime getArr_time() {
         return arr_time;
     }
 
-    public void setArr_time(String arr_time) {
+    public void setArr_time(LocalDateTime arr_time) {
         this.arr_time = arr_time;
     }
 
@@ -186,7 +191,7 @@ public class Flight {
                 ", dep_terminal='" + dep_terminal + '\'' +
                 ", dep_gate='" + dep_gate + '\'' +
                 ", arr_iata='" + arr_iata + '\'' +
-                ", arr_termial='" + arr_termial + '\'' +
+                ", arr_terminal='" + arr_terminal + '\'' +
                 ", arr_gate='" + arr_gate + '\'' +
                 ", status='" + status + '\'' +
                 ", aircraft_icao='" + aircraft_icao + '\'' +
