@@ -1,0 +1,9 @@
+.toggle-container{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+/*.heading-title{*/
+/*    margin-top: 20px;*/
+/*}*/
