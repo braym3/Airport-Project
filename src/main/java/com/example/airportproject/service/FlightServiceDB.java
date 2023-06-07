@@ -1,6 +1,6 @@
 package com.example.airportproject.service;
 
-import com.example.airportproject.domain.Flight;
+import com.example.airportproject.model.Flight;
 import com.example.airportproject.exception.FlightNotFoundException;
 import com.example.airportproject.repository.FlightRepository;
 import org.springframework.context.annotation.Primary;
@@ -46,5 +46,15 @@ public class FlightServiceDB implements FlightService{
         if(status != null) f.setStatus(status);       // set attributes if they're not null
 
         return this.flightRepo.save(f);               // save the updated Flight and return it
+    }
+
+    @Override
+    public List<Flight> getByDepartureAirport(String depIata) {
+        return this.flightRepo.findFlightsByDepIata(depIata);
+    }
+
+    @Override
+    public List<Flight> getByArrivalAirport(String arrIata) {
+        return this.flightRepo.findFlightsByArrIata(arrIata);
     }
 }

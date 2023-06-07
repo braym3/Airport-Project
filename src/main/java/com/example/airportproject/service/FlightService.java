@@ -1,6 +1,6 @@
 package com.example.airportproject.service;
 
-import com.example.airportproject.domain.Flight;
+import com.example.airportproject.model.Flight;
 
 import java.util.List;
 
@@ -15,4 +15,8 @@ public interface FlightService {
     Flight remove(int id);
 
     Flight updateStatus(int id, String status);
+
+    List<Flight> getByDepartureAirport(String depIata);
+
+    List<Flight> getByArrivalAirport(String arrIata);
 }

@@ -1,6 +1,6 @@
 package com.example.airportproject.controller;
 
-import com.example.airportproject.domain.Flight;
+import com.example.airportproject.model.Flight;
 import com.example.airportproject.exception.FlightNotFoundException;
 import com.example.airportproject.repository.FlightRepository;
 import com.example.airportproject.service.FlightService;
@@ -50,4 +50,13 @@ public class FlightController {
         return this.flightService.remove(id);
     }
 
+    @GetMapping("/get/departures/{depIata}")
+    public List<Flight> getByDepartureAirport(@PathVariable String depIata){
+        return flightRepository.findFlightsByDepIata(depIata);
+    }
+
+    @GetMapping("/get/arrivals/{arrIata}")
+    public List<Flight> getByArrivalAirport(@PathVariable String arrIata){
+        return flightRepository.findFlightsByArrIata(arrIata);
+    }
 }

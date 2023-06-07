@@ -1,6 +1,6 @@
 package com.example.airportproject.service;
 
-import com.example.airportproject.domain.Flight;
+import com.example.airportproject.model.Flight;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,5 +48,15 @@ public class FlightServiceList implements FlightService{
         if(status != null) f.setStatus(status);
         // return the updated flight
         return f;
+    }
+
+    @Override
+    public List<Flight> getByDepartureAirport(String depIATA) {
+        return this.flights.stream().filter(f -> f.getDepIata().equals(depIATA)).toList();
+    }
+
+    @Override
+    public List<Flight> getByArrivalAirport(String arrIATA) {
+        return this.flights.stream().filter(f -> f.getArrIata().equals(arrIATA)).toList();
     }
 }
