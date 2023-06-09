@@ -24,7 +24,7 @@ public class FlightServiceDB implements FlightService{
 
     @Override
     public Flight get(int id) {
-        return this.flightRepo.findById((long)id).orElseThrow(FlightNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
+        return this.flightRepo.findById((long) id).orElseThrow(FlightNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
     }
 
     @Override
@@ -43,7 +43,7 @@ public class FlightServiceDB implements FlightService{
     public Flight updateStatus(int id, String status) {
         Flight f = this.get(id);                   // get the Flight by the id
 
-        if(status != null) f.setStatus(status);       // set attributes if they're not null
+        if(status != null) f.setStatus(status);       // set status attribute if it's not null
 
         return this.flightRepo.save(f);               // save the updated Flight and return it
     }
