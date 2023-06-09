@@ -4,6 +4,11 @@
     margin-bottom: 20px;
 }
 
-/*.heading-title{*/
-/*    margin-top: 20px;*/
-/*}*/
+.heading-title{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.flight-table{
+    margin-top: 40px;
+}

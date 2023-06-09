@@ -3,6 +3,7 @@
 const address = "";
 const toggleSwitch = document.getElementById('toggle-switch');
 const tableHeading = document.getElementById('table-heading');
+const departureGateHeading = document.getElementById('departure-gate-header');
 toggleSwitch.checked = false;
 
 fetchDepartures();
@@ -10,9 +11,11 @@ toggleTable();
 function toggleTable() {
     if (toggleSwitch.checked) {
         tableHeading.textContent = 'Arrivals';
+        departureGateHeading.textContent = 'Arrival Gate';
         fetchArrivals();
     } else {
         tableHeading.textContent = 'Departures';
+        departureGateHeading.textContent = 'Departure Gate';
         fetchDepartures();
     }
 }
@@ -66,7 +69,7 @@ function displayFlights(flights){
             `<td>${flight.flightIata}</td>` +
             `<td>${flight.depIata}</td>` +
             `<td>${flight.arrIata}</td>` +
-            `<td>${flight.depGate}</td>` +
+            `<td>${toggleSwitch.checked? flight.arrGate : flight.depGate}</td>` +
             `<td>${formattedDepTime}</td>` +
             `<td>${flight.status}</td>` +
             `</tr>`;
