@@ -24,12 +24,12 @@ public class FlightController {
 
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/")
     public List<Flight> getFlights() {
         return flightRepository.findAll();
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public Flight getFlightById(@PathVariable int id){
         return flightRepository.findById((long) id).orElseThrow(FlightNotFoundException::new);
     }
@@ -40,22 +40,22 @@ public class FlightController {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public Flight updateStatus(@PathVariable int id, @RequestParam(name = "status", required = false) String status){
             return this.flightService.updateStatus(id, status);
     }
 
-    @DeleteMapping("/remove/{id}")
+    @DeleteMapping("/{id}")
     public Flight remove(@PathVariable int id){
         return this.flightService.remove(id);
     }
 
-    @GetMapping("/get/departures/{depIata}")
+    @GetMapping("/departures/{depIata}")
     public List<Flight> getByDepartureAirport(@PathVariable String depIata){
         return flightRepository.findFlightsByDepIata(depIata);
     }
 
-    @GetMapping("/get/arrivals/{arrIata}")
+    @GetMapping("/arrivals/{arrIata}")
     public List<Flight> getByArrivalAirport(@PathVariable String arrIata){
         return flightRepository.findFlightsByArrIata(arrIata);
     }

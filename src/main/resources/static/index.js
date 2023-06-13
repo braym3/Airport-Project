@@ -22,7 +22,7 @@ function toggleTable() {
 
 function fetchArrivals(){
     // fetch arrivals from api
-    axios.get(`${address}/api/flights/get/arrivals/MAN`)
+    axios.get(`${address}/api/flights/arrivals/MAN`)
         .then(response => {
             const arrivals = response.data;
             displayFlights(arrivals);
@@ -34,7 +34,7 @@ function fetchArrivals(){
 
 function fetchDepartures(){
     // fetch departures from api
-    axios.get(`${address}/api/flights/get/departures/MAN`)
+    axios.get(`${address}/api/flights/departures/MAN`)
         .then(response => {
             const departures = response.data;
             displayFlights(departures);
