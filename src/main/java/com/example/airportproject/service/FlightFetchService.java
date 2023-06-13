@@ -5,10 +5,7 @@ import com.example.airportproject.repository.FlightRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,48 +25,24 @@ public class FlightFetchService {
         this.flightRepository = flightRepository;
     }
 
-    // returns text value from json node or null if the value is null
+    // returns text value from json node or null if the value is null - due to the external api returning the String 'null' for empty values
     public String getTextValue(JsonNode objectNode, String valueName){
         String textValue = objectNode.get(valueName).asText();
         if(textValue == ("null")) return "";
         return textValue;
     }
 
-    public void fetchAndPersistFlights() throws IOException, InterruptedException {
-        String apiKey = "c5de155c-c17e-47fa-9eb1-500a6d74ffae";
-        String airportCode = "MAN";
-        String apiUrl = "https://airlabs.co/api/v9/schedules?api_key=" + apiKey; // provide api key
+    // map the json flight objects to flight model
+    // returns a hashmap containing the corresponding response string and list of flight objects for each response (departures & arrivals)
+    public HashMap<String, List<Flight>> mapToFlights(String departuresResponse, String arrivalsResponse) throws JsonProcessingException {
         List<Flight> departures = new ArrayList<>();
         List<Flight> arrivals = new ArrayList<>();
-
-        // clear the flights table
-        flightRepository.deleteAll();
-
-        // build the departures get request
-        HttpRequest departuresRequest = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "&dep_iata=" + airportCode)) // provide the url - give the API endpoint
-                .method("GET", HttpRequest.BodyPublishers.noBody()) // specify http method, no body in get request
-                .build();
-
-        // build the arrivals get request
-        HttpRequest arrivalsRequest = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "&arr_iata=" + airportCode)) // provide the url - give the API endpoint
-                .method("GET", HttpRequest.BodyPublishers.noBody()) // specify http method, no body in get request
-                .build();
-
-        // send the request & save the response - departures
-        HttpResponse<String> departuresResponse = HttpClient.newHttpClient()
-                .send(departuresRequest, HttpResponse.BodyHandlers.ofString()); // synchronous - blocks until response comes
-
-        // send the request & save the response - arrivals
-        HttpResponse<String> arrivalsResponse = HttpClient.newHttpClient()
-                .send(arrivalsRequest, HttpResponse.BodyHandlers.ofString());
-
-        // Deserialization into the `Flight` class
         HashMap<String, List<Flight>> flightData = new HashMap<>();
-        flightData.put(String.valueOf(departuresResponse.body()), departures);
-        flightData.put(String.valueOf(arrivalsResponse.body()), arrivals);
+        // initialise a hashmap with the request response and an empty list of flights for both departures & arrivals
+        flightData.put(departuresResponse, departures);
+        flightData.put(arrivalsResponse, arrivals);
 
+        // for each response string in the hashmap, map the json objects to Flight objects
         for(String res : flightData.keySet()){
             ObjectMapper objectMapper = new ObjectMapper();
             // parse the JSON departures response body
@@ -111,10 +84,50 @@ public class FlightFetchService {
                 ));
             }
         }
+        return flightData;
+    }
 
-        // persisting the flight data to the db
-        flightRepository.saveAll(departures); // adding departures to the flights table
-        flightRepository.saveAll(arrivals); // adding arrivals to the flights table
+    // called by the application runner (runs 1 time when the application is started)
+    // fetches flight data from external 'AirLabs' api, models the response to Flight objects, & persists to Postgres db
+    public void fetchAndPersistFlights() throws IOException, InterruptedException {
+        String apiKey = "c5de155c-c17e-47fa-9eb1-500a6d74ffae"; // need to be stored securely
+        String airportCode = "MAN";
+        String apiUrl = "https://airlabs.co/api/v9/schedules?api_key=" + apiKey; // provide api key
+
+        // clear the flights table
+        flightRepository.deleteAll();
+
+        // build the departures get request
+        HttpRequest departuresRequest = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "&dep_iata=" + airportCode)) // provide the url - give the API endpoint
+                .method("GET", HttpRequest.BodyPublishers.noBody()) // specify http method, no body in get request
+                .build();
+
+        // build the arrivals get request
+        HttpRequest arrivalsRequest = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "&arr_iata=" + airportCode)) // provide the url - give the API endpoint
+                .method("GET", HttpRequest.BodyPublishers.noBody()) // specify http method, no body in get request
+                .build();
+
+        // send the request & save the response - departures
+        HttpResponse<String> departuresResponse = HttpClient.newHttpClient()
+                .send(departuresRequest, HttpResponse.BodyHandlers.ofString()); // synchronous - blocks until response comes
+
+        // send the request & save the response - arrivals
+        HttpResponse<String> arrivalsResponse = HttpClient.newHttpClient()
+                .send(arrivalsRequest, HttpResponse.BodyHandlers.ofString());
+
+        // Deserialization into the `Flight` class
+        HashMap<String, List<Flight>> flightData = mapToFlights(String.valueOf(departuresResponse.body()), String.valueOf(arrivalsResponse.body()));
+
+        // persisting the flight data to the db - adding both departures & arrivals to the flights table
+        for (HashMap.Entry<String, List<Flight>> flightSet : flightData.entrySet()) {
+            List<Flight> flightList = flightSet.getValue();
+            flightRepository.saveAll(flightList);
+        }
+
+        // remove duplicate flights - all except the first record of the flight
+        flightRepository.removeDuplicates();
     }
 }
 
