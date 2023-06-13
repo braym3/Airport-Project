@@ -25,15 +25,27 @@ public class FlightFetchService {
         this.flightRepository = flightRepository;
     }
 
-    // returns text value from json node or null if the value is null - due to the external api returning the String 'null' for empty values
+    /**
+        * Returns the String text value of a field in a JSON object, or an empty String if that value is 'null'.
+     * Used due to the external API returning the String 'null' for empty values.
+     * @param objectNode JSON Object Node
+     * @param valueName JSON Object value (field) name
+     * @return The String text value from the JSON node or an empty String if the value is 'null'
+    */
     public String getTextValue(JsonNode objectNode, String valueName){
         String textValue = objectNode.get(valueName).asText();
         if(textValue == ("null")) return "";
         return textValue;
     }
 
-    // map the json flight objects to flight model
-    // returns a hashmap containing the corresponding response string and list of flight objects for each response (departures & arrivals)
+
+    /**
+    * Maps the JSON response of flight objects to the Flight model
+     * @param departuresResponse A String of the HTTP response from the GET departures request
+     * @param arrivalsResponse A String of the HTTP response from the GET arrivals request
+     * @return A HashMap containing the corresponding response String and List of Flight objects for each response (departures and arrivals)
+     * @throws JsonProcessingException
+    */
     public HashMap<String, List<Flight>> mapToFlights(String departuresResponse, String arrivalsResponse) throws JsonProcessingException {
         List<Flight> departures = new ArrayList<>();
         List<Flight> arrivals = new ArrayList<>();
@@ -87,8 +99,12 @@ public class FlightFetchService {
         return flightData;
     }
 
-    // called by the application runner (runs 1 time when the application is started)
-    // fetches flight data from external 'AirLabs' api, models the response to Flight objects, & persists to Postgres db
+    /**
+    * Fetches flight data from the external 'AirLabs' API, models the response to Flight objects, and persists the data to a Postgres database.
+     * Is called by the application runner (runs once when the application is started)
+     * @throws IOException
+     * @throws InterruptedException
+    */
     public void fetchAndPersistFlights() throws IOException, InterruptedException {
         String apiKey = "c5de155c-c17e-47fa-9eb1-500a6d74ffae"; // need to be stored securely
         String airportCode = "MAN";

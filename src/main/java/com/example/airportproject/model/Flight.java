@@ -19,24 +19,23 @@ public class Flight {
 
     private OffsetDateTime depTime, arrTime;
 
-/**
-*
- * @param airlineIata
- * @param depIata
- * @param depTerminal
- * @param depGate
- * @param arrIata
- * @param arrTerminal
- * @param arrGate
- * @param status
- * @param aircraftIcao
- * @param flightNumber
- * @param flightIata
- * @param depTime
- * @param arrTime
- * @param duration
-*/
-    // constructor without id
+    /**
+    *
+     * @param airlineIata Airline IATA code
+     * @param depIata Departure airport IATA code
+     * @param depTerminal Departure terminal
+     * @param depGate Departure gate
+     * @param arrIata Arrival airport IATA code
+     * @param arrTerminal Arrival terminal
+     * @param arrGate Arrival gate
+     * @param status Status of the flight
+     * @param aircraftIcao Aircraft ICAO code
+     * @param flightNumber Flight number
+     * @param flightIata Flight IATA code
+     * @param depTime Departure time
+     * @param arrTime Arrival time
+     * @param duration Flight duration in minutes
+    */
     public Flight(String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, OffsetDateTime depTime, OffsetDateTime arrTime, int duration) {
 
         this.airlineIata = airlineIata; // airline code
@@ -56,25 +55,24 @@ public class Flight {
     }
 
 
-/**
-*
- * @param id
- * @param airlineIata
- * @param depIata
- * @param depTerminal
- * @param depGate
- * @param arrIata
- * @param arrTerminal
- * @param arrGate
- * @param status
- * @param aircraftIcao
- * @param flightNumber
- * @param flightIata
- * @param depTime
- * @param arrTime
- * @param duration
-*/
-    // constructor with id
+    /**
+    * Constructor with ID
+     * @param id Unique ID used in the database
+     * @param airlineIata Airline IATA code
+     * @param depIata Departure airport IATA code
+     * @param depTerminal Departure terminal
+     * @param depGate Departure gate
+     * @param arrIata Arrival airport IATA code
+     * @param arrTerminal Arrival terminal
+     * @param arrGate Arrival gate
+     * @param status Status of the flight
+     * @param aircraftIcao Aircraft ICAO code
+     * @param flightNumber Flight number
+     * @param flightIata Flight IATA code
+     * @param depTime Departure time
+     * @param arrTime Arrival time
+     * @param duration Flight duration in minutes
+    */
     public Flight(Long id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, OffsetDateTime depTime, OffsetDateTime arrTime, int duration) {
         this.id = id;
         this.airlineIata = airlineIata;
@@ -93,9 +91,9 @@ public class Flight {
         this.duration = duration;
     }
 
-/**
-*
-*/
+    /**
+    * Default constructor
+    */
     // no arg constructor
     public Flight() {
 
