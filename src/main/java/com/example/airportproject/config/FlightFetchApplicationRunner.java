@@ -6,6 +6,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+// An application runner that is called 1 time when the application is started -
+// fetches the real-time flight data from the external 'AirLabs' api, maps it to Flight objects & persists it
 @Component
 public class FlightFetchApplicationRunner implements ApplicationRunner {
     private final FlightFetchService flightFetchService;
