@@ -34,7 +34,7 @@ public class FlightFetchService {
     */
     public String getTextValue(JsonNode objectNode, String valueName){
         String textValue = objectNode.get(valueName).asText();
-        if(textValue == ("null")) return "";
+        if(textValue.equals("null")) return "";
         return textValue;
     }
 
