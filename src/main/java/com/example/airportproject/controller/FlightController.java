@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/flights")
@@ -34,8 +35,8 @@ public class FlightController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Flight> getFlightById(@PathVariable int id){
-        Flight found = flightRepository.findById((long) id).orElseThrow(FlightNotFoundException::new);
+    public ResponseEntity<Flight> getFlightById(@PathVariable UUID id){
+        Flight found = flightRepository.findById(id).orElseThrow(FlightNotFoundException::new);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .body(found);
     }
@@ -53,14 +54,14 @@ public class FlightController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Flight> updateStatus(@PathVariable int id, @RequestParam(name = "status", required = false) String status){
+    public ResponseEntity<Flight> updateStatus(@PathVariable UUID id, @RequestParam(name = "status", required = false) String status){
             Flight updated = flightService.updateStatus(id, status);
         return ResponseEntity.ok()
                 .body(updated);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Flight> remove(@PathVariable int id){
+    public ResponseEntity<Flight> remove(@PathVariable UUID id){
         Flight deleted = flightService.remove(id);
         return ResponseEntity.ok()
                 .body(deleted);
@@ -68,14 +69,14 @@ public class FlightController {
 
     @GetMapping("/departures/{depIata}")
     public ResponseEntity<List<Flight>> getByDepartureAirport(@PathVariable String depIata){
-        List<Flight> departures = flightRepository.findFlightsByDepIata(depIata);
+        List<Flight> departures = flightRepository.findFlightsByDepIataOrderByDepTimeAsc(depIata);
         return ResponseEntity.ok()
                 .body(departures);
     }
 
     @GetMapping("/arrivals/{arrIata}")
     public ResponseEntity<List<Flight>> getByArrivalAirport(@PathVariable String arrIata){
-        List<Flight> arrivals = flightRepository.findFlightsByArrIata(arrIata);
+        List<Flight> arrivals = flightRepository.findFlightsByArrIataOrderByArrTimeAsc(arrIata);
         return ResponseEntity.ok()
                 .body(arrivals);
     }

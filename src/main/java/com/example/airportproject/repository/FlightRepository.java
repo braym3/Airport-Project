@@ -8,31 +8,33 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @Transactional
-public interface FlightRepository extends JpaRepository<Flight, Long> {
+public interface FlightRepository extends JpaRepository<Flight, UUID> {
+
 
     /**
      * Get flights with specific depIATA (departure airport e.g. 'MAN')
      * @param depIata
      * @return List of flights with that corresponding 'depIata'
     */
-    List<Flight> findFlightsByDepIata(String depIata); // get departures with specific depIATA (departure airport e.g. 'MAN')
+    List<Flight> findFlightsByDepIataOrderByDepTimeAsc(String depIata); // get departures with specific depIATA (departure airport e.g. 'MAN')
 
     /**
      * Get flights with specific arrIATA (arrival airport e.g. 'MAN')
      * @param arrIata
      * @return List of flights with that corresponding 'arrIata'
      * */
-    List<Flight> findFlightsByArrIata(String arrIata); // get arrivals with specific arrIATA (arrival airport e.g. 'MAN')
+    List<Flight> findFlightsByArrIataOrderByArrTimeAsc(String arrIata); // get arrivals with specific arrIATA (arrival airport e.g. 'MAN')
 
 
     /**
     * Remove duplicate flights - all except the first record of the flight.
     */
     @Modifying
-    @Query(value = "DELETE FROM flights WHERE id NOT IN (SELECT min_id FROM ( SELECT MIN(id) AS min_id FROM flights GROUP BY dep_time, dep_iata, dep_gate, arr_iata ) AS grouped_data )",
+    @Query(value = "DELETE FROM FLIGHTS WHERE id IN ( SELECT id FROM ( SELECT *, ROW_NUMBER() OVER ( PARTITION BY dep_iata, dep_gate, dep_time, arr_time ) AS row_num FROM flights ) AS sub WHERE row_num > 1 )",
     nativeQuery = true)
     void removeDuplicates(); // remove duplicate flights - all except the first record of the flight
 }

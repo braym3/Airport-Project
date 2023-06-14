@@ -3,60 +3,63 @@ package com.example.airportproject.service;
 import com.example.airportproject.model.Flight;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class FlightServiceList implements FlightService{
-    private final List<Flight> flights;
+    private final Map<UUID, Flight> flights;
 
     public FlightServiceList() {
-        flights = new ArrayList<>();
+        flights = new HashMap<>();
     }
 
     @Override
     public Flight createFlight(Flight f){
-        // add flight to list
-        this.flights.add(f);
-        // return the last flight created (last in the list)
-        return this.flights.get(flights.size()-1);
+        UUID flightId = f.getId();
+        // add Flight to the HashMap, using its UUID as the key
+        this.flights.put(flightId, f);
+        // return the flight added to the HashMap, find it using its UUID
+        return this.flights.get(flightId);
     }
 
     @Override
-    public Flight get(int id){
-        // return the flight from the list, using the id as index
+    public Flight get(UUID id){
+        // return the Flight from the HashMap, using the id as the key
         return this.flights.get(id);
     }
 
     @Override
     public List<Flight> getAll(){
-        // return flights list
-        return this.flights;
+        // convert map values to list & return flights list
+        return new ArrayList<>(flights.values());
     }
 
     @Override
-    public Flight remove(int id){
+    public Flight remove(UUID id){
         // remove the flight from the list & return the flight just removed
-        return this.flights.remove(id);
+        return flights.remove(id);
     }
 
     @Override
-    public Flight updateStatus(int id, String status){
+    public Flight updateStatus(UUID id, String status){
         // get the flight from the list using the id as index
-        Flight f  = this.flights.get(id);
+        Flight f  = flights.get(id);
         // set status attribute
         if(status != null) f.setStatus(status);
+        flights.replace(id, f);
         // return the updated flight
         return f;
     }
 
     @Override
     public List<Flight> getByDepartureAirport(String depIATA) {
-        return this.flights.stream().filter(f -> f.getDepIata().equals(depIATA)).toList();
+        List<Flight> flightsList = new ArrayList<>(flights.values());
+        return flightsList.stream().filter(f -> f.getDepIata().equals(depIATA)).toList();
     }
 
     @Override
     public List<Flight> getByArrivalAirport(String arrIATA) {
-        return this.flights.stream().filter(f -> f.getArrIata().equals(arrIATA)).toList();
+        List<Flight> flightsList = new ArrayList<>(flights.values());
+        return flightsList.stream().filter(f -> f.getArrIata().equals(arrIATA)).toList();
     }
 }

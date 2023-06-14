@@ -7,13 +7,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Entity // tells spring it's a table
 @Table(name = "flights")
 public class Flight {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)    // makes it auto-increment
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)    // makes it auto-increment
+    private UUID id;
     private String airlineIata, depIata, depTerminal, depGate, arrIata, arrTerminal, arrGate, status, aircraftIcao, flightNumber, flightIata;
     private int duration;
 
@@ -73,7 +74,7 @@ public class Flight {
      * @param arrTime Arrival time
      * @param duration Flight duration in minutes
     */
-    public Flight(Long id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, OffsetDateTime depTime, OffsetDateTime arrTime, int duration) {
+    public Flight(UUID id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, OffsetDateTime depTime, OffsetDateTime arrTime, int duration) {
         this.id = id;
         this.airlineIata = airlineIata;
         this.depIata = depIata;
@@ -100,11 +101,11 @@ public class Flight {
     }
 
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

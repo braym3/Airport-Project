@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Primary
 @Service
@@ -24,7 +25,7 @@ public class FlightServiceDB implements FlightService{
     */
     @Override
     public Flight createFlight(Flight f) {
-        return this.flightRepo.save(f);
+        return flightRepo.save(f);
     }
 
 
@@ -34,8 +35,8 @@ public class FlightServiceDB implements FlightService{
        * @return Flight object with the matching id
     */
     @Override
-    public Flight get(int id) {
-        return this.flightRepo.findById((long) id).orElseThrow(FlightNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
+    public Flight get(UUID id) {
+        return flightRepo.findById(id).orElseThrow(FlightNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
     }
 
     /**
@@ -44,7 +45,7 @@ public class FlightServiceDB implements FlightService{
     */
     @Override
     public List<Flight> getAll() {
-        return this.flightRepo.findAll();
+        return flightRepo.findAll();
     }
 
     /**
@@ -53,9 +54,9 @@ public class FlightServiceDB implements FlightService{
        * @return The deleted Flight object
     */
     @Override
-    public Flight remove(int id) {
+    public Flight remove(UUID id) {
         Flight removed = this.get(id);             // using the get method just made
-        this.flightRepo.deleteById((long)id);
+        flightRepo.deleteById(id);
         return removed;
     }
 
@@ -66,12 +67,12 @@ public class FlightServiceDB implements FlightService{
        * @return The updated Flight object
     */
     @Override
-    public Flight updateStatus(int id, String status) {
+    public Flight updateStatus(UUID id, String status) {
         Flight f = this.get(id);                   // get the Flight by the id
 
         if(status != null) f.setStatus(status);       // set status attribute if it's not null
 
-        return this.flightRepo.save(f);               // save the updated Flight and return it
+        return flightRepo.save(f);               // save the updated Flight and return it
     }
 
     /**
@@ -81,7 +82,7 @@ public class FlightServiceDB implements FlightService{
     */
     @Override
     public List<Flight> getByDepartureAirport(String depIata) {
-        return this.flightRepo.findFlightsByDepIata(depIata);
+        return flightRepo.findFlightsByDepIataOrderByDepTimeAsc(depIata);
     }
 
     /**
@@ -91,6 +92,6 @@ public class FlightServiceDB implements FlightService{
      */
     @Override
     public List<Flight> getByArrivalAirport(String arrIata) {
-        return this.flightRepo.findFlightsByArrIata(arrIata);
+        return flightRepo.findFlightsByArrIataOrderByArrTimeAsc(arrIata);
     }
 }
