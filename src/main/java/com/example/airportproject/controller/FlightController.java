@@ -25,38 +25,44 @@ public class FlightController {
     }
 
     @GetMapping("/")
-    public List<Flight> getFlights() {
-        return flightRepository.findAll();
+    public ResponseEntity<List<Flight>> getFlights() {
+        List<Flight> flights = flightRepository.findAll();
+        return new ResponseEntity<>(flights, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Flight getFlightById(@PathVariable int id){
-        return flightRepository.findById((long) id).orElseThrow(FlightNotFoundException::new);
+    public ResponseEntity<Flight> getFlightById(@PathVariable int id){
+        Flight found = flightRepository.findById((long) id).orElseThrow(FlightNotFoundException::new);
+        return new ResponseEntity<>(found, HttpStatus.FOUND);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/")
     public ResponseEntity<Flight> createFlight(@RequestBody Flight f){
-        Flight created = this.flightService.createFlight(f);
+        Flight created = flightService.createFlight(f);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public Flight updateStatus(@PathVariable int id, @RequestParam(name = "status", required = false) String status){
-            return this.flightService.updateStatus(id, status);
+    public ResponseEntity<Flight> updateStatus(@PathVariable int id, @RequestParam(name = "status", required = false) String status){
+            Flight updated = flightService.updateStatus(id, status);
+            return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public Flight remove(@PathVariable int id){
-        return this.flightService.remove(id);
+    public ResponseEntity<Flight> remove(@PathVariable int id){
+        Flight deleted = flightService.remove(id);
+        return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 
     @GetMapping("/departures/{depIata}")
-    public List<Flight> getByDepartureAirport(@PathVariable String depIata){
-        return flightRepository.findFlightsByDepIata(depIata);
+    public ResponseEntity<List<Flight>> getByDepartureAirport(@PathVariable String depIata){
+        List<Flight> departures = flightRepository.findFlightsByDepIata(depIata);
+        return new ResponseEntity<>(departures, HttpStatus.OK);
     }
 
     @GetMapping("/arrivals/{arrIata}")
-    public List<Flight> getByArrivalAirport(@PathVariable String arrIata){
-        return flightRepository.findFlightsByArrIata(arrIata);
+    public ResponseEntity<List<Flight>> getByArrivalAirport(@PathVariable String arrIata){
+        List<Flight> arrivals = flightRepository.findFlightsByArrIata(arrIata);
+        return new ResponseEntity<>(arrivals, HttpStatus.OK);
     }
 }
