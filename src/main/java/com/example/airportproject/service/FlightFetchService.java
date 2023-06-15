@@ -5,6 +5,7 @@ import com.example.airportproject.repository.FlightRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,6 +21,12 @@ import java.util.List;
 @Service
 public class FlightFetchService {
     private final FlightRepository flightRepository;
+    @Value("${airportproject.apikey}")
+    String apiKey;
+    @Value("${airportproject.airportcode}")
+    String airportCode;
+    @Value("${airportproject.baseurl}")
+    String apiBaseUrl;
 
     public FlightFetchService(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
@@ -106,9 +113,8 @@ public class FlightFetchService {
      * @throws InterruptedException
     */
     public void fetchAndPersistFlights() throws IOException, InterruptedException {
-        String apiKey = "c5de155c-c17e-47fa-9eb1-500a6d74ffae"; // need to be stored securely
-        String airportCode = "MAN";
-        String apiUrl = "https://airlabs.co/api/v9/schedules?api_key=" + apiKey; // provide api key
+
+        String apiUrl = apiBaseUrl + apiKey; // provide api key
 
         // clear the flights table
         flightRepository.deleteAll();
