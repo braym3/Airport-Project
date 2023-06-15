@@ -3,7 +3,8 @@
 const address = "";
 const toggleSwitch = document.getElementById('toggle-switch');
 const tableHeading = document.getElementById('table-heading');
-const departureGateHeading = document.getElementById('departure-gate-header');
+const gateHeading = document.getElementById('gate-header');
+const timeHeading = document.getElementById('time-header');
 toggleSwitch.checked = false;
 
 fetchDepartures();
@@ -11,11 +12,13 @@ toggleTable();
 function toggleTable() {
     if (toggleSwitch.checked) {
         tableHeading.textContent = 'Arrivals';
-        departureGateHeading.textContent = 'Arrival Gate';
+        gateHeading.textContent = 'Arrival Gate';
+        timeHeading.textContent = 'Arrival Time';
         fetchArrivals();
     } else {
         tableHeading.textContent = 'Departures';
-        departureGateHeading.textContent = 'Departure Gate';
+        gateHeading.textContent = 'Departure Gate';
+        timeHeading.textContent = 'Departure Time';
         fetchDepartures();
     }
 }
@@ -58,19 +61,17 @@ function formatDateTime(offsetDateTime){
 
 function displayFlights(flights){
     const tableBody = document.getElementById('table-body');
-    const tableHeading = document.getElementById('table-heading');
     // clear the table body
     tableBody.innerHTML = '';
 
     flights.forEach((flight, index) => {
-        const formattedDepTime = formatDateTime(flight.depTime);
         const row = `<tr>` +
             `<th scope="row">${index + 1}</th>` +
             `<td>${flight.flightIata}</td>` +
             `<td>${flight.depIata}</td>` +
             `<td>${flight.arrIata}</td>` +
             `<td>${toggleSwitch.checked? flight.arrGate : flight.depGate}</td>` +
-            `<td>${formattedDepTime}</td>` +
+            `<td>${toggleSwitch.checked? formatDateTime(flight.arrTime) : formatDateTime(flight.depTime)}</td>` +
             `<td>${flight.status}</td>` +
             `</tr>`;
         tableBody.insertAdjacentHTML('beforeend', row);
