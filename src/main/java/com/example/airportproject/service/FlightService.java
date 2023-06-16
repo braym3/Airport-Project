@@ -9,10 +9,10 @@ public interface FlightService {
 
     /**
      * Creates a new record in the database with the data from a Flight object
-     * @param f The Flight to persist
+     * @param flight The Flight to persist
      * @return The created Flight
      */
-    Flight createFlight(Flight f);
+    Flight createFlight(Flight flight);
 
     /**
      * Returns the Flight with the given id

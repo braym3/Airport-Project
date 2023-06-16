@@ -14,10 +14,10 @@ public class FlightServiceList implements FlightService{
     }
 
     @Override
-    public Flight createFlight(Flight f){
-        UUID flightId = f.getId();
+    public Flight createFlight(Flight flight){
+        UUID flightId = flight.getId();
         // add Flight to the HashMap, using its UUID as the key
-        this.flights.put(flightId, f);
+        this.flights.put(flightId, flight);
         // return the flight added to the HashMap, find it using its UUID
         return this.flights.get(flightId);
     }
@@ -43,23 +43,23 @@ public class FlightServiceList implements FlightService{
     @Override
     public Flight updateStatus(UUID id, String status){
         // get the flight from the list using the id as index
-        Flight f  = flights.get(id);
+        Flight flight  = flights.get(id);
         // set status attribute
-        if(status != null) f.setStatus(status);
-        flights.replace(id, f);
+        if(status != null) flight.setStatus(status);
+        flights.replace(id, flight);
         // return the updated flight
-        return f;
+        return flight;
     }
 
     @Override
     public List<Flight> getByDepartureAirport(String depIATA) {
         List<Flight> flightsList = new ArrayList<>(flights.values());
-        return flightsList.stream().filter(f -> f.getDepIata().equals(depIATA)).toList();
+        return flightsList.stream().filter(flight -> flight.getDepIata().equals(depIATA)).toList();
     }
 
     @Override
     public List<Flight> getByArrivalAirport(String arrIATA) {
         List<Flight> flightsList = new ArrayList<>(flights.values());
-        return flightsList.stream().filter(f -> f.getArrIata().equals(arrIATA)).toList();
+        return flightsList.stream().filter(flight -> flight.getArrIata().equals(arrIATA)).toList();
     }
 }

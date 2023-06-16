@@ -117,7 +117,7 @@ public class FlightFetchService {
     // Builds a GET request with the provided API URL, endpoint, and airport code
     // returns a HttpRequest object
     public HttpRequest buildRequest(String baseUrl, String endpoint, String airportCode){
-        // url for the API request constucted using baseUrl, endpoint, and airport code
+        // url for the API request constructed using baseUrl, endpoint, and airport code
         String url = baseUrl + "&" + endpoint + "=" + airportCode;
         return HttpRequest.newBuilder()
                 .uri(URI.create(url))

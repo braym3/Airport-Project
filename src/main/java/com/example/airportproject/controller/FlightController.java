@@ -42,8 +42,8 @@ public class FlightController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Flight> createFlight(@RequestBody Flight f){
-        Flight created = flightService.createFlight(f);
+    public ResponseEntity<Flight> createFlight(@RequestBody Flight flight){
+        Flight created = flightService.createFlight(flight);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

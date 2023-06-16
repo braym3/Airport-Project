@@ -19,8 +19,8 @@ public class FlightServiceDB implements FlightService{
     }
 
     @Override
-    public Flight createFlight(Flight f) {
-        return flightRepo.save(f);
+    public Flight createFlight(Flight flight) {
+        return flightRepo.save(flight);
     }
 
 
@@ -44,11 +44,11 @@ public class FlightServiceDB implements FlightService{
 
     @Override
     public Flight updateStatus(UUID id, String status) {
-        Flight f = this.get(id);                   // get the Flight by the id
+        Flight flight = this.get(id);                   // get the Flight by the id
 
-        if(status != null) f.setStatus(status);       // set status attribute if it's not null
+        if(status != null) flight.setStatus(status);       // set status attribute if it's not null
 
-        return flightRepo.save(f);               // save the updated Flight and return it
+        return flightRepo.save(flight);               // save the updated Flight and return it
     }
 
     @Override
