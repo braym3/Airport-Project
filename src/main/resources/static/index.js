@@ -47,8 +47,9 @@ function fetchDepartures(){
         })
 }
 
-function formatDateTime(offsetDateTime){
-    const dateTime = new Date(offsetDateTime);
+// Convert UTC flight time to user device local time, and format it
+function formatDateTime(flightTimeUTC){
+    const localFlightTime = new Date(flightTimeUTC+'Z');
     const options = {
         year: 'numeric',
         month: 'short',
@@ -56,7 +57,7 @@ function formatDateTime(offsetDateTime){
         hour: 'numeric',
         minute: 'numeric'
     };
-    return new Intl.DateTimeFormat(navigator.language, options).format(dateTime);
+    return new Intl.DateTimeFormat(navigator.language, options).format(localFlightTime);
 }
 
 function displayFlights(flights){

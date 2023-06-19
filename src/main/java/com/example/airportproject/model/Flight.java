@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity // tells spring it's a table
@@ -18,7 +18,7 @@ public class Flight {
     private String airlineIata, depIata, depTerminal, depGate, arrIata, arrTerminal, arrGate, status, aircraftIcao, flightNumber, flightIata;
     private int duration;
 
-    private OffsetDateTime depTime, arrTime;
+    private LocalDateTime depTime, arrTime;
 
     /**
     *
@@ -37,7 +37,7 @@ public class Flight {
      * @param arrTime Arrival time
      * @param duration Flight duration in minutes
     */
-    public Flight(String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, OffsetDateTime depTime, OffsetDateTime arrTime, int duration) {
+    public Flight(String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, int duration) {
 
         this.airlineIata = airlineIata; // airline code
         this.depIata = depIata; // departure airport code
@@ -74,7 +74,7 @@ public class Flight {
      * @param arrTime Arrival time
      * @param duration Flight duration in minutes
     */
-    public Flight(UUID id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, OffsetDateTime depTime, OffsetDateTime arrTime, int duration) {
+    public Flight(UUID id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, int duration) {
         this.id = id;
         this.airlineIata = airlineIata;
         this.depIata = depIata;
@@ -197,19 +197,19 @@ public class Flight {
         this.flightIata = flightIata;
     }
 
-    public OffsetDateTime getDepTime() {
+    public LocalDateTime getDepTime() {
         return depTime;
     }
 
-    public void setDepTime(OffsetDateTime depTime) {
+    public void setDepTime(LocalDateTime depTime) {
         this.depTime = depTime;
     }
 
-    public OffsetDateTime getArrTime() {
+    public LocalDateTime getArrTime() {
         return arrTime;
     }
 
-    public void setArrTime(OffsetDateTime arrTime) {
+    public void setArrTime(LocalDateTime arrTime) {
         this.arrTime = arrTime;
     }
 

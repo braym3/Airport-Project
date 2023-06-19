@@ -9,7 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ public class FlightFetchService {
     private final FlightRepository flightRepository;
     private final FlightDAO flightDAO;
     private final ObjectMapper objectMapper;
+    private final DateTimeFormatter timeFormatter;
 
 
 
@@ -37,6 +39,7 @@ public class FlightFetchService {
         this.flightRepository = flightRepository;
         this.flightDAO = flightDAO;
         this.objectMapper = new ObjectMapper();
+        this.timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     }
 
     /**
@@ -70,8 +73,8 @@ public class FlightFetchService {
                 getTextValue(objectNode, "aircraft_icao"),
                 getTextValue(objectNode, "flight_number"),
                 getTextValue(objectNode, "flight_iata"),
-                OffsetDateTime.parse(objectNode.get("dep_time").asText().replace(" ", "T") + ":00+01"),
-                OffsetDateTime.parse(objectNode.get("arr_time").asText().replace(" ", "T") + ":00+01"),
+                LocalDateTime.parse(objectNode.get("dep_time_utc").asText(), timeFormatter),
+                LocalDateTime.parse(objectNode.get("arr_time_utc").asText(), timeFormatter),
                 objectNode.get("duration").asInt()
         );
     }
