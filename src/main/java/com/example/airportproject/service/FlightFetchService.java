@@ -1,37 +1,41 @@
 package com.example.airportproject.service;
 
+import com.example.airportproject.dao.FlightDAO;
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.repository.FlightRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+* Service class for fetching flight data from an external API, mapping it to Flight objects,
+ * and persisting the data to a database
+*/
 @Service
 public class FlightFetchService {
     private final FlightRepository flightRepository;
-    private ObjectMapper objectMapper;
-    @Value("${airportproject.apikey}")
-    String apiKey;
-    @Value("${airportproject.airportcode}")
-    String airportCode;
-    @Value("${airportproject.baseurl}")
-    String apiBaseUrl;
+    private final FlightDAO flightDAO;
+    private final ObjectMapper objectMapper;
 
-    public FlightFetchService(FlightRepository flightRepository) {
+
+
+
+    /**
+    * Constructs a new FlightFetchService with the specified FlightRepository and FlightDAO
+     * @param flightRepository the FlightRepository to use for persisting the flight data
+     * @param flightDAO the FlightDAO to use for fetching flight data from the external API
+    */
+    public FlightFetchService(FlightRepository flightRepository, FlightDAO flightDAO) {
         this.flightRepository = flightRepository;
+        this.flightDAO = flightDAO;
         this.objectMapper = new ObjectMapper();
     }
 
@@ -48,16 +52,12 @@ public class FlightFetchService {
         return textValue;
     }
 
-
-    // Extract JSON object nodes (array of flights) from a response String
-    public JsonNode extractResponse(String response) throws JsonProcessingException {
-        // parse the JSON departures response body
-        JsonNode jsonNode = objectMapper.readTree(response);
-        // extract the array of flights from the JSON
-        return jsonNode.get("response");
-    }
-
-    public Flight createFlightFromJsonNode(JsonNode objectNode){
+    /**
+    * Creates a Flight object from a JSON object node
+     * @param objectNode the JSON object node representing a Flight
+     * @return the created Flight object
+    */
+    public Flight createFlightFromJson(JsonNode objectNode){
         return new Flight(
                 getTextValue(objectNode, "airline_iata"),
                 getTextValue(objectNode, "dep_iata"),
@@ -76,60 +76,47 @@ public class FlightFetchService {
         );
     }
 
-    // convert JSON flight data from the response into Flight objects in a List
-    public List<Flight> parseArray(JsonNode objectsArray){
-        List<Flight> flightList = new ArrayList<>();
-        // for each flight in the array, deserialize into Flight POJO
-        for(JsonNode objectNode : objectsArray){
-            // create a new flight object using the values from the current object in the response & add the new flight to the list of flights
-            flightList.add(createFlightFromJsonNode(objectNode));
+    /**
+    * Parses the JSON flight data response and creates a List of Flight objects.
+     * @param jsonResponse the JSON response string
+     * @return a List of Flight objects parsed from the JSON response
+     * @throws JsonProcessingException if an error occurs while processing the JSON responses
+    */
+    public List<Flight> parseFlights(String jsonResponse) throws JsonProcessingException {
+        JsonNode jsonNode = objectMapper.readTree(jsonResponse);
+        JsonNode objectsArray = jsonNode.get("response");
+
+        List<Flight> flights = new ArrayList<>();
+        if(objectsArray != null){
+            // for each flight in the object array, deserialize into Flight POJOs
+            for(JsonNode objectNode : objectsArray){
+                // create a new Flight object using the current object's values and add it to the List of Flights
+                flights.add(createFlightFromJson(objectNode));
+            }
         }
-        // return the list of Flights
-        return flightList;
+
+        return flights;
     }
 
 
     /**
-    * Maps the JSON response of flight objects to the Flight model
-     * @param departuresResponse A String of the HTTP response from the GET departures request
-     * @param arrivalsResponse A String of the HTTP response from the GET arrivals request
-     * @return A HashMap containing the corresponding response String and List of Flight objects for each response (departures and arrivals)
-     * @throws JsonProcessingException
+    * Maps the JSON response of flight objects to the Flight model.
+     * This method parses the JSON responses for departures and arrivals, creates Flight objects
+     * from the parsed data, and returns a Map containing the response Strings and Lists of Flight objects
+     * @param departuresResponse a String of the HTTP response body from the GET departures request
+     * @param arrivalsResponse a String of the HTTP response body from the GET arrivals request
+     * @return a Map containing the corresponding response String and List of Flight objects for each response (departures and arrivals)
+     * @throws JsonProcessingException if an error occurs while processing the JSON responses
     */
     public Map<String, List<Flight>> deserializeFlights(String departuresResponse, String arrivalsResponse) throws JsonProcessingException {
-        List<Flight> departures = new ArrayList<>();
-        List<Flight> arrivals = new ArrayList<>();
+        List<Flight> departures = parseFlights(departuresResponse);
+        List<Flight> arrivals = parseFlights(arrivalsResponse);
         Map<String, List<Flight>> flightData = new HashMap<>();
-        // initialise a HashMap with the request response and an empty List of Flights for both departures & arrivals
+
         flightData.put(departuresResponse, departures);
         flightData.put(arrivalsResponse, arrivals);
 
-        // for each response string in the HashMap, map the JSON objects to Flight objects
-        for(String res : flightData.keySet()){
-            // extract the JSON array of Flights from the response
-            JsonNode objectsArray = extractResponse(res);
-            // replace the empty Flights List in the HashMap with a List of the parsed Flight objects
-            flightData.replace(res, parseArray(objectsArray));
-        }
         return flightData;
-    }
-
-    // Builds a GET request with the provided API URL, endpoint, and airport code
-    // returns a HttpRequest object
-    public HttpRequest buildRequest(String baseUrl, String endpoint, String airportCode){
-        // url for the API request constructed using baseUrl, endpoint, and airport code
-        String url = baseUrl + "&" + endpoint + "=" + airportCode;
-        return HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .method("GET", HttpRequest.BodyPublishers.noBody()) // specify http method, no body in get request
-                .build();
-    }
-
-    // Sends a GET request asynchronously to the specified API endpoint with the provided API URL, and airport code
-    // returns the HTTPResponse<String> object, containing the response body as a String
-    public HttpResponse<String> sendRequest(HttpRequest request) throws IOException, InterruptedException {
-        return HttpClient.newHttpClient()
-                .send(request, HttpResponse.BodyHandlers.ofString()); // synchronous - blocks until response comes
     }
 
     public void persistFlights(Map<String, List<Flight>> flightData){
@@ -141,31 +128,27 @@ public class FlightFetchService {
     }
 
     /**
-    * Fetches flight data from the external 'AirLabs' API, models the response to Flight objects, and persists the data to a Postgres database.
-     * Is called by the application runner (runs once when the application is started)
-     * @throws IOException
-     * @throws InterruptedException
+    * Fetches flight data from the external API, models the response to Flight objects,
+     * and persists the data to a database.
+     * This method is called by the application runner (runs once when the application is started).
+     * @throws IOException if an I/O error occurs while sending the request or receiving the response
+     * @throws InterruptedException if the current thread is interrupted while waiting for the response
     */
     public void fetchAndPersistFlights() throws IOException, InterruptedException {
-        String apiUrl = apiBaseUrl + apiKey; // provide api key
-
         // clear the flights table
         flightRepository.deleteAll();
 
         // build get request for departures and asynchronously send it
-        HttpResponse<String> departuresResponse = sendRequest(buildRequest(apiUrl, "dep_iata", airportCode));
+        String departuresResponse = flightDAO.fetchData("dep_iata");
         // build get request for arrivals and asynchronously send it
-        HttpResponse<String> arrivalsResponse = sendRequest(buildRequest(apiUrl, "arr_iata", airportCode));
+        String arrivalsResponse = flightDAO.fetchData("arr_iata");
 
         // Deserialization into the `Flight` class
-        Map<String, List<Flight>> flightData = deserializeFlights(String.valueOf(departuresResponse.body()), String.valueOf(arrivalsResponse.body()));
+        Map<String, List<Flight>> flightData = deserializeFlights(departuresResponse, arrivalsResponse);
 
         // persisting the flight data to the db - adding both departures & arrivals to the flights table
         persistFlights(flightData);
-
         // remove duplicate flights - all except the first record of the flight
         flightRepository.removeDuplicates();
     }
 }
-
-
