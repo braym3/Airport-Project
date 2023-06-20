@@ -6,6 +6,8 @@ import com.example.airportproject.repository.FlightRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,7 +28,7 @@ public class FlightFetchService {
     private final FlightDAO flightDAO;
     private final ObjectMapper objectMapper;
     private final DateTimeFormatter timeFormatter;
-
+    private static final Logger logger = LoggerFactory.getLogger(FlightFetchService.class);
 
 
 
@@ -141,17 +143,24 @@ public class FlightFetchService {
         // clear the flights table
         flightRepository.deleteAll();
 
-        // build get request for departures and asynchronously send it
-        String departuresResponse = flightDAO.fetchData("dep_iata");
-        // build get request for arrivals and asynchronously send it
-        String arrivalsResponse = flightDAO.fetchData("arr_iata");
+        try{
+            // build get request for departures and asynchronously send it
+            String departuresResponse = flightDAO.fetchData("dep_iata");
+            // build get request for arrivals and asynchronously send it
+            String arrivalsResponse = flightDAO.fetchData("arr_iata");
 
-        // Deserialization into the `Flight` class
-        Map<String, List<Flight>> flightData = deserializeFlights(departuresResponse, arrivalsResponse);
+            // Deserialization into the `Flight` class
+            Map<String, List<Flight>> flightData = deserializeFlights(departuresResponse, arrivalsResponse);
 
-        // persisting the flight data to the db - adding both departures & arrivals to the flights table
-        persistFlights(flightData);
-        // remove duplicate flights - all except the first record of the flight
-        flightRepository.removeDuplicates();
+            // persisting the flight data to the db - adding both departures & arrivals to the flights table
+            persistFlights(flightData);
+            // remove duplicate flights - all except the first record of the flight
+            flightRepository.removeDuplicates();
+        }catch (IOException e){
+            logger.error("An IOException occurred whilst fetching flight data", e);
+        }catch (InterruptedException e){
+            Thread.currentThread().interrupt();
+            logger.error("An IOException occurred whilst fetching flight data", e);
+        }
     }
 }
