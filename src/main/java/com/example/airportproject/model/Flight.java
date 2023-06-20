@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,9 +17,13 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)    // makes it auto-increment
     private UUID id;
-    private String airlineIata, depIata, depTerminal, depGate, arrIata, arrTerminal, arrGate, status, aircraftIcao, flightNumber, flightIata;
+    @NotNull
+    @Length(max = 10)
+    private String flightIata, depIata, arrIata, status, flightNumber;
+    private String airlineIata, depTerminal, depGate, arrTerminal, arrGate, aircraftIcao;
+    @NotNull
     private int duration;
-
+    @NotNull
     private LocalDateTime depTime, arrTime;
 
     /**

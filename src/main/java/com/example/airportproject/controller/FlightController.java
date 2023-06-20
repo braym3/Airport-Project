@@ -4,6 +4,8 @@ import com.example.airportproject.model.Flight;
 import com.example.airportproject.exception.FlightNotFoundException;
 import com.example.airportproject.repository.FlightRepository;
 import com.example.airportproject.service.FlightService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +44,7 @@ public class FlightController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Flight> createFlight(@RequestBody Flight flight){
+    public ResponseEntity<Flight> createFlight(@Valid @NotNull @RequestBody Flight flight){
         Flight created = flightService.createFlight(flight);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -54,7 +56,7 @@ public class FlightController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Flight> updateStatus(@PathVariable UUID id, @RequestParam(name = "status", required = false) String status){
+    public ResponseEntity<Flight> updateStatus(@PathVariable UUID id, @RequestParam(name = "status", required = true) String status){
             Flight updated = flightService.updateStatus(id, status);
         return ResponseEntity.ok()
                 .body(updated);
