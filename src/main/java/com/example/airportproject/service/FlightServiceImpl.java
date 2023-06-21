@@ -11,10 +11,10 @@ import java.util.UUID;
 
 @Primary
 @Service
-public class FlightServiceDB implements FlightService{
+public class FlightServiceImpl implements FlightService{
     private final FlightRepository flightRepo;
 
-    public FlightServiceDB(FlightRepository flightRepo) {
+    public FlightServiceImpl(FlightRepository flightRepo) {
         this.flightRepo = flightRepo;
     }
 
