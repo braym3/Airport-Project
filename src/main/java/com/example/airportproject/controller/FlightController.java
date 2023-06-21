@@ -2,7 +2,6 @@ package com.example.airportproject.controller;
 
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.exception.FlightNotFoundException;
-import com.example.airportproject.repository.FlightRepository;
 import com.example.airportproject.service.FlightService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -20,25 +19,23 @@ import java.util.UUID;
 @RequestMapping("api/flights")
 public class FlightController {
     private final FlightService flightService;
-    private final FlightRepository flightRepository;
 
     @Autowired
-    public FlightController(FlightRepository flightRepository, FlightService flightService) {
-        this.flightRepository = flightRepository;
+    public FlightController(FlightService flightService) {
         this.flightService = flightService;
 
     }
 
     @GetMapping("/")
     public ResponseEntity<List<Flight>> getFlights() {
-        List<Flight> flights = flightRepository.findAll();
+        List<Flight> flights = flightService.getAll();
         return ResponseEntity.ok()
                 .body(flights);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Flight> getFlightById(@PathVariable UUID id){
-        Flight found = flightRepository.findById(id).orElseThrow(FlightNotFoundException::new);
+        Flight found = flightService.get(id);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .body(found);
     }
@@ -71,14 +68,14 @@ public class FlightController {
 
     @GetMapping("/departures/{depIata}")
     public ResponseEntity<List<Flight>> getByDepartureAirport(@PathVariable String depIata){
-        List<Flight> departures = flightRepository.findFlightsByDepIataOrderByDepTimeAsc(depIata);
+        List<Flight> departures = flightService.getByDepartureAirport(depIata);
         return ResponseEntity.ok()
                 .body(departures);
     }
 
     @GetMapping("/arrivals/{arrIata}")
     public ResponseEntity<List<Flight>> getByArrivalAirport(@PathVariable String arrIata){
-        List<Flight> arrivals = flightRepository.findFlightsByArrIataOrderByArrTimeAsc(arrIata);
+        List<Flight> arrivals = flightService.getByArrivalAirport(arrIata);
         return ResponseEntity.ok()
                 .body(arrivals);
     }
