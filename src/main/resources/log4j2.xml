@@ -1,0 +1,12 @@
+<Configuration status="WARN">
+    <Appenders name="Console" class="SYSTEM_OUT">
+        <encoder>
+            <PatternLayout>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</PatternLayout>
+        </encoder>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <appender-ref ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>
