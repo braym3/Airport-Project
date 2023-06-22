@@ -1,6 +1,7 @@
 package com.example.airportproject.config;
 
-import com.example.airportproject.service.FlightFetchService;
+import com.example.airportproject.service.flights.FlightFetchService;
+import com.example.airportproject.service.gates.GateInitializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -11,13 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class FlightFetchApplicationRunner implements ApplicationRunner {
     private final FlightFetchService flightFetchService;
+    private final GateInitializer gateInitializer;
 
     // config property for whether to run the application runner (default true)
     @Value("${airportproject.runFetchFlight:false}")
     private boolean runFetchFlight;
 
-    public FlightFetchApplicationRunner(FlightFetchService flightFetchService) {
+    public FlightFetchApplicationRunner(FlightFetchService flightFetchService, GateInitializer gateInitializer) {
         this.flightFetchService = flightFetchService;
+        this.gateInitializer = gateInitializer;
     }
 
     @Override
@@ -25,5 +28,7 @@ public class FlightFetchApplicationRunner implements ApplicationRunner {
         if(runFetchFlight){
             flightFetchService.fetchAndPersistFlights();
         }
+        gateInitializer.initializeGatesAndTerminals();
+
     }
 }
