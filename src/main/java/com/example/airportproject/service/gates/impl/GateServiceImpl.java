@@ -1,8 +1,9 @@
-package com.example.airportproject.service.gates;
+package com.example.airportproject.service.gates.impl;
 
 import com.example.airportproject.exception.GateNotFoundException;
 import com.example.airportproject.model.Gate;
-import com.example.airportproject.repository.GateRepository;
+import com.example.airportproject.repository.GateRepo;
+import com.example.airportproject.service.gates.GateService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -11,34 +12,34 @@ import java.util.UUID;
 
 @Primary
 @Service
-public class GateServiceImpl implements GateService{
-    private final GateRepository gateRepo;
+public class GateServiceImpl implements GateService {
+    private final GateRepo gateRepo;
 
-    public GateServiceImpl(GateRepository gateRepo) {
+    public GateServiceImpl(GateRepo gateRepo) {
         this.gateRepo = gateRepo;
     }
 
     @Override
     public Gate createGate(Gate gate) {
-        return gateRepo.save(gate);
+        return gateRepo.create(gate);
     }
 
 
 
     @Override
     public Gate get(UUID id) {
-        return gateRepo.findById(id).orElseThrow(GateNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
+        return gateRepo.get(id); //.orElseThrow(GateNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
     }
 
     @Override
     public List<Gate> getAll() {
-        return gateRepo.findAll();
+        return gateRepo.getAll();
     }
 
     @Override
     public Gate remove(UUID id) {
         Gate removed = this.get(id);
-        gateRepo.deleteById(id);
+        gateRepo.remove(id);
         return removed;
     }
 
@@ -48,7 +49,7 @@ public class GateServiceImpl implements GateService{
 
         gate.setNumber(number);
 
-        return gateRepo.save(gate);               // save the updated Gate and return it
+        return gateRepo.update(gate);               // save the updated Gate and return it
     }
 
 }

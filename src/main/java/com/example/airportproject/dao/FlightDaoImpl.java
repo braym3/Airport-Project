@@ -15,7 +15,7 @@ import java.net.http.HttpResponse;
  * Provides methods to fetch flight data for departures and arrivals.
 */
 @Repository
-public class FlightDAO {
+public class FlightDaoImpl {
     private final HttpClient httpClient;
 
     @Value("${airportproject.apikey}")
@@ -28,7 +28,7 @@ public class FlightDAO {
     /**
     * Constructs a new FlightDAO.
     */
-    public FlightDAO(){
+    public FlightDaoImpl(){
         this.httpClient = HttpClient.newHttpClient();
     }
 

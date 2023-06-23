@@ -1,8 +1,9 @@
-package com.example.airportproject.service.terminals;
+package com.example.airportproject.service.terminals.impl;
 import com.example.airportproject.exception.TerminalNotFoundException;
 
 import com.example.airportproject.model.Terminal;
-import com.example.airportproject.repository.TerminalRepository;
+import com.example.airportproject.repository.TerminalRepo;
+import com.example.airportproject.service.terminals.TerminalService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -11,34 +12,34 @@ import java.util.UUID;
 
 @Primary
 @Service
-public class TerminalServiceImpl implements TerminalService{
-    private final TerminalRepository terminalRepo;
+public class TerminalServiceImpl implements TerminalService {
+    private final TerminalRepo terminalRepo;
 
-    public TerminalServiceImpl(TerminalRepository terminalRepo) {
+    public TerminalServiceImpl(TerminalRepo terminalRepo) {
         this.terminalRepo = terminalRepo;
     }
 
     @Override
     public Terminal createTerminal(Terminal terminal) {
-        return terminalRepo.save(terminal);
+        return terminalRepo.create(terminal);
     }
 
 
 
     @Override
     public Terminal get(UUID id) {
-        return terminalRepo.findById(id).orElseThrow(TerminalNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
+        return terminalRepo.get(id); //.orElseThrow(TerminalNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
     }
 
     @Override
     public List<Terminal> getAll() {
-        return terminalRepo.findAll();
+        return terminalRepo.getAll();
     }
 
     @Override
     public Terminal remove(UUID id) {
         Terminal removed = this.get(id);
-        terminalRepo.deleteById(id);
+        terminalRepo.remove(id);
         return removed;
     }
 
@@ -48,6 +49,6 @@ public class TerminalServiceImpl implements TerminalService{
 
         terminal.setNumber(number);
 
-        return terminalRepo.save(terminal);               // save the updated Gate and return it
+        return terminalRepo.update(terminal);               // save the updated Gate and return it
     }
 }

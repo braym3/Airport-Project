@@ -1,10 +1,16 @@
-package com.example.airportproject.service;
+package com.example.airportproject.service.flights;
 
 import com.example.airportproject.model.Flight;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Defines the contract for managing flights.
+ * It provides operations to fetch flights, add a new flight, remove flights, and update a flight's status.
+ */
 public interface FlightService {
 
     /**
@@ -35,12 +41,25 @@ public interface FlightService {
     Flight remove(UUID id);
 
     /**
-     * Updates the status of the flight in the database that corresponds to the provided id
-     * @param id The id used to identify the Flight to update
-     * @param status The new status of the flight
-     * @return The updated Flight object
-     */
-    Flight updateStatus(UUID id, String status);
+    * Updates the flight record of the corresponding id with the specified attributes
+     * @param id
+     * @param airlineIata
+     * @param depIata
+     * @param depTerminal
+     * @param depGate
+     * @param arrIata
+     * @param arrTerminal
+     * @param arrGate
+     * @param status
+     * @param aircraftIcao
+     * @param flightNumber
+     * @param flightIata
+     * @param depTime
+     * @param arrTime
+     * @param duration
+     * @return
+    */
+    Flight update(UUID id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration);
 
     /**
      * Returns a List of Flights that have the same provided 'depIata' (departure airport code)

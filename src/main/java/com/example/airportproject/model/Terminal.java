@@ -1,22 +1,16 @@
 package com.example.airportproject.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Entity
-@Table(name = "terminals")
 public class Terminal {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private int number;
+    private Integer number;
 
     public Terminal() {
 
     }
 
-    public Terminal(int number){
+    public Terminal(Integer number){
         this.number = number;
     }
 
@@ -28,11 +22,11 @@ public class Terminal {
         this.id = id;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 }

@@ -1,8 +1,7 @@
 package com.example.airportproject.controller;
 
 import com.example.airportproject.model.Flight;
-import com.example.airportproject.exception.FlightNotFoundException;
-import com.example.airportproject.service.FlightService;
+import com.example.airportproject.service.flights.FlightService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,8 +53,22 @@ public class FlightController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Flight> updateStatus(@PathVariable UUID id, @RequestParam(name = "status", required = true) String status){
-            Flight updated = flightService.updateStatus(id, status);
+    public ResponseEntity<Flight> update(@PathVariable UUID id,
+                                         @RequestParam(name = "airlineIata", required = false) String airlineIata,
+                                         @RequestParam(name = "depIata", required = false) String depIata,
+                                         @RequestParam(name = "depTerminal", required = false) String depTerminal,
+                                         @RequestParam(name = "depGate", required = false) String depGate,
+                                         @RequestParam(name = "arrIata", required = false) String arrIata,
+                                         @RequestParam(name = "arrTerminal", required = false) String arrTerminal,
+                                         @RequestParam(name = "arrGate", required = false) String arrGate,
+                                         @RequestParam(name = "status", required = false) String status,
+                                         @RequestParam(name = "aircraftIcao", required = false) String aircraftIcao,
+                                         @RequestParam(name = "flightNumber", required = false) String flightNumber,
+                                         @RequestParam(name = "flightIata", required = false) String flightIata,
+                                         @RequestParam(name = "depTime", required = false) LocalDateTime depTime,
+                                         @RequestParam(name = "arrTime", required = false) LocalDateTime arrTime,
+                                         @RequestParam(name = "duration", required = false) Integer duration){
+        Flight updated = flightService.update(id, airlineIata, depIata, depTerminal, depGate, arrIata, arrTerminal, arrGate, status, aircraftIcao, flightNumber, flightIata, depTime, arrTime, duration);
         return ResponseEntity.ok()
                 .body(updated);
     }
