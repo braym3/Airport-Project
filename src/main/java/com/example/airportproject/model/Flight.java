@@ -1,28 +1,19 @@
 package com.example.airportproject.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity // tells spring it's a table
-@Table(name = "flights")
 public class Flight {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)    // makes it auto-increment
     private UUID id;
     @NotNull
     @Length(max = 10)
     private String flightIata, depIata, arrIata, status, flightNumber;
     private String airlineIata, depTerminal, depGate, arrTerminal, arrGate, aircraftIcao;
     @NotNull
-    private int duration;
+    private Integer duration;
     @NotNull
     private LocalDateTime depTime, arrTime;
 
@@ -43,7 +34,7 @@ public class Flight {
      * @param arrTime Arrival time
      * @param duration Flight duration in minutes
     */
-    public Flight(String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, int duration) {
+    public Flight(String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration) {
 
         this.airlineIata = airlineIata; // airline code
         this.depIata = depIata; // departure airport code
@@ -80,7 +71,7 @@ public class Flight {
      * @param arrTime Arrival time
      * @param duration Flight duration in minutes
     */
-    public Flight(UUID id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, int duration) {
+    public Flight(UUID id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration) {
         this.id = id;
         this.airlineIata = airlineIata;
         this.depIata = depIata;
@@ -219,11 +210,11 @@ public class Flight {
         this.arrTime = arrTime;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
