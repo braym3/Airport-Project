@@ -29,7 +29,7 @@ public class DataInitializerApplicationRunner implements ApplicationRunner {
         if(runFetchFlight){
             flightFetchService.fetchAndPersistFlights();
         }
-        //gateInitializer.initializeGatesAndTerminals();
+        gateInitializer.initializeGatesAndTerminals();
 
     }
 }

@@ -10,7 +10,7 @@ import java.util.UUID;
 @Mapper
 public interface TerminalMapper {
     @Insert(
-            "INSERT INTO terminals (number) VALUES (#{number})")
+            "INSERT INTO terminals (id, number) VALUES (#{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}, #{number})")
     void create(Terminal terminal);
 
     @Results(id = "terminalResults")

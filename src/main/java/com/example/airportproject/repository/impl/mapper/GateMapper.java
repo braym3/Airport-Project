@@ -1,6 +1,7 @@
 package com.example.airportproject.repository.impl.mapper;
 
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.Terminal;
 import com.example.airportproject.typehandler.UUIDTypeHandler;
 import org.apache.ibatis.annotations.*;
 
@@ -10,7 +11,8 @@ import java.util.UUID;
 @Mapper
 public interface GateMapper {
     @Insert(
-            "INSERT INTO gates (number, terminal_id) VALUES (#{number}, #{terminal_id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler})")
+            "INSERT INTO gates (number, terminal_id) VALUES (#{number}, #{terminalId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler})")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     void create(Gate gate);
 
     @Results(id = "gateResults")

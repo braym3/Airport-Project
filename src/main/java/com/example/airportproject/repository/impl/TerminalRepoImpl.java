@@ -20,7 +20,8 @@ public class TerminalRepoImpl implements TerminalRepo {
     }
 
     @Override
-    public Terminal create(Terminal terminal) {
+    public Terminal create(Terminal terminal, UUID terminalId) {
+        terminal.setId(terminalId);
         terminalMapper.create(terminal);
         return terminal;
     }

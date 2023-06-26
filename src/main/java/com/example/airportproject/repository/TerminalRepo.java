@@ -2,13 +2,12 @@ package com.example.airportproject.repository;
 
 import com.example.airportproject.model.Terminal;
 
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface TerminalRepo{
-    Terminal create(Terminal terminal);
+    Terminal create(Terminal terminal, UUID terminalId);
 
     List<Terminal> getAll();
 

@@ -3,7 +3,6 @@ package com.example.airportproject.repository.impl;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.repository.GateRepo;
 import com.example.airportproject.repository.impl.mapper.GateMapper;
-import org.apache.ibatis.annotations.ResultMap;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +36,7 @@ public class GateRepoImpl implements GateRepo {
 
     @Override
     public Gate update(Gate gate) {
-        return gateMapper.update(gate.getId(), gate.getNumber(), gate.getTerminal().getId());
+        return gateMapper.update(gate.getId(), gate.getNumber(), gate.getTerminalId());
     }
 
     @Override

@@ -20,8 +20,9 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
     @Override
-    public Terminal createTerminal(Terminal terminal) {
-        return terminalRepo.create(terminal);
+    public Terminal create(Terminal terminal) {
+        UUID terminalId = UUID.randomUUID();
+        return terminalRepo.create(terminal, terminalId);
     }
 
 

@@ -16,7 +16,7 @@ public interface TerminalService {
      * @param terminal The Terminal to persist
      * @return The created Terminal
      */
-    Terminal createTerminal(Terminal terminal);
+    Terminal create(Terminal terminal);
 
     /**
      * Returns the Terminal with the given id

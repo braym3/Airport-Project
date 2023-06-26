@@ -8,15 +8,17 @@ public class Gate {
     private Integer number;
 //    @ManyToOne
 //    @JoinColumn(name = "terminal_id")
-    private Terminal terminal;
+    private UUID terminalId;
 
-    public Gate() {
-
+    public Gate(Integer number, UUID terminalId) {
+        this.number = number;
+        this.terminalId = terminalId;
     }
 
-    public Gate(Integer number, Terminal terminal) {
+    public Gate(UUID id, Integer number, UUID terminalId) {
+        this.id = id;
         this.number = number;
-        this.terminal = terminal;
+        this.terminalId = terminalId;
     }
 
     public UUID getId() {
@@ -35,12 +37,12 @@ public class Gate {
         this.number = number;
     }
 
-    public Terminal getTerminal() {
-        return terminal;
+    public UUID getTerminalId() {
+        return terminalId;
     }
 
-    public void setTerminal(Terminal terminal) {
-        this.terminal = terminal;
+    public void setTerminalId(UUID terminalId) {
+        this.terminalId = terminalId;
     }
 
 }
