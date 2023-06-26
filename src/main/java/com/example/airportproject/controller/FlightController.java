@@ -4,6 +4,8 @@ import com.example.airportproject.model.Flight;
 import com.example.airportproject.service.flights.FlightService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +21,16 @@ import java.util.UUID;
 @RequestMapping("api/flights")
 public class FlightController {
     private final FlightService flightService;
+    private final Logger logger = LoggerFactory.getLogger(FlightController.class);
 
     @Autowired
     public FlightController(FlightService flightService) {
         this.flightService = flightService;
-
     }
 
     @GetMapping("/")
     public ResponseEntity<List<Flight>> getFlights() {
+        logger.debug("Controller getting all flights");
         List<Flight> flights = flightService.getAll();
         return ResponseEntity.ok()
                 .body(flights);
@@ -35,6 +38,7 @@ public class FlightController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Flight> getFlightById(@PathVariable UUID id){
+        logger.debug("Controller getting flight with ID {}", id);
         Flight found = flightService.get(id);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .body(found);
@@ -42,6 +46,7 @@ public class FlightController {
 
     @PostMapping("/")
     public ResponseEntity<Flight> createFlight(@Valid @NotNull @RequestBody Flight flight){
+        logger.debug("Controller creating flight");
         Flight created = flightService.createFlight(flight);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -68,6 +73,7 @@ public class FlightController {
                                          @RequestParam(name = "depTime", required = false) LocalDateTime depTime,
                                          @RequestParam(name = "arrTime", required = false) LocalDateTime arrTime,
                                          @RequestParam(name = "duration", required = false) Integer duration){
+        logger.debug("Controller updating flight with ID {}", id);
         Flight updated = flightService.update(id, airlineIata, depIata, depTerminal, depGate, arrIata, arrTerminal, arrGate, status, aircraftIcao, flightNumber, flightIata, depTime, arrTime, duration);
         return ResponseEntity.ok()
                 .body(updated);
@@ -75,6 +81,7 @@ public class FlightController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Flight> remove(@PathVariable UUID id){
+        logger.debug("Controller removing flight with ID {}", id);
         Flight deleted = flightService.remove(id);
         return ResponseEntity.ok()
                 .body(deleted);
@@ -82,6 +89,7 @@ public class FlightController {
 
     @GetMapping("/departures/{depIata}")
     public ResponseEntity<List<Flight>> getByDepartureAirport(@PathVariable String depIata){
+        logger.debug("Controller getting all departing flights from airport {}", depIata);
         List<Flight> departures = flightService.getByDepartureAirport(depIata);
         return ResponseEntity.ok()
                 .body(departures);
@@ -89,6 +97,7 @@ public class FlightController {
 
     @GetMapping("/arrivals/{arrIata}")
     public ResponseEntity<List<Flight>> getByArrivalAirport(@PathVariable String arrIata){
+        logger.debug("Controller getting all arriving flights to airport {}", arrIata);
         List<Flight> arrivals = flightService.getByArrivalAirport(arrIata);
         return ResponseEntity.ok()
                 .body(arrivals);
