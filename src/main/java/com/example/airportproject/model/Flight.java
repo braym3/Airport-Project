@@ -7,6 +7,9 @@ import org.hibernate.validator.constraints.Length;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+* Represents a flight arriving or departing from an airport
+*/
 public class Flight {
     private UUID id;
     @NotNull
