@@ -1,7 +1,6 @@
 package com.example.airportproject.service.flights;
 
 import com.example.airportproject.model.Flight;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,4 +73,11 @@ public interface FlightService {
      * @return List of Flight objects that have the corresponding 'arrIata'
      */
     List<Flight> getByArrivalAirport(String arrIata);
+
+    /**
+     * Returns a List of Flights ordered based on either their departure time or arrival time to the specified airport
+     * @param airportIata Airport code
+     * @return List of ordered Flight objects that have the corresponding 'airportIata'
+     */
+    List<Flight> getOrderedFlights(String airportIata);
 }

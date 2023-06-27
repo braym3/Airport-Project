@@ -45,6 +45,11 @@ public class FlightRepoImpl implements FlightRepo {
     }
 
     @Override
+    public List<Flight> getOrderedFlights(String airportIata) {
+        return flightMapper.getOrderedFlights(airportIata);
+    }
+
+    @Override
     public Flight update(Flight flight) {
         return flightMapper.update(flight.getId(), flight.getAirlineIata(), flight.getDepIata(), flight.getDepTerminal(), flight.getDepGate(), flight.getArrIata(), flight.getArrTerminal(), flight.getArrGate(), flight.getStatus(), flight.getAircraftIcao(), flight.getFlightNumber(), flight.getFlightIata(), flight.getDepTime(), flight.getArrTime(), flight.getDuration());
     }

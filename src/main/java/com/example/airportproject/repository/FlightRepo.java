@@ -27,6 +27,8 @@ public interface FlightRepo {
      */
     List<Flight> getArrivals(String arrIata);
 
+    List<Flight> getOrderedFlights(String airportIata);
+
     // flight - updated flight object to save the updated values of
     Flight update(Flight flight);
 

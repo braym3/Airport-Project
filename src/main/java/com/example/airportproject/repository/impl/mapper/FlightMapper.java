@@ -48,6 +48,10 @@ public interface FlightMapper {
     @Select("SELECT * FROM flights WHERE arr_iata = #{arrIata} ORDER BY arr_time ASC")
     List<Flight> getArrivals(@Param("arrIata") String arrIata);
 
+    @ResultMap("flightResults")
+    @Select("SELECT * FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END")
+    List<Flight> getOrderedFlights(@Param("airportIata") String airportIata);
+
     @Update("UPDATE flights SET airline_iata = #{airlineIata}, dep_iata = #{depIata}, dep_terminal = #{depTerminal}, dep_gate = #{depGate}, arr_iata = #{arrIata}, arr_terminal = #{arrTerminal}, arr_gate = #{arrGate}, status = #{status}, aircraft_icao = #{aircraftIcao}, flight_number = #{flightNumber}, flight_iata = #{flightIata}, dep_time = #{depTime}, arr_time = #{arrTime}, duration = #{duration} WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     Flight update(@Param("id") UUID id, @Param("airlineIata") String airlineIata, @Param("depIata") String depIata, @Param("depTerminal") String depTerminal, @Param("depGate") String depGate, @Param("arrIata") String arrIata, @Param("arrTerminal") String arrTerminal, @Param("arrGate") String arrGate, @Param("status") String status, @Param("aircraftIcao") String aircraftIcao, @Param("flightNumber") String flightNumber, @Param("flightIata") String flightIata, @Param("depTime") LocalDateTime depTime, @Param("arrTime") LocalDateTime arrTime, @Param("duration") Integer duration);
 

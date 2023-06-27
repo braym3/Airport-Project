@@ -1,7 +1,6 @@
 package com.example.airportproject.service.flights.impl;
 
 import com.example.airportproject.model.Flight;
-import com.example.airportproject.exception.FlightNotFoundException;
 import com.example.airportproject.repository.FlightRepo;
 import com.example.airportproject.service.flights.FlightService;
 import org.springframework.context.annotation.Primary;
@@ -106,5 +105,10 @@ public class FlightServiceImpl implements FlightService {
     @Override
     public List<Flight> getByArrivalAirport(String arrIata) {
         return flightRepo.getArrivals(arrIata);
+    }
+
+    @Override
+    public List<Flight> getOrderedFlights(String airportIata) {
+        return flightRepo.getOrderedFlights(airportIata);
     }
 }

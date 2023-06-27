@@ -102,4 +102,12 @@ public class FlightController {
         return ResponseEntity.ok()
                 .body(arrivals);
     }
+
+    @GetMapping("/ordered/{airportIata}")
+    public ResponseEntity<List<Flight>> getOrderedFlights(@PathVariable String airportIata){
+        logger.debug("Controller getting all ordered flights to airport {}", airportIata);
+        List<Flight> flights = flightService.getOrderedFlights(airportIata);
+        return ResponseEntity.ok()
+                .body(flights);
+    }
 }
