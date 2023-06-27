@@ -1,5 +1,6 @@
 package com.example.airportproject.model;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
@@ -11,8 +12,10 @@ public class Flight {
     @NotNull
     @Length(max = 10)
     private String flightIata, depIata, arrIata, status, flightNumber;
+    @Length(max = 10)
     private String airlineIata, depTerminal, depGate, arrTerminal, arrGate, aircraftIcao;
     @NotNull
+    @Min(0)
     private Integer duration;
     @NotNull
     private LocalDateTime depTime, arrTime;
@@ -34,7 +37,7 @@ public class Flight {
      * @param arrTime Arrival time
      * @param duration Flight duration in minutes
     */
-    public Flight(String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration) {
+    public Flight(String airlineIata, @NotNull String depIata, String depTerminal, String depGate, @NotNull String arrIata, String arrTerminal, String arrGate, @NotNull String status, String aircraftIcao, @NotNull String flightNumber, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration) {
 
         this.airlineIata = airlineIata; // airline code
         this.depIata = depIata; // departure airport code
@@ -71,7 +74,7 @@ public class Flight {
      * @param arrTime Arrival time
      * @param duration Flight duration in minutes
     */
-    public Flight(UUID id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration) {
+    public Flight(UUID id, String airlineIata, @NotNull String depIata, String depTerminal, String depGate, @NotNull String arrIata, String arrTerminal, String arrGate, @NotNull String status, String aircraftIcao, @NotNull String flightNumber, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration) {
         this.id = id;
         this.airlineIata = airlineIata;
         this.depIata = depIata;
@@ -114,11 +117,11 @@ public class Flight {
         this.airlineIata = airlineIata;
     }
 
-    public String getDepIata() {
+    public @NotNull String getDepIata() {
         return depIata;
     }
 
-    public void setDepIata(String depIata) {
+    public void setDepIata(@NotNull String depIata) {
         this.depIata = depIata;
     }
 
@@ -138,11 +141,11 @@ public class Flight {
         this.depGate = depGate;
     }
 
-    public String getArrIata() {
+    public @NotNull String getArrIata() {
         return arrIata;
     }
 
-    public void setArrIata(String arrIata) {
+    public void setArrIata(@NotNull String arrIata) {
         this.arrIata = arrIata;
     }
 
@@ -162,11 +165,11 @@ public class Flight {
         this.arrGate = arrGate;
     }
 
-    public String getStatus() {
+    public @NotNull String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(@NotNull String status) {
         this.status = status;
     }
 
@@ -178,43 +181,43 @@ public class Flight {
         this.aircraftIcao = aircraftIcao;
     }
 
-    public String getFlightNumber() {
+    public @NotNull String getFlightNumber() {
         return flightNumber;
     }
 
-    public void setFlightNumber(String flightNumber) {
+    public void setFlightNumber(@NotNull String flightNumber) {
         this.flightNumber = flightNumber;
     }
 
-    public String getFlightIata() {
+    public @NotNull String getFlightIata() {
         return flightIata;
     }
 
-    public void setFlightIata(String flightIata) {
+    public void setFlightIata(@NotNull String flightIata) {
         this.flightIata = flightIata;
     }
 
-    public LocalDateTime getDepTime() {
+    public @NotNull LocalDateTime getDepTime() {
         return depTime;
     }
 
-    public void setDepTime(LocalDateTime depTime) {
+    public void setDepTime(@NotNull LocalDateTime depTime) {
         this.depTime = depTime;
     }
 
-    public LocalDateTime getArrTime() {
+    public @NotNull LocalDateTime getArrTime() {
         return arrTime;
     }
 
-    public void setArrTime(LocalDateTime arrTime) {
+    public void setArrTime(@NotNull LocalDateTime arrTime) {
         this.arrTime = arrTime;
     }
 
-    public Integer getDuration() {
+    public @NotNull Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(@NotNull @Min(0) Integer duration) {
         this.duration = duration;
     }
 

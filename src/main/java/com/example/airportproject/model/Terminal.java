@@ -1,26 +1,29 @@
 package com.example.airportproject.model;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class Terminal {
     private UUID id;
+
+    @NotNull
+    @Min(0)
+    @Max(10)
     private Integer number;
 
     private List<Gate> gates;
 
-    public Terminal(Integer number){
+    public Terminal(@NotNull Integer number){
         this.number = number;
         this.gates = new ArrayList<>();
     }
 
-    public Terminal(Integer number, List<Gate> gates) {
-        this.number = number;
-        this.gates = gates;
-    }
-
-    public Terminal(UUID id, Integer number){
+    public Terminal(UUID id, @NotNull Integer number){
         this.id = id;
         this.number = number;
         this.gates = new ArrayList<>();
@@ -34,11 +37,11 @@ public class Terminal {
         this.id = id;
     }
 
-    public Integer getNumber() {
+    public @NotNull Integer getNumber() {
         return number;
     }
 
-    public void setNumber(Integer number) {
+    public void setNumber(@NotNull @Min(0) @Max(10) Integer number) {
         this.number = number;
     }
 

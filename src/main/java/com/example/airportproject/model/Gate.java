@@ -1,21 +1,27 @@
 package com.example.airportproject.model;
 
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.UUID;
 
 public class Gate {
     private UUID id;
+    @NotNull
+    @Min(0)
+    @Max(50)
     private Integer number;
-//    @ManyToOne
-//    @JoinColumn(name = "terminal_id")
+    @NotNull
     private UUID terminalId;
 
-    public Gate(Integer number, UUID terminalId) {
+    public Gate(@NotNull Integer number, @NotNull UUID terminalId) {
         this.number = number;
         this.terminalId = terminalId;
     }
 
-    public Gate(UUID id, Integer number, UUID terminalId) {
+    public Gate(UUID id, @NotNull Integer number, @NotNull UUID terminalId) {
         this.id = id;
         this.number = number;
         this.terminalId = terminalId;
@@ -29,19 +35,19 @@ public class Gate {
         this.id = id;
     }
 
-    public Integer getNumber() {
+    public @NotNull Integer getNumber() {
         return number;
     }
 
-    public void setNumber(Integer number) {
+    public void setNumber(@NotNull @Min(0) @Max(50) Integer number) {
         this.number = number;
     }
 
-    public UUID getTerminalId() {
+    public @NotNull UUID getTerminalId() {
         return terminalId;
     }
 
-    public void setTerminalId(UUID terminalId) {
+    public void setTerminalId(@NotNull UUID terminalId) {
         this.terminalId = terminalId;
     }
 
