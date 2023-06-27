@@ -2,12 +2,9 @@ package com.example.airportproject.dao;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 
 /**
@@ -16,7 +13,7 @@ import java.net.http.HttpResponse;
 */
 @Repository
 public class FlightDaoImpl {
-    private final HttpClient httpClient;
+    private final WebClient webClient;
 
     @Value("${airportproject.apikey}")
     String apiKey;
@@ -29,32 +26,20 @@ public class FlightDaoImpl {
     * Constructs a new FlightDAO.
     */
     public FlightDaoImpl(){
-        this.httpClient = HttpClient.newHttpClient();
+        this.webClient = WebClient.create();
     }
 
     /**
-    * Builds an HTTP GET request object for the specified endpoint parameter
+    * Builds an asynchronous HTTP GET request object for the specified endpoint parameter
      * @param endpoint the endpoint query parameter for the API request (e.g. "dep_iata" or "arr_iata")
-     * @return the constructed HttpRequest object
+     * @return the constructed WebClient ResponseSpec object
     */
-    public HttpRequest buildRequest(String endpoint){
+    public WebClient.ResponseSpec buildRequest(String endpoint){
         // uri constructed using stored api details and endpoint parameter
-        String url = apiBaseUrl + apiKey + "&" + endpoint + "=" + airportCode;
-        return HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
-    }
-
-    /**
-    * Sends a synchronous HTTP request and returns the response
-     * @param request the HttpRequest to send
-     * @return the HTTPResponse object containing the response body from the API as a String
-     * @throws IOException if an I/O error occurs while receiving the response
-     * @throws InterruptedException if the current thread is interrupted while waiting for the response
-    */
-    public HttpResponse<String> sendRequest(HttpRequest request) throws IOException, InterruptedException {
-        return httpClient.send(request, HttpResponse.BodyHandlers.ofString()); // synchronous - blocks until response comes
+        String uri = apiBaseUrl + apiKey + "&" + endpoint + "=" + airportCode;
+        return webClient.get()
+                .uri(uri)
+                .retrieve();
     }
 
     /**
@@ -65,7 +50,7 @@ public class FlightDaoImpl {
      * @throws InterruptedException if the current thread is interrupted while waiting for the response
     */
     public String fetchData(String endpoint) throws IOException, InterruptedException {
-        HttpResponse<String> response = sendRequest(buildRequest(endpoint));
-        return response.body();
+        WebClient.ResponseSpec responseSpec = buildRequest(endpoint);
+        return responseSpec.bodyToMono(String.class).block();
     }
 }
