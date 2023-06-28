@@ -1,6 +1,6 @@
 package com.example.airportproject.service.flights;
 
-import com.example.airportproject.dao.FlightDaoImpl;
+import com.example.airportproject.dao.impl.FlightDaoImpl;
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.repository.FlightRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;

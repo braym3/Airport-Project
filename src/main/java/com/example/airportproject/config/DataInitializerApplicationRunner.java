@@ -1,8 +1,7 @@
 package com.example.airportproject.config;
 
 import com.example.airportproject.service.flights.FlightFetchService;
-//import com.example.airportproject.service.gates.GateInitializer;
-import com.example.airportproject.service.gates.GateInitializer;
+import com.example.airportproject.service.gates.impl.GateInitializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

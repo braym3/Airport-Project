@@ -1,7 +1,7 @@
 package com.example.airportproject.controller;
 
 import com.example.airportproject.model.Gate;
-import com.example.airportproject.service.gates.GateInitializer;
+import com.example.airportproject.service.gates.impl.GateInitializer;
 import com.example.airportproject.service.gates.GateService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

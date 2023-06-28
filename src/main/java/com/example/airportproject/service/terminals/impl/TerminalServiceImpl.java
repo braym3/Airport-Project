@@ -6,6 +6,7 @@ import com.example.airportproject.repository.TerminalRepo;
 import com.example.airportproject.service.terminals.TerminalService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +34,7 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
     @Override
+    @Transactional
     public List<Terminal> getAll() {
         return terminalRepo.getAll();
     }

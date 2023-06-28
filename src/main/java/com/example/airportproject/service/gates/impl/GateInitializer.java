@@ -1,4 +1,4 @@
-package com.example.airportproject.service.gates;
+package com.example.airportproject.service.gates.impl;
 
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -58,6 +59,12 @@ public class GateInitializer {
         // iterates through the map of terminal config numbers, creating each terminal and its respective gates
         for(Map.Entry<Integer, Integer> terminal : terminalGates.entrySet()){
             createTerminal(terminal.getKey(), terminal.getValue());
+        }
+        /////////
+        List<Terminal> terminals = terminalRepo.getAll();
+//        Terminal t = terminalRepo.get(terminals.get(0).getId());
+        for(Terminal terminal : terminals){
+            System.out.println(terminal.toString());
         }
     }
 }

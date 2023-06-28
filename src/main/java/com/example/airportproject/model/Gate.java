@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -19,6 +21,18 @@ public class Gate {
     @NotNull
     private UUID terminalId;
 
+    private Map<LocalDateTime, LocalDateTime> schedule;
+
+    /**
+     * Constructs a new Gate object with the specified ID and gate number.
+     * @param id the gate ID
+     * @param number the gate number
+     */
+    public Gate(UUID id, @NotNull Integer number) {
+        this.id = id;
+        this.number = number;
+    }
+
     /**
     * Constructs a new Gate object with the specified gate number and terminal ID.
      * @param number the gate number
@@ -27,6 +41,18 @@ public class Gate {
     public Gate(@NotNull Integer number, @NotNull UUID terminalId) {
         this.number = number;
         this.terminalId = terminalId;
+    }
+
+    /**
+     * Constructs a new Gate object with the specified gate number, terminal ID and schedule.
+     * @param number the gate number
+     * @param terminalId the ID of the Terminal that the Gate belongs to
+     * @param schedule a Map of start and end times of time slots when the gate is occupied
+     */
+    public Gate(@NotNull Integer number, @NotNull UUID terminalId, Map<LocalDateTime, LocalDateTime> schedule) {
+        this.number = number;
+        this.terminalId = terminalId;
+        this.schedule = schedule;
     }
 
     /**

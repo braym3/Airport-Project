@@ -21,6 +21,10 @@ public class Terminal {
 
     private List<Gate> gates;
 
+    public Terminal(){
+
+    }
+
     /**
     * Constructs a new Terminal object with the specified terminal number.
      * @param number the terminal number
@@ -39,6 +43,18 @@ public class Terminal {
         this.id = id;
         this.number = number;
         this.gates = new ArrayList<>();
+    }
+
+    /**
+     * Constructs a new Terminal object with the specified ID, terminal number, and List of Gates belonging to it.
+     * @param id the unique ID of the terminal
+     * @param number the terminal number
+     * @param gates the List of Gates that belong to the terminal
+     */
+    public Terminal(UUID id, @NotNull Integer number, List<Gate> gates){
+        this.id = id;
+        this.number = number;
+        this.gates = gates;
     }
 
     /**
