@@ -47,7 +47,7 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional
-    public Flight update(UUID id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration) {
+    public Flight update(UUID id, String airlineIata, String depIata, String arrIata, String status, String aircraftIcao, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration, UUID gateId) {
         Flight flight = flightRepo.get(id); //.orElseThrow(FlightNotFoundException::new);
 
         // update the flight attributes if the corresponding parameters are provided
@@ -57,29 +57,14 @@ public class FlightServiceImpl implements FlightService {
         if(depIata != null){
             flight.setDepIata(depIata);
         }
-        if(depTerminal != null){
-            flight.setDepTerminal(depTerminal);
-        }
-        if(depGate != null){
-            flight.setDepGate(depGate);
-        }
         if(arrIata != null){
             flight.setArrIata(arrIata);
-        }
-        if(arrTerminal != null){
-            flight.setArrTerminal(arrTerminal);
-        }
-        if(arrGate != null){
-            flight.setArrGate(arrGate);
         }
         if(status != null){
             flight.setStatus(status);
         }
         if(aircraftIcao != null){
             flight.setAircraftIcao(aircraftIcao);
-        }
-        if(flightNumber != null){
-            flight.setFlightNumber(flightNumber);
         }
         if(flightIata != null){
             flight.setFlightIata(flightIata);
@@ -92,6 +77,9 @@ public class FlightServiceImpl implements FlightService {
         }
         if(duration != null){
             flight.setDuration(duration);
+        }
+        if(gateId != null){
+            flight.setGateId(gateId);
         }
         // save and return the updated flight record
         return flightRepo.update(flight);

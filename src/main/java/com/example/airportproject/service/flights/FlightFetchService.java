@@ -30,8 +30,6 @@ public class FlightFetchService {
     private final DateTimeFormatter timeFormatter;
     private static final Logger logger = LoggerFactory.getLogger(FlightFetchService.class);
 
-
-
     /**
     * Constructs a new FlightFetchService with the specified FlightRepository and FlightDAO
      * @param flightRepository the FlightRepository to use for persisting the flight data
@@ -66,14 +64,9 @@ public class FlightFetchService {
         return new Flight(
                 getTextValue(objectNode, "airline_iata"),
                 getTextValue(objectNode, "dep_iata"),
-                getTextValue(objectNode, "dep_terminal"),
-                getTextValue(objectNode, "dep_gate"),
                 getTextValue(objectNode, "arr_iata"),
-                getTextValue(objectNode, "arr_terminal"),
-                getTextValue(objectNode, "arr_gate"),
                 getTextValue(objectNode, "status"),
                 getTextValue(objectNode, "aircraft_icao"),
-                getTextValue(objectNode, "flight_number"),
                 getTextValue(objectNode, "flight_iata"),
                 LocalDateTime.parse(objectNode.get("dep_time_utc").asText(), timeFormatter),
                 LocalDateTime.parse(objectNode.get("arr_time_utc").asText(), timeFormatter),

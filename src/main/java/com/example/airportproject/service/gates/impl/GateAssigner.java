@@ -23,18 +23,18 @@ public class GateAssigner {
     private final GateService gateService;
     private final TerminalRepo terminalRepo;
     private final TerminalService terminalService;
-    private final FlightRepo flightService;
+    private final FlightRepo flightRepo;
 
     @Value("${airportproject.airportcode}")
     String airportCode;
     private final Logger logger = LoggerFactory.getLogger(GateAssigner.class);
 
 
-    public GateAssigner(GateService gateService, TerminalRepo terminalRepo, TerminalService terminalService, FlightRepo flightService) {
+    public GateAssigner(GateService gateService, TerminalRepo terminalRepo, TerminalService terminalService, FlightRepo flightRepo) {
         this.gateService = gateService;
         this.terminalRepo = terminalRepo;
         this.terminalService = terminalService;
-        this.flightService = flightService;
+        this.flightRepo = flightRepo;
     }
 
     private boolean isGateAvailable(Gate gate, LocalDateTime startTime, LocalDateTime endTime){
@@ -63,11 +63,8 @@ public class GateAssigner {
             availableGate.addTimeSlot(timeSlot);
 
             // set the Gate ID in the Flight object
-            if(isDeparture(flight)){
-                flight.setDepGateId(availableGate.getId());
-            }else{
-                flight.setArrGateId(availableGate.getId());
-            }
+            flight.setGateId(availableGate.getId());
+            flightRepo.update(flight);
         }
 
     }
@@ -103,7 +100,7 @@ public class GateAssigner {
     public void assignGatesAndTerminals(){
         // Get the list of sorted flights (both arrivals and departures)
         logger.debug("GateAssigner getting ordered flights with airport code {}", airportCode);
-        List<Flight> sortedFlights = flightService.getOrderedFlights(airportCode);
+        List<Flight> sortedFlights = flightRepo.getOrderedFlights(airportCode);
 
         // Get the list of gates at the airport
         logger.debug("GateAssigner getting all gates");
@@ -121,9 +118,9 @@ public class GateAssigner {
 
             // test
             if(isDeparture(flight)){
-                System.out.println("Departure " + flight.getFlightIata() + " to gate " + flight.getDepGateId());
+                System.out.println("Departure " + flight.getFlightIata() + " to gate " + flight.getGateId());
             }else{
-                System.out.println("Arrival " + flight.getFlightIata() + " to gate " + flight.getArrGateId());
+                System.out.println("Arrival " + flight.getFlightIata() + " to gate " + flight.getGateId());
             }
 
         }

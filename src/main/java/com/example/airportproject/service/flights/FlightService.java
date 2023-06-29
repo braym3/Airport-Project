@@ -44,21 +44,17 @@ public interface FlightService {
      * @param id
      * @param airlineIata
      * @param depIata
-     * @param depTerminal
-     * @param depGate
      * @param arrIata
-     * @param arrTerminal
-     * @param arrGate
      * @param status
      * @param aircraftIcao
-     * @param flightNumber
      * @param flightIata
      * @param depTime
      * @param arrTime
      * @param duration
+     * @param gateId
      * @return
     */
-    Flight update(UUID id, String airlineIata, String depIata, String depTerminal, String depGate, String arrIata, String arrTerminal, String arrGate, String status, String aircraftIcao, String flightNumber, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration);
+    Flight update(UUID id, String airlineIata, String depIata, String arrIata, String status, String aircraftIcao, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration, UUID gateId);
 
     /**
      * Returns a List of Flights that have the same provided 'depIata' (departure airport code)

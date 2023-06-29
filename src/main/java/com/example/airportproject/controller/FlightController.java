@@ -61,20 +61,16 @@ public class FlightController {
     public ResponseEntity<Flight> update(@PathVariable UUID id,
                                          @RequestParam(name = "airlineIata", required = false) String airlineIata,
                                          @RequestParam(name = "depIata", required = false) String depIata,
-                                         @RequestParam(name = "depTerminal", required = false) String depTerminal,
-                                         @RequestParam(name = "depGate", required = false) String depGate,
                                          @RequestParam(name = "arrIata", required = false) String arrIata,
-                                         @RequestParam(name = "arrTerminal", required = false) String arrTerminal,
-                                         @RequestParam(name = "arrGate", required = false) String arrGate,
                                          @RequestParam(name = "status", required = false) String status,
                                          @RequestParam(name = "aircraftIcao", required = false) String aircraftIcao,
-                                         @RequestParam(name = "flightNumber", required = false) String flightNumber,
                                          @RequestParam(name = "flightIata", required = false) String flightIata,
                                          @RequestParam(name = "depTime", required = false) LocalDateTime depTime,
                                          @RequestParam(name = "arrTime", required = false) LocalDateTime arrTime,
-                                         @RequestParam(name = "duration", required = false) Integer duration){
+                                         @RequestParam(name = "duration", required = false) Integer duration,
+                                         @RequestParam(name = "gateId", required = false) UUID gateId){
         logger.debug("Controller updating flight with ID {}", id);
-        Flight updated = flightService.update(id, airlineIata, depIata, depTerminal, depGate, arrIata, arrTerminal, arrGate, status, aircraftIcao, flightNumber, flightIata, depTime, arrTime, duration);
+        Flight updated = flightService.update(id, airlineIata, depIata, arrIata, status, aircraftIcao, flightIata, depTime, arrTime, duration, gateId);
         return ResponseEntity.ok()
                 .body(updated);
     }
