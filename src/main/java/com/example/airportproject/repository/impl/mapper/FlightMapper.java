@@ -1,6 +1,7 @@
 package com.example.airportproject.repository.impl.mapper;
 
 import com.example.airportproject.model.Flight;
+import com.example.airportproject.model.Gate;
 import com.example.airportproject.typehandler.UUIDTypeHandler;
 import org.apache.ibatis.annotations.*;
 
@@ -29,8 +30,16 @@ public interface FlightMapper {
             @Arg(column = "duration", javaType = Integer.class),
             @Arg(column = "gate_id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class)
     })
-    @Select("SELECT * FROM flights")
+    @Select("SELECT f.id, f.airline_iata, f.dep_iata, f.arr_iata, f.status, f.aircraft_icao, f.flight_iata, f.dep_time, f.arr_time, f.duration, f.gate_id FROM flights f")
     List<Flight> getAll();
+
+    @Results(id = "gateResults", value = {
+            @Result(property = "id", column = "id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class),
+            @Result(property = "number", column = "number"),
+            @Result(property = "terminalId", column = "terminal_id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class)
+    })
+    @Select("SELECT gates.id, gates.number, gates.terminal_id FROM gates LEFT JOIN flights ON gates.id = flights.gate_id WHERE flights.id = #{flightId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    Gate getGateForFlight(UUID flightId);
 
     @ResultMap("flightResults")
     @Select("SELECT * FROM flights WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")

@@ -24,6 +24,8 @@ public class Flight {
     private LocalDateTime depTime, arrTime;
     private UUID gateId;
 
+    private Gate gate;
+
     /**
     *
      * @param airlineIata Airline IATA code
@@ -189,5 +191,13 @@ public class Flight {
 
     public void setGateId(UUID gateId) {
         this.gateId = gateId;
+    }
+
+    public Gate getGate() {
+        return gate;
+    }
+
+    public void setGate(Gate gate) {
+        this.gate = gate;
     }
 }

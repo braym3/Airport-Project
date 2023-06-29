@@ -1,6 +1,7 @@
 package com.example.airportproject.repository.impl;
 
 import com.example.airportproject.model.Flight;
+import com.example.airportproject.model.Gate;
 import com.example.airportproject.repository.FlightRepo;
 import com.example.airportproject.repository.impl.mapper.FlightMapper;
 import org.springframework.stereotype.Repository;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional
@@ -26,27 +28,29 @@ public class FlightRepoImpl implements FlightRepo {
 
     @Override
     public List<Flight> getAll() {
-        return flightMapper.getAll();
+        return populateGates(flightMapper.getAll());
     }
 
     @Override
     public Flight get(UUID id) {
-        return flightMapper.get(id);
+        Flight flight = flightMapper.get(id);
+        flight.setGate(flightMapper.getGateForFlight(flight.getId()));
+        return flight;
     }
 
     @Override
     public List<Flight> getDepartures(String depIata) {
-        return flightMapper.getDepartures(depIata);
+        return populateGates(flightMapper.getDepartures(depIata));
     }
 
     @Override
     public List<Flight> getArrivals(String arrIata) {
-        return flightMapper.getArrivals(arrIata);
+        return populateGates(flightMapper.getArrivals(arrIata));
     }
 
     @Override
     public List<Flight> getOrderedFlights(String airportIata) {
-        return flightMapper.getOrderedFlights(airportIata);
+        return populateGates(flightMapper.getOrderedFlights(airportIata));
     }
 
     @Override
@@ -70,5 +74,10 @@ public class FlightRepoImpl implements FlightRepo {
     @Override
     public void removeDuplicates() {
         flightMapper.removeDuplicates();
+    }
+
+    public List<Flight> populateGates(List<Flight> flights){
+        flights.forEach(flight -> flight.setGate(flightMapper.getGateForFlight(flight.getId())));
+        return flights;
     }
 }
