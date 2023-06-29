@@ -22,8 +22,6 @@ public interface GateMapper {
             @Arg(column = "id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class, id = true),
             @Arg(column = "number", javaType = Integer.class),
             @Arg(column = "terminal_id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class, id = true),
-            @Arg(column = "start_time", javaType = LocalDateTime.class),
-            @Arg(column = "end_time", javaType = LocalDateTime.class)
     })
     @Select("SELECT gates.id, gates.number, gates.terminal_id, gate_slots.start_time, gate_slots.end_time FROM gates LEFT JOIN gate_slots ON gates.id = gate_slots.gate_id")
     List<Gate> getAll();

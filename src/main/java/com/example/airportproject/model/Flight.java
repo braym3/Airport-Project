@@ -23,6 +23,8 @@ public class Flight {
     @NotNull
     private LocalDateTime depTime, arrTime;
 
+    private UUID depGateId, arrGateId;
+
     /**
     *
      * @param airlineIata Airline IATA code
@@ -222,6 +224,22 @@ public class Flight {
 
     public void setDuration(@NotNull @Min(0) Integer duration) {
         this.duration = duration;
+    }
+
+    public UUID getDepGateId() {
+        return depGateId;
+    }
+
+    public void setDepGateId(UUID depGateId) {
+        this.depGateId = depGateId;
+    }
+
+    public UUID getArrGateId() {
+        return arrGateId;
+    }
+
+    public void setArrGateId(UUID arrGateId) {
+        this.arrGateId = arrGateId;
     }
 
     @Override
