@@ -71,6 +71,7 @@ function displayFlights(flights){
             `<td>${flight.flightIata}</td>` +
             `<td>${flight.depIata}</td>` +
             `<td>${flight.arrIata}</td>` +
+            `<td>${flight.gate.terminal.number}</td>` +
             `<td>${flight.gate.number}</td>` +
             `<td>${toggleSwitch.checked? formatDateTime(flight.arrTime) : formatDateTime(flight.depTime)}</td>` +
             `<td>${flight.status}</td>` +
