@@ -63,7 +63,7 @@ public class GateAssigner {
             availableGate.addTimeSlot(timeSlot);
 
             // set the Gate ID in the Flight object
-            flight.setGateId(availableGate.getId());
+            flight.setGate(availableGate);
             flightRepo.update(flight);
         }
 
@@ -118,9 +118,9 @@ public class GateAssigner {
 
             // test
             if(isDeparture(flight)){
-                System.out.println("Departure " + flight.getFlightIata() + " to gate " + flight.getGateId());
+                System.out.println("Departure " + flight.getFlightIata() + " to gate " + flight.getGate().getNumber());
             }else{
-                System.out.println("Arrival " + flight.getFlightIata() + " to gate " + flight.getGateId());
+                System.out.println("Arrival " + flight.getFlightIata() + " to gate " + flight.getGate().getNumber());
             }
 
         }

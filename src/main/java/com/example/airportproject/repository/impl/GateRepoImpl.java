@@ -36,7 +36,7 @@ public class GateRepoImpl implements GateRepo {
 
     @Override
     public Gate update(Gate gate) {
-        return gateMapper.update(gate.getId(), gate.getNumber(), gate.getTerminalId());
+        return gateMapper.update(gate);
     }
 
     @Override

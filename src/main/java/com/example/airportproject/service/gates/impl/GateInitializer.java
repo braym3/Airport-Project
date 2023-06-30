@@ -34,7 +34,7 @@ public class GateInitializer {
     public void createTerminalGates(int gateCount, Terminal terminal){
         for(int i = 1; i <= gateCount; i++){
             logger.debug("GateInitializer creating gate number {} for terminal {}", i, terminal.getNumber());
-            Gate gate = new Gate(i, terminal.getId());
+            Gate gate = new Gate(i, terminal);
             gateRepository.create(gate);
         }
     }

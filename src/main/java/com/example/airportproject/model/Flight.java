@@ -22,7 +22,6 @@ public class Flight {
     private Integer duration;
     @NotNull
     private LocalDateTime depTime, arrTime;
-    private UUID gateId;
 
     private Gate gate;
 
@@ -49,8 +48,8 @@ public class Flight {
         this.depTime = depTime; // actual departure date/time
         this.arrTime = arrTime; // actual arrival date/time
         this.duration = duration; // flight duration (minutes)
-        // initialise gate ID as null until gate has been assigned
-        this.gateId = null;
+        // initialise gate as null until gate has been assigned
+        this.gate = null;
     }
 
 
@@ -78,11 +77,11 @@ public class Flight {
         this.depTime = depTime;
         this.arrTime = arrTime;
         this.duration = duration;
-        // initialise gate ID as null until gate has been assigned
-        this.gateId = null;
+        // initialise gate as null until gate has been assigned
+        this.gate = null;
     }
 
-    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration, UUID gateId){
+    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration, Gate gate){
         this.id = id;
         this.airlineIata = airlineIata;
         this.depIata = depIata;
@@ -93,7 +92,7 @@ public class Flight {
         this.depTime = depTime;
         this.arrTime = arrTime;
         this.duration = duration;
-        this.gateId = gateId;
+        this.gate = gate;
     }
 
     /**
@@ -185,13 +184,13 @@ public class Flight {
         this.duration = duration;
     }
 
-    public UUID getGateId() {
-        return gateId;
-    }
-
-    public void setGateId(UUID gateId) {
-        this.gateId = gateId;
-    }
+//    public UUID getGateId() {
+//        return gateId;
+//    }
+//
+//    public void setGateId(UUID gateId) {
+//        this.gateId = gateId;
+//    }
 
     public Gate getGate() {
         return gate;

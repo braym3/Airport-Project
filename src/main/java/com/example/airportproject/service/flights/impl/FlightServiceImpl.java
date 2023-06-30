@@ -78,9 +78,9 @@ public class FlightServiceImpl implements FlightService {
         if(duration != null){
             flight.setDuration(duration);
         }
-        if(gateId != null){
-            flight.setGateId(gateId);
-        }
+//        if(gateId != null){
+//            flight.setGateId(gateId);
+//        }
         // save and return the updated flight record
         return flightRepo.update(flight);
     }

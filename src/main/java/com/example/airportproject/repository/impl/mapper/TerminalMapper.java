@@ -47,11 +47,11 @@ public interface TerminalMapper {
     })
     List<Terminal> getAll();
 
-    @Select("SELECT id, number, terminal_id FROM gates WHERE gates.terminal_id = #{terminalId, javaType=java.util.UUID, jdbcType=OTHER}")
+    @Select("SELECT id, number FROM gates WHERE gates.terminal_id = #{terminalId, javaType=java.util.UUID, jdbcType=OTHER}")
     @Results(value = {
             @Result(property = "id", column = "id", javaType = UUID.class),
             @Result(property = "number", column = "number"),
-            @Result(property = "terminalId", column = "terminal_id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class)
+            //@Result(property = "terminalId", column = "terminal_id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class)
     })
     List<Gate> selectGatesForTerminal(@Param("terminalId") UUID terminalId);
 

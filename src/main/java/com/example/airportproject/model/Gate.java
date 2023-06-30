@@ -18,55 +18,70 @@ public class Gate {
     @Max(50)
     private Integer number;
     @NotNull
-    private UUID terminalId;
+    private Terminal terminal;
 
     private List<TimeSlot> schedule;
 
     /**
-     * Constructs a new Gate object with the specified ID and gate number.
+     * Constructs a new Gate object with the specified ID, gate number.
      * @param id the gate ID
      * @param number the gate number
      */
     public Gate(UUID id, @NotNull Integer number) {
         this.id = id;
         this.number = number;
+        this.terminal = null;
         this.schedule = new ArrayList<>();
     }
 
     /**
-    * Constructs a new Gate object with the specified gate number and terminal ID.
+     * Constructs a new Gate object with the specified ID, gate number, and terminal.
+     * @param id the gate ID
      * @param number the gate number
-     * @param terminalId the ID of the Terminal that the Gate belongs to
-    */
-    public Gate(@NotNull Integer number, @NotNull UUID terminalId) {
+     * @param terminal the Terminal object that this gate belongs to
+     */
+    public Gate(UUID id, @NotNull Integer number, @NotNull Terminal terminal) {
+        this.id = id;
         this.number = number;
-        this.terminalId = terminalId;
+        this.terminal = terminal;
         this.schedule = new ArrayList<>();
     }
 
     /**
-     * Constructs a new Gate object with the specified gate number, terminal ID and schedule.
+    * Constructs a new Gate object with the specified gate number and terminal.
      * @param number the gate number
-     * @param terminalId the ID of the Terminal that the Gate belongs to
+     * @param terminal the Terminal object that the Gate belongs to
+    */
+    public Gate(@NotNull Integer number, @NotNull Terminal terminal) {
+        this.number = number;
+        this.terminal = terminal;
+        this.schedule = new ArrayList<>();
+    }
+
+    /**
+     * Constructs a new Gate object with the specified gate number, terminal and schedule.
+     * @param number the gate number
+     * @param terminal the Terminal object that the Gate belongs to
      * @param schedule a List of time slots for when the gate is occupied
      */
-    public Gate(@NotNull Integer number, @NotNull UUID terminalId, List<TimeSlot> schedule) {
+    public Gate(@NotNull Integer number, @NotNull Terminal terminal, List<TimeSlot> schedule) {
         this.number = number;
-        this.terminalId = terminalId;
+        this.terminal = terminal;
         this.schedule = schedule;
     }
 
     /**
-     * Constructs a new Gate object with the specified ID, gate number, and terminal ID.
-     * @param id the unique ID of the gate
+     * Constructs a new Gate object with the specified ID, gate number, terminal and schedule.
+     * @param id the gate ID
      * @param number the gate number
-     * @param terminalId the ID of the Terminal that the Gate belongs to
+     * @param terminal the Terminal object that the Gate belongs to
+     * @param schedule a List of time slots for when the gate is occupied
      */
-    public Gate(UUID id, @NotNull Integer number, @NotNull UUID terminalId) {
+    public Gate(UUID id, @NotNull Integer number, @NotNull Terminal terminal, List<TimeSlot> schedule) {
         this.id = id;
         this.number = number;
-        this.terminalId = terminalId;
-        this.schedule = new ArrayList<>();
+        this.terminal = terminal;
+        this.schedule = schedule;
     }
 
     /**
@@ -101,19 +116,19 @@ public class Gate {
     }
 
     /**
-    * Returns the ID of the Terminal that the gate belongs to.
-     * @return the ID of the associated terminal
+    * Returns the Terminal object that the gate belongs to.
+     * @return the associated Terminal object
     */
-    public @NotNull UUID getTerminalId() {
-        return terminalId;
+    public @NotNull Terminal getTerminal() {
+        return terminal;
     }
 
     /**
-    * Sets the ID of the terminal that the gate belongs to.
-     * @param terminalId the ID of the associated terminal
+    * Sets the Terminal object that the gate belongs to.
+     * @param terminal the associated Terminal object
     */
-    public void setTerminalId(@NotNull UUID terminalId) {
-        this.terminalId = terminalId;
+    public void setTerminal(@NotNull Terminal terminal) {
+        this.terminal = terminal;
     }
 
     public List<TimeSlot> getSchedule() {
