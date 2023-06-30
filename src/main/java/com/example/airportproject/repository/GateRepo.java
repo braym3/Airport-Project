@@ -1,6 +1,7 @@
 package com.example.airportproject.repository;
 
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.TimeSlot;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,4 +21,6 @@ public interface GateRepo{
 
     // clear table
     void clear();
+
+    void addGateSlot(UUID gateId, TimeSlot timeSlot);
 }

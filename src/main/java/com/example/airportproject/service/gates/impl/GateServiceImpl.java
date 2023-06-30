@@ -1,7 +1,7 @@
 package com.example.airportproject.service.gates.impl;
 
-import com.example.airportproject.exception.GateNotFoundException;
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.repository.GateRepo;
 import com.example.airportproject.service.gates.GateService;
 import org.springframework.context.annotation.Primary;
@@ -50,6 +50,12 @@ public class GateServiceImpl implements GateService {
         gate.setNumber(number);
 
         return gateRepo.update(gate);               // save the updated Gate and return it
+    }
+
+    @Override
+    public TimeSlot addGateSlot(UUID gateId, TimeSlot timeSlot){
+        gateRepo.addGateSlot(gateId, timeSlot);
+        return timeSlot;
     }
 
 }

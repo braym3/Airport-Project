@@ -1,8 +1,10 @@
 package com.example.airportproject.repository.impl;
 
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.repository.GateRepo;
 import com.example.airportproject.repository.impl.mapper.GateMapper;
+import com.example.airportproject.repository.impl.mapper.TimeSlotMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +15,11 @@ import java.util.UUID;
 @Transactional
 public class GateRepoImpl implements GateRepo {
     private final GateMapper gateMapper;
+    private final TimeSlotMapper timeSlotMapper;
 
-    public GateRepoImpl(GateMapper gateMapper){
+    public GateRepoImpl(GateMapper gateMapper, TimeSlotMapper timeSlotMapper){
         this.gateMapper = gateMapper;
+        this.timeSlotMapper = timeSlotMapper;
     }
 
     @Override
@@ -47,5 +51,10 @@ public class GateRepoImpl implements GateRepo {
     @Override
     public void clear() {
         gateMapper.clear();
+    }
+
+    @Override
+    public void addGateSlot(UUID gateId, TimeSlot timeSlot){
+        timeSlotMapper.create(timeSlot, gateId);
     }
 }

@@ -59,8 +59,10 @@ public class GateAssigner {
     private void assignGate(Flight flight, LocalDateTime startTime, LocalDateTime endTime, Gate availableGate){
         if(availableGate != null){
             // add a new time slot to the gate schedule
-            TimeSlot timeSlot = new TimeSlot(startTime, endTime, flight.getId());
+            TimeSlot timeSlot = new TimeSlot(flight.getId(), startTime, endTime);
             availableGate.addTimeSlot(timeSlot);
+            // add the new time slot to the database
+            gateService.addGateSlot(availableGate.getId(), timeSlot);
 
             // set the Gate ID in the Flight object
             flight.setGate(availableGate);

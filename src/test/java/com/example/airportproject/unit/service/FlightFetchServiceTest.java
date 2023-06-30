@@ -1,19 +1,11 @@
 package com.example.airportproject.unit.service;
 
-import com.example.airportproject.dao.FlightDaoImpl;
-import com.example.airportproject.model.Flight;
+import com.example.airportproject.dao.impl.FlightDaoImpl;
 import com.example.airportproject.repository.FlightRepo;
 import com.example.airportproject.service.flights.FlightFetchService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class FlightFetchServiceTest {
 

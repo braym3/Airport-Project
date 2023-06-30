@@ -9,6 +9,8 @@ import java.util.UUID;
 * Represents a time slot during which a flight occupies a gate.
 */
 public class TimeSlot {
+
+    private UUID id;
     @NotNull
     private LocalDateTime startTime, endTime;
     // time slot can be occupied by a flight (using a gate or runway)
@@ -16,12 +18,26 @@ public class TimeSlot {
 
 
     /**
-    * Constructs a TimeSlot object with the specified start time, end time, and flight ID.
+     * Constructs a TimeSlot object with the specified ID, flight ID, start time, and end time.
+     * @param id the ID of the time slot
+     * @param flightId the ID of the flight occupying the time slot
      * @param startTime the start time of the time slot
      * @param endTime the end time of the time slot
+     */
+    public TimeSlot(UUID id, UUID flightId, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime) {
+        this.id = id;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.flightId = flightId;
+    }
+
+    /**
+    * Constructs a TimeSlot object with the specified start time, end time, and flight ID.
      * @param flightId the ID of the flight occupying the time slot
+     * @param startTime the start time of the time slot
+     * @param endTime the end time of the time slot
     */
-    public TimeSlot(@NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime, UUID flightId) {
+    public TimeSlot(UUID flightId, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.flightId = flightId;

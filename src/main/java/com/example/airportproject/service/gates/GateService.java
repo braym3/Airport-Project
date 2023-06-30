@@ -1,6 +1,7 @@
 package com.example.airportproject.service.gates;
 
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.TimeSlot;
 
 import java.util.List;
 import java.util.UUID;
@@ -45,4 +46,6 @@ public interface GateService {
      * @return The updated Gate object
      */
     Gate updateNumber(UUID id, int number);
+
+    TimeSlot addGateSlot(UUID gateId, TimeSlot timeSlot);
 }
