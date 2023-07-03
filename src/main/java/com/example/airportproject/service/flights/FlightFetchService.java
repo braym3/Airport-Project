@@ -1,8 +1,8 @@
-package com.example.airportproject.service;
+package com.example.airportproject.service.flights;
 
-import com.example.airportproject.dao.FlightDAO;
+import com.example.airportproject.dao.impl.FlightDaoImpl;
 import com.example.airportproject.model.Flight;
-import com.example.airportproject.repository.FlightRepository;
+import com.example.airportproject.repository.FlightRepo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,20 +24,18 @@ import java.util.Map;
 */
 @Service
 public class FlightFetchService {
-    private final FlightRepository flightRepository;
-    private final FlightDAO flightDAO;
+    private final FlightRepo flightRepository;
+    private final FlightDaoImpl flightDAO;
     private final ObjectMapper objectMapper;
     private final DateTimeFormatter timeFormatter;
     private static final Logger logger = LoggerFactory.getLogger(FlightFetchService.class);
-
-
 
     /**
     * Constructs a new FlightFetchService with the specified FlightRepository and FlightDAO
      * @param flightRepository the FlightRepository to use for persisting the flight data
      * @param flightDAO the FlightDAO to use for fetching flight data from the external API
     */
-    public FlightFetchService(FlightRepository flightRepository, FlightDAO flightDAO) {
+    public FlightFetchService(FlightRepo flightRepository, FlightDaoImpl flightDAO) {
         this.flightRepository = flightRepository;
         this.flightDAO = flightDAO;
         this.objectMapper = new ObjectMapper();
@@ -66,14 +64,9 @@ public class FlightFetchService {
         return new Flight(
                 getTextValue(objectNode, "airline_iata"),
                 getTextValue(objectNode, "dep_iata"),
-                getTextValue(objectNode, "dep_terminal"),
-                getTextValue(objectNode, "dep_gate"),
                 getTextValue(objectNode, "arr_iata"),
-                getTextValue(objectNode, "arr_terminal"),
-                getTextValue(objectNode, "arr_gate"),
                 getTextValue(objectNode, "status"),
                 getTextValue(objectNode, "aircraft_icao"),
-                getTextValue(objectNode, "flight_number"),
                 getTextValue(objectNode, "flight_iata"),
                 LocalDateTime.parse(objectNode.get("dep_time_utc").asText(), timeFormatter),
                 LocalDateTime.parse(objectNode.get("arr_time_utc").asText(), timeFormatter),
@@ -128,7 +121,9 @@ public class FlightFetchService {
         // persisting the flight data to the db - adding both departures & arrivals to the flights table
         for (Map.Entry<String, List<Flight>> flightSet : flightData.entrySet()) {
             List<Flight> flightList = flightSet.getValue();
-            flightRepository.saveAll(flightList);
+            for(Flight flight : flightList){
+                flightRepository.create(flight);
+            }
         }
     }
 
@@ -141,7 +136,7 @@ public class FlightFetchService {
     */
     public void fetchAndPersistFlights() throws IOException, InterruptedException {
         // clear the flights table
-        flightRepository.deleteAll();
+        flightRepository.clear();
 
         try{
             // build get request for departures and asynchronously send it

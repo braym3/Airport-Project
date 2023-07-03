@@ -1,19 +1,11 @@
 package com.example.airportproject.service;
 
-import com.example.airportproject.model.Flight;
-import com.example.airportproject.repository.FlightRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import com.example.airportproject.repository.FlightRepo;
+import com.example.airportproject.service.flights.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // will run the application normally to test it properly - makes sure port is not being used
 class FlightServiceDBTest {
 
@@ -21,7 +13,7 @@ class FlightServiceDBTest {
     private FlightService service;
 
     @MockBean // make a mock repo
-    private FlightRepository repo;
+    private FlightRepo repo;
 
 //    @Test
 //    void createFlight() {

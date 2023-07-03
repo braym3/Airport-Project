@@ -1,0 +1,58 @@
+package com.example.airportproject.service.terminals.impl;
+
+import com.example.airportproject.model.Terminal;
+import com.example.airportproject.repository.TerminalRepo;
+import com.example.airportproject.service.terminals.TerminalService;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
+
+@Primary
+@Service
+public class TerminalServiceImpl implements TerminalService {
+    private final TerminalRepo terminalRepo;
+
+    public TerminalServiceImpl(TerminalRepo terminalRepo) {
+        this.terminalRepo = terminalRepo;
+    }
+
+    @Override
+    @Transactional
+    public Terminal create(Terminal terminal) {
+        UUID terminalId = UUID.randomUUID();
+        return terminalRepo.create(terminal, terminalId);
+    }
+
+    @Override
+    @Transactional
+    public Terminal get(UUID id) {
+        return terminalRepo.get(id); //.orElseThrow(TerminalNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
+    }
+
+    @Override
+    @Transactional
+    public List<Terminal> getAll() {
+        return terminalRepo.getAll();
+    }
+
+    @Override
+    @Transactional
+    public Terminal remove(UUID id) {
+        Terminal removed = this.get(id);
+        terminalRepo.remove(id);
+        return removed;
+    }
+
+    @Override
+    @Transactional
+    public Terminal updateNumber(UUID id, int number) {
+        Terminal terminal = this.get(id);
+
+        terminal.setNumber(number);
+
+        return terminalRepo.update(terminal);               // save the updated Gate and return it
+    }
+}
