@@ -1,18 +1,14 @@
 package com.example.airportproject.repository.impl;
 
 import com.example.airportproject.model.Flight;
-import com.example.airportproject.model.Gate;
 import com.example.airportproject.repository.FlightRepo;
 import com.example.airportproject.repository.impl.mapper.FlightMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Repository
-@Transactional
 public class FlightRepoImpl implements FlightRepo {
     private final FlightMapper flightMapper;
 
@@ -34,27 +30,21 @@ public class FlightRepoImpl implements FlightRepo {
 
     @Override
     public Flight get(UUID id) {
-//        Flight flight = flightMapper.get(id);
-//        flight.setGate(flightMapper.getGateForFlight(flight.getId()));
-//        return flight;
         return flightMapper.get(id);
     }
 
     @Override
     public List<Flight> getDepartures(String depIata) {
-//        return populateGates(flightMapper.getDepartures(depIata));
         return flightMapper.getDepartures(depIata);
     }
 
     @Override
     public List<Flight> getArrivals(String arrIata) {
-//        return populateGates(flightMapper.getArrivals(arrIata));
         return flightMapper.getArrivals(arrIata);
     }
 
     @Override
     public List<Flight> getOrderedFlights(String airportIata) {
-//        return populateGates(flightMapper.getOrderedFlights(airportIata));
         return flightMapper.getOrderedFlights(airportIata);
     }
 
@@ -81,8 +71,8 @@ public class FlightRepoImpl implements FlightRepo {
         flightMapper.removeDuplicates();
     }
 
-    public List<Flight> populateGates(List<Flight> flights){
-        //flights.forEach(flight -> flight.setGate(flightMapper.getGateForFlight(flight.getId())));
-        return flights;
-    }
+//    public List<Flight> populateGates(List<Flight> flights){
+//        flights.forEach(flight -> flight.setGate(flightMapper.getGateForFlight(flight.getId())));
+//        return flights;
+//    }
 }

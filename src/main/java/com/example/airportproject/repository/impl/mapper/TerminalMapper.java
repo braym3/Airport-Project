@@ -23,20 +23,6 @@ public interface TerminalMapper {
             "INSERT INTO terminals (id, number) VALUES (#{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}, #{number})")
     void create(Terminal terminal);
 
-//    @Results(id = "terminalResults", value = {
-//            @Result(property = "id", column = "id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class),
-//            @Result(property = "number", column = "number")
-//    })
-//    @Select("SELECT id, number FROM terminals")
-//    List<Terminal> getAll();
-//
-//    @Results(id = "gateResults", value = {
-//            @Result(property = "id", column = "id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class),
-//            @Result(property = "number", column = "number")
-//    })
-//    @Select("SELECT id, number FROM gates WHERE terminal_id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
-//    List<Gate> getGatesForTerminal(UUID id);
-
     @Select("SELECT id, number FROM terminals")
     @Results(id="terminalResults", value = {
             @Result(property = "id", column = "id"),
@@ -49,7 +35,6 @@ public interface TerminalMapper {
     @Results(value = {
             @Result(property = "id", column = "id", javaType = UUID.class),
             @Result(property = "number", column = "number"),
-            //@Result(property = "terminalId", column = "terminal_id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class)
     })
     List<Gate> selectGatesForTerminal(@Param("terminalId") UUID terminalId);
 

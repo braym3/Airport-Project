@@ -1,5 +1,4 @@
 package com.example.airportproject.service.terminals.impl;
-import com.example.airportproject.exception.TerminalNotFoundException;
 
 import com.example.airportproject.model.Terminal;
 import com.example.airportproject.repository.TerminalRepo;
@@ -21,14 +20,14 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
     @Override
+    @Transactional
     public Terminal create(Terminal terminal) {
         UUID terminalId = UUID.randomUUID();
         return terminalRepo.create(terminal, terminalId);
     }
 
-
-
     @Override
+    @Transactional
     public Terminal get(UUID id) {
         return terminalRepo.get(id); //.orElseThrow(TerminalNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
     }
@@ -40,6 +39,7 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
     @Override
+    @Transactional
     public Terminal remove(UUID id) {
         Terminal removed = this.get(id);
         terminalRepo.remove(id);
@@ -47,6 +47,7 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
     @Override
+    @Transactional
     public Terminal updateNumber(UUID id, int number) {
         Terminal terminal = this.get(id);
 

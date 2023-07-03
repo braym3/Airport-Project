@@ -6,6 +6,7 @@ import com.example.airportproject.repository.GateRepo;
 import com.example.airportproject.service.gates.GateService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
+    @Transactional
     public Gate createGate(Gate gate) {
         return gateRepo.create(gate);
     }
@@ -27,16 +29,19 @@ public class GateServiceImpl implements GateService {
 
 
     @Override
+    @Transactional
     public Gate get(UUID id) {
         return gateRepo.get(id); //.orElseThrow(GateNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
     }
 
     @Override
+    @Transactional
     public List<Gate> getAll() {
         return gateRepo.getAll();
     }
 
     @Override
+    @Transactional
     public Gate remove(UUID id) {
         Gate removed = this.get(id);
         gateRepo.remove(id);
@@ -44,6 +49,7 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
+    @Transactional
     public Gate updateNumber(UUID id, int number) {
         Gate gate = this.get(id);
 
@@ -53,9 +59,9 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
-    public TimeSlot addGateSlot(UUID gateId, TimeSlot timeSlot){
+    @Transactional
+    public void addGateSlot(UUID gateId, TimeSlot timeSlot){
         gateRepo.addGateSlot(gateId, timeSlot);
-        return timeSlot;
     }
 
 }

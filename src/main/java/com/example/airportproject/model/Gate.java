@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -22,17 +21,17 @@ public class Gate {
 
     private List<TimeSlot> schedule;
 
-    /**
-     * Constructs a new Gate object with the specified ID, gate number.
-     * @param id the gate ID
-     * @param number the gate number
-     */
-    public Gate(UUID id, @NotNull Integer number) {
-        this.id = id;
-        this.number = number;
-        this.terminal = null;
-        this.schedule = new ArrayList<>();
-    }
+//    /**
+//     * Constructs a new Gate object with the specified ID, gate number.
+//     * @param id the gate ID
+//     * @param number the gate number
+//     */
+//    public Gate(UUID id, @NotNull Integer number) {
+//        this.id = id;
+//        this.number = number;
+//        this.terminal = null;
+//        this.schedule = new ArrayList<>();
+//    }
 
     /**
      * Constructs a new Gate object with the specified ID, gate number, and terminal.

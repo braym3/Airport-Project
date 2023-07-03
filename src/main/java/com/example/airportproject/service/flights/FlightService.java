@@ -1,6 +1,7 @@
 package com.example.airportproject.service.flights;
 
 import com.example.airportproject.model.Flight;
+import com.example.airportproject.model.Gate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,20 +42,20 @@ public interface FlightService {
 
     /**
     * Updates the flight record of the corresponding id with the specified attributes
-     * @param id
-     * @param airlineIata
-     * @param depIata
-     * @param arrIata
-     * @param status
-     * @param aircraftIcao
-     * @param flightIata
-     * @param depTime
-     * @param arrTime
-     * @param duration
-     * @param gateId
-     * @return
+     * @param id the ID of the flight
+     * @param airlineIata the airline IATA code of the flight
+     * @param depIata the departure airport IATA code
+     * @param arrIata the arrival airport IATA code
+     * @param status the flight status
+     * @param aircraftIcao the aircraft ICAO code
+     * @param flightIata the flight IATA code
+     * @param depTime the departure time of the flight
+     * @param arrTime the arrival time of the flight
+     * @param duration the flight duration in minutes
+     * @param gate the assigned Gate object
+     * @return the updated flight object
     */
-    Flight update(UUID id, String airlineIata, String depIata, String arrIata, String status, String aircraftIcao, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration, UUID gateId);
+    Flight update(UUID id, String airlineIata, String depIata, String arrIata, String status, String aircraftIcao, String flightIata, LocalDateTime depTime, LocalDateTime arrTime, Integer duration, Gate gate);
 
     /**
      * Returns a List of Flights that have the same provided 'depIata' (departure airport code)

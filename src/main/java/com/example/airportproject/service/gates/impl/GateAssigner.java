@@ -4,25 +4,18 @@ import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.repository.FlightRepo;
-import com.example.airportproject.repository.GateRepo;
-import com.example.airportproject.repository.TerminalRepo;
 import com.example.airportproject.service.gates.GateService;
-import com.example.airportproject.service.terminals.TerminalService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class GateAssigner {
     private final GateService gateService;
-    private final TerminalRepo terminalRepo;
-    private final TerminalService terminalService;
     private final FlightRepo flightRepo;
 
     @Value("${airportproject.airportcode}")
@@ -30,10 +23,8 @@ public class GateAssigner {
     private final Logger logger = LoggerFactory.getLogger(GateAssigner.class);
 
 
-    public GateAssigner(GateService gateService, TerminalRepo terminalRepo, TerminalService terminalService, FlightRepo flightRepo) {
+    public GateAssigner(GateService gateService, FlightRepo flightRepo) {
         this.gateService = gateService;
-        this.terminalRepo = terminalRepo;
-        this.terminalService = terminalService;
         this.flightRepo = flightRepo;
     }
 
@@ -81,7 +72,7 @@ public class GateAssigner {
             // if flight is departing - the flight occupies the gate from 45 minutes before departure until departure time
             startTime = flight.getDepTime().minusMinutes(45);
         }else {
-            // if flight is arriving - the flight occupies the gate from arrival time until 10 minutes after arrival
+            // if flight is arriving - the flight occupies the gate from arrival time until 15 minutes after arrival
             startTime = flight.getArrTime();
         }
         return startTime;
@@ -93,8 +84,8 @@ public class GateAssigner {
             // if flight is departing - the flight occupies the gate from 45 minutes before departure until departure time
             endTime = flight.getDepTime();
         }else {
-            // if flight is arriving - the flight occupies the gate from arrival time until 10 minutes after arrival
-            endTime = flight.getArrTime().plusMinutes(10);
+            // if flight is arriving - the flight occupies the gate from arrival time until 15 minutes after arrival
+            endTime = flight.getArrTime().plusMinutes(15);
         }
         return endTime;
     }
@@ -108,26 +99,14 @@ public class GateAssigner {
         logger.debug("GateAssigner getting all gates");
         List<Gate> gates = gateService.getAll();
 
-        // iterate over the sorted list of flights
         for(Flight flight : sortedFlights){
-            // set the allotted start and end time of using the gate
+            // set the allotted start and end time of the flight using the gate
             LocalDateTime startTime = getStartTime(flight);
             LocalDateTime endTime = getEndTime(flight);
 
             // find an available gate for the flight
             Gate availableGate = findAvailableGate(startTime, endTime, gates);
             assignGate(flight, startTime, endTime, availableGate);
-
-            // test
-            if(isDeparture(flight)){
-                System.out.println("Departure " + flight.getFlightIata() + " to gate " + flight.getGate().getNumber());
-            }else{
-                System.out.println("Arrival " + flight.getFlightIata() + " to gate " + flight.getGate().getNumber());
-            }
-
         }
-
     }
-
-
 }

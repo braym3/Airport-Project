@@ -26,7 +26,7 @@ public class Flight {
     private Gate gate;
 
     /**
-    *
+    * Constructor with no ID
      * @param airlineIata Airline IATA code
      * @param depIata Departure airport IATA code
      * @param arrIata Arrival airport IATA code
@@ -81,6 +81,20 @@ public class Flight {
         this.gate = null;
     }
 
+    /**
+     * Constructor with ID and assigned Gate
+     * @param id Unique ID used in the database
+     * @param airlineIata Airline IATA code
+     * @param depIata Departure airport IATA code
+     * @param arrIata Arrival airport IATA code
+     * @param status Status of the flight
+     * @param aircraftIcao Aircraft ICAO code
+     * @param flightIata Flight IATA code
+     * @param depTime Departure time
+     * @param arrTime Arrival time
+     * @param duration Flight duration in minutes
+     * @param gate The assigned Gate object
+     */
     public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration, Gate gate){
         this.id = id;
         this.airlineIata = airlineIata;
@@ -94,15 +108,6 @@ public class Flight {
         this.duration = duration;
         this.gate = gate;
     }
-
-    /**
-    * Default constructor
-    */
-    // no arg constructor
-    public Flight() {
-
-    }
-
 
     public UUID getId() {
         return id;
@@ -183,14 +188,6 @@ public class Flight {
     public void setDuration(@NotNull @Min(0) Integer duration) {
         this.duration = duration;
     }
-
-//    public UUID getGateId() {
-//        return gateId;
-//    }
-//
-//    public void setGateId(UUID gateId) {
-//        this.gateId = gateId;
-//    }
 
     public Gate getGate() {
         return gate;

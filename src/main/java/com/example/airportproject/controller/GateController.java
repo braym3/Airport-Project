@@ -1,10 +1,12 @@
 package com.example.airportproject.controller;
 
 import com.example.airportproject.model.Gate;
-import com.example.airportproject.service.gates.impl.GateInitializer;
 import com.example.airportproject.service.gates.GateService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("api/gates")
@@ -58,7 +56,7 @@ public class GateController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Gate> updateNumber(@PathVariable UUID id, @RequestParam(name = "number", required = true) int number){
+    public ResponseEntity<Gate> updateNumber(@PathVariable UUID id, @RequestParam(name = "number") int number){
         logger.debug("Controller updating gate with ID {}", id);
         Gate updated = gateService.updateNumber(id, number);
         return ResponseEntity.ok()

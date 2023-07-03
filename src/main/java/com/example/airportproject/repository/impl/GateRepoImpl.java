@@ -6,13 +6,11 @@ import com.example.airportproject.repository.GateRepo;
 import com.example.airportproject.repository.impl.mapper.GateMapper;
 import com.example.airportproject.repository.impl.mapper.TimeSlotMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 @Repository
-@Transactional
 public class GateRepoImpl implements GateRepo {
     private final GateMapper gateMapper;
     private final TimeSlotMapper timeSlotMapper;

@@ -2,13 +2,8 @@ package com.example.airportproject.repository.impl.mapper;
 
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
-import com.example.airportproject.model.TimeSlot;
-import com.example.airportproject.typehandler.UUIDTypeHandler;
 import org.apache.ibatis.annotations.*;
 
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 

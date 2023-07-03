@@ -21,10 +21,6 @@ public class Terminal {
 
     private List<Gate> gates;
 
-    public Terminal(){
-
-    }
-
     /**
     * Constructs a new Terminal object with the specified terminal number.
      * @param number the terminal number

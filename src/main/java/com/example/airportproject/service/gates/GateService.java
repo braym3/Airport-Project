@@ -47,5 +47,5 @@ public interface GateService {
      */
     Gate updateNumber(UUID id, int number);
 
-    TimeSlot addGateSlot(UUID gateId, TimeSlot timeSlot);
+    void addGateSlot(UUID gateId, TimeSlot timeSlot);
 }
