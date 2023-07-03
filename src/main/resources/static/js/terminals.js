@@ -22,42 +22,30 @@ function displayTerminals(terminals){
     terminals.forEach(function (terminal) {
         // create terminal card
         const terminalCard = document.createElement('div');
-        terminalCard.className = 'card';
-        terminalCard.style.marginBottom = '30px';
-
-        // create terminal card body
-        const terminalCardBody = document.createElement('div');
-        terminalCardBody.className = 'card-body';
+        terminalCard.classList.add('terminal-card');
 
         // add terminal number to card body
-        const terminalNumber = document.createElement('h5');
-        terminalNumber.innerText = 'T' + terminal.number;
-        terminalCardBody.appendChild(terminalNumber);
+        const terminalCardBody = document.createElement('h5');
+        terminalCardBody.innerText = 'T' + terminal.number;
+        terminalCard.appendChild(terminalCardBody);
+
+        // create container for gate cards
+        const gateCardsContainer = document.createElement('div');
+        gateCardsContainer.classList.add('gate-cards-container');
 
         // iterate over gates & create sub cards
         terminal.gates.forEach(function (gate) {
             // create gate card
             const gateCard = document.createElement('div');
-            gateCard.className = 'card';
-            gateCard.style.marginTop = '10px';
+            gateCard.classList.add('gate-card');
+            gateCard.innerText = 'Gate ' + gate.number;
 
-            // create gate card body
-            const gateCardBody = document.createElement('div');
-            gateCardBody.className = 'card-body';
-
-            // add gate number to card body
-            const gateNumber = document.createElement('h6');
-            gateNumber.innerText = 'Gate ' + gate.number;
-            gateCardBody.appendChild(gateNumber);
-
-            // add gate card body to gate card
-            gateCard.appendChild(gateCardBody);
-            // add gate card to terminal card
-            terminalCardBody.appendChild(gateCard);
+            // add gate card to container
+            gateCardsContainer.appendChild(gateCard);
         });
 
-        // add terminal card body to terminal card
-        terminalCard.appendChild(terminalCardBody);
+        // add gate cards container to terminal
+        terminalCard.appendChild(gateCardsContainer);
         // add terminal card to terminals container
         terminalsContainer.appendChild(terminalCard);
     })
