@@ -42,4 +42,7 @@ public interface FlightRepo {
      */
     void removeDuplicates();
 
+    Flight getFirstFlight(String airportIata);
+
+    Flight getLastFlight(String airportIata);
 }

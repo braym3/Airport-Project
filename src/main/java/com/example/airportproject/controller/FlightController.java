@@ -107,4 +107,20 @@ public class FlightController {
         return ResponseEntity.ok()
                 .body(flights);
     }
+
+    @GetMapping("/first/{airportIata}")
+    public ResponseEntity<LocalDateTime> getFirstFlightTime(@PathVariable String airportIata){
+        logger.debug("Controller getting the time of the first flight at airport {}", airportIata);
+        LocalDateTime firstFlightTime = flightService.getFirstFlightTime(airportIata);
+        return ResponseEntity.ok()
+                .body(firstFlightTime);
+    }
+
+    @GetMapping("/last/{airportIata}")
+    public ResponseEntity<LocalDateTime> getLastFlightTime(@PathVariable String airportIata){
+        logger.debug("Controller getting last flight at airport {}", airportIata);
+        LocalDateTime lastFlightTime = flightService.getLastFlightTime(airportIata);
+        return ResponseEntity.ok()
+                .body(lastFlightTime);
+    }
 }

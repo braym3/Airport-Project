@@ -71,6 +71,16 @@ public class FlightRepoImpl implements FlightRepo {
         flightMapper.removeDuplicates();
     }
 
+    @Override
+    public Flight getFirstFlight(String airportIata) {
+        return flightMapper.getFirstFlight(airportIata);
+    }
+
+    @Override
+    public Flight getLastFlight(String airportIata) {
+        return flightMapper.getLastFlight(airportIata);
+    }
+
 //    public List<Flight> populateGates(List<Flight> flights){
 //        flights.forEach(flight -> flight.setGate(flightMapper.getGateForFlight(flight.getId())));
 //        return flights;

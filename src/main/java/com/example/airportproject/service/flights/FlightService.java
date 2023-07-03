@@ -77,4 +77,18 @@ public interface FlightService {
      * @return List of ordered Flight objects that have the corresponding 'airportIata'
      */
     List<Flight> getOrderedFlights(String airportIata);
+
+    /**
+     * Returns the time of the first flight at the specified airport
+     * @param airportIata airport code
+     * @return the time of the flight (departure time if the flight is departing, or arrival time if the flight is arriving)
+     */
+    LocalDateTime getFirstFlightTime(String airportIata);
+
+    /**
+     * Returns the time of the last flight at the specified airport
+     * @param airportIata airport code
+     * @return the time of the flight (departure time if the flight is departing, or arrival time if the flight is arriving)
+     */
+    LocalDateTime getLastFlightTime(String airportIata);
 }

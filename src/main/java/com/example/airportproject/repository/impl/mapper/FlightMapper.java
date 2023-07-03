@@ -53,6 +53,14 @@ public interface FlightMapper {
     @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END")
     List<Flight> getOrderedFlights(@Param("airportIata") String airportIata);
 
+    @ResultMap("flightResults")
+    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END LIMIT 1")
+    Flight getFirstFlight(String airportIata);
+
+    @ResultMap("flightResults")
+    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END DESC LIMIT 1")
+    Flight getLastFlight(String airportIata);
+
     @Update("UPDATE flights SET airline_iata = #{airlineIata}, dep_iata = #{depIata}, arr_iata = #{arrIata}, status = #{status}, aircraft_icao = #{aircraftIcao}, flight_iata = #{flightIata}, dep_time = #{depTime}, arr_time = #{arrTime}, duration = #{duration}, gate_id = #{gate.id} WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     void update(Flight flight);
 

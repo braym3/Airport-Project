@@ -104,4 +104,26 @@ public class FlightServiceImpl implements FlightService {
     public List<Flight> getOrderedFlights(String airportIata) {
         return flightRepo.getOrderedFlights(airportIata);
     }
+
+    @Override
+    public LocalDateTime getFirstFlightTime(String airportIata) {
+        // get the time of the first flight
+        Flight firstFlight = flightRepo.getFirstFlight(airportIata);
+        if(firstFlight.getDepIata().equals(airportIata)){
+            return firstFlight.getDepTime();
+        }else{
+            return firstFlight.getArrTime();
+        }
+    }
+
+    @Override
+    public LocalDateTime getLastFlightTime(String airportIata) {
+        // get the time of the first flight
+        Flight lastFlight = flightRepo.getLastFlight(airportIata);
+        if(lastFlight.getDepIata().equals(airportIata)){
+            return lastFlight.getDepTime();
+        }else{
+            return lastFlight.getArrTime();
+        }
+    }
 }

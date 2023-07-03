@@ -13,9 +13,8 @@ public class TimeSlot {
     private UUID id;
     @NotNull
     private LocalDateTime startTime, endTime;
-    // time slot can be occupied by a flight (using a gate or runway)
-    private UUID flightId;
-
+    // time slot can be occupied by a flight (using a gate/runway), impact event (closing a gate/runway)
+    private UUID flightId, impactEventId;
 
     /**
      * Constructs a TimeSlot object with the specified ID, flight ID, start time, and end time.
@@ -23,12 +22,14 @@ public class TimeSlot {
      * @param flightId the ID of the flight occupying the time slot
      * @param startTime the start time of the time slot
      * @param endTime the end time of the time slot
+     * @param impactEventId the ID of the impact event occupying the time slot
      */
-    public TimeSlot(UUID id, UUID flightId, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime) {
+    public TimeSlot(UUID id, UUID flightId, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime, UUID impactEventId) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.flightId = flightId;
+        this.impactEventId = impactEventId;
     }
 
     /**
@@ -36,11 +37,13 @@ public class TimeSlot {
      * @param flightId the ID of the flight occupying the time slot
      * @param startTime the start time of the time slot
      * @param endTime the end time of the time slot
+     * @param impactEventId the ID of the impact event occupying the time slot
     */
-    public TimeSlot(UUID flightId, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime) {
+    public TimeSlot(UUID flightId, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime, UUID impactEventId) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.flightId = flightId;
+        this.impactEventId = impactEventId;
     }
 
     /**
@@ -89,6 +92,22 @@ public class TimeSlot {
      */
     public void setFlightId(UUID flightId) {
         this.flightId = flightId;
+    }
+
+    /**
+     * Retrieves the ID of the impact event occupying the time slot.
+     * @return the impact event ID
+     */
+    public UUID getImpactEventId() {
+        return impactEventId;
+    }
+
+    /**
+     * Sets the ID of the impact event occupying the time slot.
+     * @param impactEventId the impact event ID
+     */
+    public void setImpactEventId(UUID impactEventId) {
+        this.impactEventId = impactEventId;
     }
 
     public boolean overlaps(LocalDateTime otherStartTime, LocalDateTime otherEndTime){
