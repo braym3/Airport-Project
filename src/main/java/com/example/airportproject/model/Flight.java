@@ -22,7 +22,6 @@ public class Flight {
     private Integer duration;
     @NotNull
     private LocalDateTime depTime, arrTime;
-
     private Gate gate;
 
     /**
@@ -107,6 +106,33 @@ public class Flight {
         this.arrTime = arrTime;
         this.duration = duration;
         this.gate = gate;
+    }
+
+    /**
+     * Constructor with ID and assigned Gate
+     * @param id Unique ID used in the database
+     * @param airlineIata Airline IATA code
+     * @param depIata Departure airport IATA code
+     * @param arrIata Arrival airport IATA code
+     * @param status Status of the flight
+     * @param aircraftIcao Aircraft ICAO code
+     * @param flightIata Flight IATA code
+     * @param depTime Departure time
+     * @param arrTime Arrival time
+     * @param duration Flight duration in minutes
+     * @param gateId The assigned Gate ID
+     */
+    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration, UUID gateId){
+        this.id = id;
+        this.airlineIata = airlineIata;
+        this.depIata = depIata;
+        this.arrIata = arrIata;
+        this.status = status;
+        this.aircraftIcao = aircraftIcao;
+        this.flightIata = flightIata;
+        this.depTime = depTime;
+        this.arrTime = arrTime;
+        this.duration = duration;
     }
 
     public UUID getId() {

@@ -16,22 +16,21 @@ public class Gate {
     @Min(0)
     @Max(50)
     private Integer number;
-    @NotNull
     private Terminal terminal;
 
     private List<TimeSlot> schedule;
 
-//    /**
-//     * Constructs a new Gate object with the specified ID, gate number.
-//     * @param id the gate ID
-//     * @param number the gate number
-//     */
-//    public Gate(UUID id, @NotNull Integer number) {
-//        this.id = id;
-//        this.number = number;
-//        this.terminal = null;
-//        this.schedule = new ArrayList<>();
-//    }
+    /**
+     * Constructs a new Gate object with the specified ID, gate number.
+     * @param id the gate ID
+     * @param number the gate number
+     */
+    public Gate(UUID id, @NotNull Integer number) {
+        this.id = id;
+        this.number = number;
+        this.terminal = null;
+        this.schedule = new ArrayList<>();
+    }
 
     /**
      * Constructs a new Gate object with the specified ID, gate number, and terminal.

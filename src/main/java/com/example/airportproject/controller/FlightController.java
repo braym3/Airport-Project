@@ -1,6 +1,7 @@
 package com.example.airportproject.controller;
 
 import com.example.airportproject.model.Flight;
+import com.example.airportproject.model.Gate;
 import com.example.airportproject.service.flights.FlightService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -68,9 +69,9 @@ public class FlightController {
                                          @RequestParam(name = "depTime", required = false) LocalDateTime depTime,
                                          @RequestParam(name = "arrTime", required = false) LocalDateTime arrTime,
                                          @RequestParam(name = "duration", required = false) Integer duration,
-                                         @RequestParam(name = "gateId", required = false) UUID gateId){
+                                         @RequestParam(name = "gate", required = false) Gate gate){
         logger.debug("Controller updating flight with ID {}", id);
-        Flight updated = flightService.update(id, airlineIata, depIata, arrIata, status, aircraftIcao, flightIata, depTime, arrTime, duration, gateId);
+        Flight updated = flightService.update(id, airlineIata, depIata, arrIata, status, aircraftIcao, flightIata, depTime, arrTime, duration, gate);
         return ResponseEntity.ok()
                 .body(updated);
     }
