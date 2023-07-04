@@ -75,6 +75,7 @@ public class ImpactEventTimeSlotService {
         TimeSlot gateClosedSlot = createImpactEventTimeSlot(impactEventId);
         // re-organise schedule and persist the updated gate with its new schedule
         redoGateSchedule(selectedGate, gateClosedSlot, gates);
+        System.out.println("T" + selectedGate.getTerminal().getNumber() + " gate " + selectedGate.getNumber() + " closed from: " + gateClosedSlot.getStartTime() + " until " + gateClosedSlot.getEndTime());
     }
 
     private List<Flight> getImpactedFlights(Gate affectedGate, TimeSlot newTimeSlot){
@@ -132,7 +133,12 @@ public class ImpactEventTimeSlotService {
                     }
                 }
             }
-            System.out.print("\nFlight reassigned: \nbest gate = " + bestAvailableGate.toString() + "\nbest start time = " + bestAvailableStartTime + "\nbest end time = " + bestAvailableEndTime + "\n");
+            System.out.print("\nFlight reassigned: " +
+                    "\nold start time = " + originalStartTime +
+                    "\nold end time = " + originalEndTime +
+                    "\nbest gate = T" + bestAvailableGate.getTerminal().getNumber() + " gate " + bestAvailableGate.getNumber() +
+                    "\nbest start time = " + bestAvailableStartTime +
+                    "\nbest end time = " + bestAvailableEndTime + "\n");
         }
         // consider gates that can accommodate the affected flights - based on size, taxi time to runway, availability etc
 
