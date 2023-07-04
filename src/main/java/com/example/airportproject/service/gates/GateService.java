@@ -48,4 +48,6 @@ public interface GateService {
     Gate updateNumber(UUID id, int number);
 
     void addGateSlot(UUID gateId, TimeSlot timeSlot);
+
+    TimeSlot getGateTimeSlotByFlightId(UUID flightId);
 }

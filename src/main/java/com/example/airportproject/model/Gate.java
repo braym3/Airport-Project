@@ -140,4 +140,27 @@ public class Gate {
     public void addTimeSlot(TimeSlot timeSlot){
         this.schedule.add(timeSlot);
     }
+
+    @Override
+    public String toString() {
+        return "Gate{" +
+                "id=" + id +
+                ", number=" + number +
+                ", terminal=" + terminal +
+                ", schedule=" + schedule +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Gate gate = (Gate) o;
+        return Objects.equals(getId(), gate.getId()) && Objects.equals(getNumber(), gate.getNumber()) && Objects.equals(getTerminal(), gate.getTerminal()) && Objects.equals(getSchedule(), gate.getSchedule());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getNumber(), getTerminal(), getSchedule());
+    }
 }

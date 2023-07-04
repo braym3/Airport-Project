@@ -1,6 +1,7 @@
 package com.example.airportproject.controller;
 
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.service.gates.GateService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -69,5 +70,13 @@ public class GateController {
         Gate deleted = gateService.remove(id);
         return ResponseEntity.ok()
                 .body(deleted);
+    }
+
+    @GetMapping("/flight/{flightId}")
+    public ResponseEntity<TimeSlot> getGateTimeSlotByFlightId(@PathVariable UUID flightId){
+        logger.debug("Controller getting gate time slot for flight ID {}", flightId);
+        TimeSlot found = gateService.getGateTimeSlotByFlightId(flightId);
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .body(found);
     }
 }

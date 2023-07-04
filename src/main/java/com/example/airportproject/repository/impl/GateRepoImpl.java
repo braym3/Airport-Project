@@ -55,4 +55,9 @@ public class GateRepoImpl implements GateRepo {
     public void addGateSlot(UUID gateId, TimeSlot timeSlot){
         timeSlotMapper.create(timeSlot, gateId);
     }
+
+    @Override
+    public TimeSlot getGateTimeSlotByFlightId(UUID flightId) {
+        return timeSlotMapper.getGateTimeSlotByFlightId(flightId);
+    }
 }

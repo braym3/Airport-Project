@@ -23,4 +23,6 @@ public interface GateRepo{
     void clear();
 
     void addGateSlot(UUID gateId, TimeSlot timeSlot);
+
+    TimeSlot getGateTimeSlotByFlightId(UUID flightId);
 }

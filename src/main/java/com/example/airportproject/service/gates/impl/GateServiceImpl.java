@@ -64,4 +64,8 @@ public class GateServiceImpl implements GateService {
         gateRepo.addGateSlot(gateId, timeSlot);
     }
 
+    @Override
+    public TimeSlot getGateTimeSlotByFlightId(UUID flightId) {
+        return gateRepo.getGateTimeSlotByFlightId(flightId);
+    }
 }

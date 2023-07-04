@@ -113,4 +113,15 @@ public class TimeSlot {
     public boolean overlaps(LocalDateTime otherStartTime, LocalDateTime otherEndTime){
         return this.startTime.isBefore(otherEndTime) && otherStartTime.isBefore(this.endTime);
     }
+
+    @Override
+    public String toString() {
+        return "TimeSlot{" +
+                "id=" + id +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", flightId=" + flightId +
+                ", impactEventId=" + impactEventId +
+                '}';
+    }
 }
