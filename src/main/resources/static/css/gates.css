@@ -1,0 +1,16 @@
+.gate-card{
+    padding: 10px;
+    margin-bottom: 30px;
+    border: 1px solid #ccc;
+}
+
+.time-slot-card{
+    border: 1px solid #ccc;
+
+}
+
+.schedule-cards-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
