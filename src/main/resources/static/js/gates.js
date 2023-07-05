@@ -17,17 +17,6 @@ function fetchGates(){
         })
 }
 
-async function fetchFlight(flightId){
-    // fetch flight from api using id
-    axios.get(`${address}/api/flights/${flightId}`)
-        .then(response => {
-            return response.data;
-        })
-        .catch(error => {
-            console.error('Error fetching flight data:', error);
-        })
-}
-
 // Convert UTC flight time to user device local time, and format it
 function formatDateTime(flightTimeUTC){
     const localFlightTime = new Date(flightTimeUTC+'Z');
@@ -44,55 +33,85 @@ function formatDateTime(flightTimeUTC){
 function displayGates(gates){
     // iterate over gates & create cards
     gates.forEach(function (gate) {
-
         // create gate card
         const gateCard = createGateCard(gate);
 
-
-        // add terminal and gate number to card body
-        const gateCardBody = document.createElement('h5');
-        gateCardBody.innerText = 'T' + gate.terminal.number + ' gate ' + gate.number;
-        gateCard.appendChild(gateCardBody);
-
-        // create container for gate cards
-        const scheduleCardsContainer = document.createElement('div');
-        scheduleCardsContainer.classList.add('schedule-cards-container');
-
-        // iterate over schedule & create sub cards
-        gate.schedule.forEach(function (timeSlot) {
-            // create time slot card
-            const timeSlotCard = document.createElement('div');
-            timeSlotCard.classList.add('time-slot-card');
-
-            const flightId = document.createElement("p");
-            // flightId.innerText = `Flight: ${fetchFlight(timeSlot.flightId).id}`;
-            // flightId.classList.add("card-text");
-            // timeSlotCard.appendChild(flightId);
-            console.log(`Flight: ${fetchFlight(timeSlot.flightId)}`)
-
-            const startTime = document.createElement("p");
-            startTime.innerText = `Occupied starting: ${formatDateTime(timeSlot.startTime)}`;
-            startTime.classList.add("card-text");
-            timeSlotCard.appendChild(startTime);
-
-            const endTime = document.createElement("p");
-            endTime.innerText = `Occupied until: ${formatDateTime(timeSlot.endTime)}`;
-            endTime.classList.add("card-text");
-            timeSlotCard.appendChild(endTime);
-
-            // add time slot card to container
-            scheduleCardsContainer.appendChild(timeSlotCard);
-        });
-
-        // add time slot cards container to gate
-        gateCard.appendChild(scheduleCardsContainer);
         // add gate card to gates container
         gatesContainer.appendChild(gateCard);
-    })
+        });
+}
 
-    function createGateCard(gate){
-        // create gate card
-        const gateCard = document.createElement('div');
-        gateCard.classList.add('gate-card');
+function createGateCard(gate){
+    // create gate card
+    const gateCard = document.createElement('div');
+    gateCard.classList.add('gate-card');
+
+    // add gate and terminal number to the card
+    const gateHeader = document.createElement('h5');
+    gateHeader.classList.add('gate-header');
+    gateHeader.textContent = `T${gate.terminal.number}: gate ${gate.number}`;
+    gateCard.appendChild(gateHeader);
+
+    // add schedule header to the card
+    const scheduleHeader = document.createElement('h6');
+    scheduleHeader.classList.add('schedule-header');
+    scheduleHeader.textContent = `Schedule:`;
+    gateCard.appendChild(scheduleHeader);
+
+    // grid layout for gate schedule cards
+    const timeSlotsGrid = document.createElement('div');
+    timeSlotsGrid.classList.add('time-slots-grid');
+
+    gate.schedule.forEach(timeSlot => {
+        const timeSlotCard = createTimeSlotCard(timeSlot);
+        timeSlotsGrid.appendChild(timeSlotCard);
+    });
+
+    gateCard.appendChild(timeSlotsGrid);
+    return gateCard;
+}
+
+function createTimeSlotCard(timeSlot){
+    // create time slot card
+    const timeSlotCard = document.createElement('div');
+    timeSlotCard.classList.add('time-slot-card');
+
+    // if time slot is occupied by a flight - fetch flight data from api using flight id
+    if(timeSlot.flightId){
+        axios.get(`${address}/api/flights/${timeSlot.flightId}`, {
+            maxRedirects: 0})
+            .then(response => {
+                const flightCode = response.data.flightIata;
+                const startTime  = timeSlot.startTime;
+                const endTime = timeSlot.endTime;
+
+                timeSlotCard.innerHTML = `
+            <p><small><b>Flight <i>${flightCode}</i></b></small></p>
+            <p><small>Start time: <i>${formatDateTime(startTime)}</i></small></p>
+            <p><small>End time: <i>${formatDateTime(endTime)}</i></small></p>`;
+            })
+            .catch(error => {
+                console.error('Error fetching flight data:', error);
+            })
+    }else if (timeSlot.impactEventId){
+        // if time slot is occupied by an impact event - fetch event data from api using impact event id
+        axios.get(`${address}/api/impact-events/${timeSlot.impactEventId}`, {
+            maxRedirects: 0})
+            .then(response => {
+                const eventType = response.data.type;
+                const startTime  = timeSlot.startTime;
+                const endTime = timeSlot.endTime;
+
+                timeSlotCard.innerHTML = `
+            <p style="color: red"><small><b>${eventType}</b></small></p>
+            <p><small>Start: <i>${formatDateTime(startTime)}</i></small></p>
+            <p><small>End: <i>${formatDateTime(endTime)}</i></small></p>`;
+            })
+            .catch(error => {
+                console.error('Error fetching impact event data:', error);
+            })
     }
+
+
+    return timeSlotCard;
 }
