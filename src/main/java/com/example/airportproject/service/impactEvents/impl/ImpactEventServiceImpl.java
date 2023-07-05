@@ -17,7 +17,6 @@ public class ImpactEventServiceImpl implements ImpactEventService {
     }
 
 
-
     @Override
     public ImpactEvent create(ImpactEvent impactEvent) {
         return impactEventRepo.create(impactEvent);

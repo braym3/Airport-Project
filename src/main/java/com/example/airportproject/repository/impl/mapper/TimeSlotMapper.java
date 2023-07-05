@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface TimeSlotMapper {
     @Insert(
             "INSERT INTO gate_slots (gate_id, flight_id, start_time, end_time, impact_event_id) VALUES (#{gateId}, #{timeSlot.flightId}, #{timeSlot.startTime}, #{timeSlot.endTime}, #{timeSlot.impactEventId})")
-    void create(TimeSlot timeSlot, UUID gateId);
+    void createTimeSlotForGate(TimeSlot timeSlot, UUID gateId);
 
     @Select("SELECT gate_slots.id, gate_slots.flight_id, gate_slots.start_time, gate_slots.end_time, gate_slots.impact_event_id FROM gate_slots LEFT JOIN gates ON gate_slots.gate_id = gates.id WHERE gates.id = #{gateId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     @Results(id = "gateSlotResults", value = {
@@ -27,4 +27,10 @@ public interface TimeSlotMapper {
     @ResultMap("gateSlotResults")
     @Select("SELECT id, flight_id, start_time, end_time, impact_event_id FROM gate_slots WHERE flight_id = #{flightId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     TimeSlot getGateTimeSlotByFlightId(UUID flightId);
+
+    @Delete("DELETE FROM gate_slots WHERE id = #{timeSlotId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    void removeTimeSlotForGate(@Param("timeSlotId") UUID timeSlotId);
+
+    @Delete("DELETE FROM gate_slots WHERE gate_id = #{gateId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    void removeAllTimeSlotsForGate(UUID gateId);
 }

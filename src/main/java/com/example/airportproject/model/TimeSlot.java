@@ -46,6 +46,14 @@ public class TimeSlot {
         this.impactEventId = impactEventId;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     /**
     * Retrieves the start time of the time slot.
      * @return the start time

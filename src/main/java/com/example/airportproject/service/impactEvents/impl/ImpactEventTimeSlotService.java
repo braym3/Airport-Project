@@ -63,6 +63,7 @@ public class ImpactEventTimeSlotService {
         LocalDateTime eventEndTime = createRandomEndTime(eventStartTime, lastFlightTime);
         return new TimeSlot(null, eventStartTime, eventEndTime, impactEventId);
     }
+
     public void closeRandomGate(UUID impactEventId){
         // get all gates
         List<Gate> gates = gateService.getAll();
@@ -73,9 +74,13 @@ public class ImpactEventTimeSlotService {
 
         // create impact event for gate closure
         TimeSlot gateClosedSlot = createImpactEventTimeSlot(impactEventId);
+        // save the gate closed time slot to the gate slots table
+        gateService.addGateSlot(selectedGate.getId(), gateClosedSlot);
+
+        System.out.println("T" + selectedGate.getTerminal().getNumber() + " gate " + selectedGate.getNumber() + " closed from: " + gateClosedSlot.getStartTime() + " until " + gateClosedSlot.getEndTime());
+
         // re-organise schedule and persist the updated gate with its new schedule
         redoGateSchedule(selectedGate, gateClosedSlot, gates);
-        System.out.println("T" + selectedGate.getTerminal().getNumber() + " gate " + selectedGate.getNumber() + " closed from: " + gateClosedSlot.getStartTime() + " until " + gateClosedSlot.getEndTime());
     }
 
     private List<Flight> getImpactedFlights(Gate affectedGate, TimeSlot newTimeSlot){
@@ -99,34 +104,51 @@ public class ImpactEventTimeSlotService {
         // for each flight that needs to be re-assigned try to find the closest availability
         for(Flight impactedFlight : impactedFlights){
             Gate bestAvailableGate = null;
+            // the minimum time difference between the original scheduled time and new available time
             Duration minTimeDifference = null;
             LocalDateTime bestAvailableStartTime = null, bestAvailableEndTime = null;
 
             TimeSlot orignalFlightTimeSlot = gateService.getGateTimeSlotByFlightId(impactedFlight.getId());
             LocalDateTime originalStartTime = orignalFlightTimeSlot.getStartTime();
             LocalDateTime originalEndTime = orignalFlightTimeSlot.getEndTime();
+
+            // remove the old flight timeslot from the impacted gate
+            gateService.removeTimeSlotForGate(orignalFlightTimeSlot.getId());
+
+            // the amount of time (minutes) that the flight requires to occupy the gate
             Long requiredMinutes = calculateTimeDifference(originalStartTime, originalEndTime).toMinutes();
 
             for(Gate gate : gates){
                 // for every gate except for the affected gate, check best suitable availability
                 if(!selectedGate.getId().equals(gate.getId())){
+                    // get the schedule for the current gate
                     List<TimeSlot> gateSchedule = gate.getSchedule();
 
-                    for(int i = 0; i < gateSchedule.size(); i++){
-                        TimeSlot currentSlot = gateSchedule.get(i);
-                        TimeSlot previousSlot = (i > 0) ? gateSchedule.get(i-1) : null;
+                    if(gateSchedule.isEmpty()){
+                        bestAvailableGate = gate;
+                        bestAvailableStartTime = originalStartTime;
+                        bestAvailableEndTime = originalEndTime;
+                        // exit the loop if an empty gate is found - the minimum time difference has been found
+                        break;
+                    }else{
+                        for(int i = 0; i < gateSchedule.size(); i++){
+                            TimeSlot currentSlot = gateSchedule.get(i);
+                            // set the previous time slot if the current time slot is not the first in the schedule
+                            TimeSlot previousSlot = (i > 0) ? gateSchedule.get(i-1) : null;
 
-                        if(previousSlot != null && currentSlot.getStartTime().isAfter(previousSlot.getEndTime())){
-                            Long gapMinutes = calculateTimeDifference(previousSlot.getEndTime(), currentSlot.getStartTime()).toMinutes();
-                            if(gapMinutes >= requiredMinutes){
-                                Duration timeDifference = calculateTimeDifference(originalStartTime, previousSlot.getEndTime());
+                            if(previousSlot != null && currentSlot.getStartTime().isAfter(previousSlot.getEndTime())){
+                                // calculate the gap between the current time slot and the previous time slot
+                                Long gapMinutes = calculateTimeDifference(previousSlot.getEndTime(), currentSlot.getStartTime()).toMinutes();
+                                // if the impacted flight can fit into this gap, set the current best fit to the closest time slot in the gap
+                                if(gapMinutes >= requiredMinutes){
+                                    Duration timeDifference = calculateTimeDifference(originalStartTime, previousSlot.getEndTime());
 
-                                if(bestAvailableStartTime == null || timeDifference.abs().compareTo(minTimeDifference.abs()) < 0){
-                                    bestAvailableGate = gate;
-                                    bestAvailableStartTime = previousSlot.getEndTime();
-                                    bestAvailableEndTime = previousSlot.getEndTime().plus(calculateTimeDifference(originalStartTime, originalEndTime));
-
-                                    minTimeDifference = timeDifference;
+                                    if(bestAvailableStartTime == null || timeDifference.abs().compareTo(minTimeDifference.abs()) < 0){
+                                        bestAvailableGate = gate;
+                                        bestAvailableStartTime = previousSlot.getEndTime();
+                                        bestAvailableEndTime = previousSlot.getEndTime().plusMinutes(requiredMinutes);
+                                        minTimeDifference = timeDifference; // could add runway taxi time
+                                    }
                                 }
                             }
                         }
@@ -139,14 +161,13 @@ public class ImpactEventTimeSlotService {
                     "\nbest gate = T" + bestAvailableGate.getTerminal().getNumber() + " gate " + bestAvailableGate.getNumber() +
                     "\nbest start time = " + bestAvailableStartTime +
                     "\nbest end time = " + bestAvailableEndTime + "\n");
+            // create new best time slot and add it to the gate schedule
+            assert bestAvailableStartTime != null;
+            TimeSlot newTimeSlot = new TimeSlot(impactedFlight.getId(), bestAvailableStartTime, bestAvailableEndTime, null);
+
+            // add and save the new time slot for the flight to the best available gate found
+            bestAvailableGate.addTimeSlot(newTimeSlot);
+            gateService.addGateSlot(bestAvailableGate.getId(), newTimeSlot);
         }
-        // consider gates that can accommodate the affected flights - based on size, taxi time to runway, availability etc
-
-        // find the available slots of other gates that are long enough for the flight
-                // find the amount of time between the gate slot availability and the original flight time (add runway taxi time from new gate)
-                // save the gate and time slot if it is the closest match found yet
-
-        // assign the gate to the corresponding flight at the best timeslot found
-
     }
 }
