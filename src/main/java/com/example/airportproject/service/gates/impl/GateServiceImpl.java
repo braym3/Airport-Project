@@ -1,6 +1,7 @@
 package com.example.airportproject.service.gates.impl;
 
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.repository.GateRepo;
 import com.example.airportproject.service.gates.GateService;
@@ -50,11 +51,20 @@ public class GateServiceImpl implements GateService {
 
     @Override
     @Transactional
-    public Gate updateNumber(UUID id, int number) {
+    public Gate update(UUID id, Integer number, Terminal terminal, List<TimeSlot> schedule) {
         Gate gate = this.get(id);
 
-        gate.setNumber(number);
-
+        // update the gate attributes if the corresponding parameters are provided
+        if(number != null){
+            gate.setNumber(number);
+        }
+        if(terminal != null){
+            gate.setTerminal(terminal);
+        }
+        if(schedule != null){
+            gate.setSchedule(schedule);
+        }
+        // save and return the updated gate record
         return gateRepo.update(gate);               // save the updated Gate and return it
     }
 
@@ -67,5 +77,10 @@ public class GateServiceImpl implements GateService {
     @Override
     public TimeSlot getGateTimeSlotByFlightId(UUID flightId) {
         return gateRepo.getGateTimeSlotByFlightId(flightId);
+    }
+
+    @Override
+    public void removeTimeSlotForGate(UUID timeSlotId){
+        gateRepo.removeTimeSlotForGate(timeSlotId);
     }
 }
