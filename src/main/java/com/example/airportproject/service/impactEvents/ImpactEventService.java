@@ -2,6 +2,7 @@ package com.example.airportproject.service.impactEvents;
 
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.ImpactEvent;
+import com.example.airportproject.model.TimeSlot;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,4 +38,6 @@ public interface ImpactEventService {
      * @return The deleted ImpactEvent object
      */
     ImpactEvent remove(UUID id);
+
+    List<TimeSlot> triggerImpactEvents();
 }

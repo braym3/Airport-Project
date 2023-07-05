@@ -1,8 +1,11 @@
 package com.example.airportproject.service.impactEvents.impl;
 
 import com.example.airportproject.model.ImpactEvent;
+import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.repository.ImpactEventRepo;
 import com.example.airportproject.service.impactEvents.ImpactEventService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,10 +14,15 @@ import java.util.UUID;
 @Service
 public class ImpactEventServiceImpl implements ImpactEventService {
     private final ImpactEventRepo impactEventRepo;
+    private ImpactEventTimeSlotHandler impactEventTimeSlotHandler;
 
-    public ImpactEventServiceImpl(ImpactEventRepo impactEventRepo) {
+    @Autowired
+    public ImpactEventServiceImpl(ImpactEventRepo impactEventRepo, @Lazy ImpactEventTimeSlotHandler impactEventTimeSlotHandler) {
         this.impactEventRepo = impactEventRepo;
+        this.impactEventTimeSlotHandler = impactEventTimeSlotHandler;
     }
+
+
 
 
     @Override
@@ -37,5 +45,10 @@ public class ImpactEventServiceImpl implements ImpactEventService {
         ImpactEvent impactEvent = impactEventRepo.get(id);
         impactEventRepo.remove(id);
         return impactEvent;
+    }
+
+    @Override
+    public List<TimeSlot> triggerImpactEvents(){
+        return impactEventTimeSlotHandler.triggerImpactEvents();
     }
 }

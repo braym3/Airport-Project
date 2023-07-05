@@ -1,6 +1,8 @@
 package com.example.airportproject.controller;
 
+import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.ImpactEvent;
+import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.service.impactEvents.ImpactEventService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/impact-events")
+@RequestMapping("api/impactEvents")
 public class ImpactEventController {
     private final ImpactEventService impactEventService;
     private final Logger logger = LoggerFactory.getLogger(ImpactEventController.class);
@@ -61,5 +63,15 @@ public class ImpactEventController {
         ImpactEvent deleted = impactEventService.remove(id);
         return ResponseEntity.ok()
                 .body(deleted);
+    }
+
+    @GetMapping("/timeJump")
+    public ResponseEntity<List<TimeSlot>> timeJump(){
+        logger.debug("Controller randomising impact events");
+        // return list of time slots for impact events that happened
+        List<TimeSlot> triggeredEvents = impactEventService.triggerImpactEvents();
+
+        return ResponseEntity.ok()
+                .body(triggeredEvents);
     }
 }

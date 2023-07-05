@@ -95,7 +95,7 @@ function createTimeSlotCard(timeSlot){
             })
     }else if (timeSlot.impactEventId){
         // if time slot is occupied by an impact event - fetch event data from api using impact event id
-        axios.get(`${address}/api/impact-events/${timeSlot.impactEventId}`, {
+        axios.get(`${address}/api/impactEvents/${timeSlot.impactEventId}`, {
             maxRedirects: 0})
             .then(response => {
                 const eventType = response.data.type;

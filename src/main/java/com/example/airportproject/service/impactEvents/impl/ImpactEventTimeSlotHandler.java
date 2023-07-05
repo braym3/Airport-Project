@@ -9,7 +9,6 @@ import com.example.airportproject.service.impactEvents.ImpactEventService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,16 +19,16 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
-public class ImpactEventTimeSlotService {
+public class ImpactEventTimeSlotHandler{
 
     private ImpactEventService impactEventService;
-    private FlightService flightService;
-    private GateService gateService;
+    private final FlightService flightService;
+    private final GateService gateService;
 
     @Value("${airportproject.airportcode}")
     String airportCode;
 
-    public ImpactEventTimeSlotService(ImpactEventService impactEventService, FlightService flightService, GateService gateService) {
+    public ImpactEventTimeSlotHandler(ImpactEventService impactEventService, FlightService flightService, GateService gateService) {
         this.impactEventService = impactEventService;
         this.flightService = flightService;
         this.gateService = gateService;
@@ -64,7 +63,7 @@ public class ImpactEventTimeSlotService {
         return new TimeSlot(null, eventStartTime, eventEndTime, impactEventId);
     }
 
-    public void closeRandomGate(UUID impactEventId){
+    public TimeSlot closeRandomGate(UUID impactEventId){
         // get all gates
         List<Gate> gates = gateService.getAll();
 
@@ -81,6 +80,8 @@ public class ImpactEventTimeSlotService {
 
         // re-organise schedule and persist the updated gate with its new schedule
         redoGateSchedule(selectedGate, gateClosedSlot, gates);
+
+        return gateClosedSlot;
     }
 
     private List<Flight> getImpactedFlights(Gate affectedGate, TimeSlot newTimeSlot){
@@ -169,5 +170,15 @@ public class ImpactEventTimeSlotService {
             bestAvailableGate.addTimeSlot(newTimeSlot);
             gateService.addGateSlot(bestAvailableGate.getId(), newTimeSlot);
         }
+    }
+
+    public List<TimeSlot> triggerImpactEvents() {
+        List<TimeSlot> triggeredEvents = new ArrayList<>();
+        triggeredEvents.add(closeRandomGate(UUID.fromString("291a6406-c2ab-473a-b138-225e75ee9c8a")));
+        // get all impact events
+        // randomise the chance of each of them happening based on their probability
+        // carry out the triggered impact events - reassign schedule accordingly
+        // add that impact event to the list of triggered events
+        return triggeredEvents;
     }
 }
