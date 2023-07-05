@@ -40,9 +40,9 @@ public class FlightController {
     @GetMapping("/{id}")
     public ResponseEntity<Flight> getFlightById(@PathVariable UUID id){
         logger.debug("Controller getting flight with ID {}", id);
-        Flight found = flightService.get(id);
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .body(found);
+        Flight flight = flightService.get(id);
+        return ResponseEntity.ok()
+                .body(flight);
     }
 
     @PostMapping("/")

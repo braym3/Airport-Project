@@ -39,7 +39,7 @@ public class TerminalController {
     public ResponseEntity<Terminal> getTerminalById(@PathVariable UUID id){
         logger.debug("Controller getting terminal with ID {}", id);
         Terminal found = terminalService.get(id);
-        return ResponseEntity.status(HttpStatus.FOUND)
+        return ResponseEntity.ok()
                 .body(found);
     }
 

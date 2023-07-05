@@ -1,6 +1,7 @@
 package com.example.airportproject.controller;
 
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.service.gates.GateService;
 import jakarta.validation.Valid;
@@ -39,7 +40,7 @@ public class GateController {
     public ResponseEntity<Gate> getGateById(@PathVariable UUID id){
         logger.debug("Controller getting gate with ID {}", id);
         Gate found = gateService.get(id);
-        return ResponseEntity.status(HttpStatus.FOUND)
+        return ResponseEntity.ok()
                 .body(found);
     }
 
@@ -57,9 +58,12 @@ public class GateController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Gate> updateNumber(@PathVariable UUID id, @RequestParam(name = "number") int number){
+    public ResponseEntity<Gate> update(@PathVariable UUID id,
+                                             @RequestParam(name = "number") int number,
+                                             @RequestParam(name = "terminal", required = false) Terminal terminal,
+                                             @RequestParam(name = "schedule", required = false) List<TimeSlot> schedule){
         logger.debug("Controller updating gate with ID {}", id);
-        Gate updated = gateService.updateNumber(id, number);
+        Gate updated = gateService.update(id, number, terminal, schedule);
         return ResponseEntity.ok()
                 .body(updated);
     }
