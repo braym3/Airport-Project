@@ -1,6 +1,7 @@
 package com.example.airportproject.service.gates;
 
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
 
 import java.util.List;
@@ -40,14 +41,18 @@ public interface GateService {
     Gate remove(UUID id);
 
     /**
-     * Updates the number of the gate in the database that corresponds to the provided id
+     * Updates the gate record of the corresponding id with the specified attributes
      * @param id The id used to identify the Gate to update
-     * @param number The new number of the gate
+     * @param number The number of the gate
+     * @param terminal The Terminal object that the gate is associated with
+     * @param schedule The List of TimeSlot objects that represent the gate's schedule of occupied times
      * @return The updated Gate object
      */
-    Gate updateNumber(UUID id, int number);
+    Gate update(UUID id, Integer number, Terminal terminal, List<TimeSlot> schedule);
 
     void addGateSlot(UUID gateId, TimeSlot timeSlot);
 
     TimeSlot getGateTimeSlotByFlightId(UUID flightId);
+
+    void removeTimeSlotForGate(UUID timeSlotId);
 }

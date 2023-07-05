@@ -53,11 +53,16 @@ public class GateRepoImpl implements GateRepo {
 
     @Override
     public void addGateSlot(UUID gateId, TimeSlot timeSlot){
-        timeSlotMapper.create(timeSlot, gateId);
+        timeSlotMapper.createTimeSlotForGate(timeSlot, gateId);
     }
 
     @Override
     public TimeSlot getGateTimeSlotByFlightId(UUID flightId) {
         return timeSlotMapper.getGateTimeSlotByFlightId(flightId);
+    }
+
+    @Override
+    public void removeTimeSlotForGate(UUID timeSlotId){
+        timeSlotMapper.removeTimeSlotForGate(timeSlotId);
     }
 }
