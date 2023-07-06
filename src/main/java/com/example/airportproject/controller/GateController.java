@@ -28,6 +28,7 @@ public class GateController {
         this.gateService = gateService;
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/")
     public ResponseEntity<List<Gate>> getGates() {
         logger.debug("Controller getting all gates");
@@ -36,6 +37,7 @@ public class GateController {
                 .body(gates);
     }
 
+    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<Gate> getGateById(@PathVariable UUID id){
         logger.debug("Controller getting gate with ID {}", id);
@@ -44,6 +46,7 @@ public class GateController {
                 .body(found);
     }
 
+    @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Gate> createGate(@Valid @NotNull @RequestBody Gate gate){
         logger.debug("Controller creating gate");
@@ -57,6 +60,7 @@ public class GateController {
                 .body(created);
     }
 
+    @CrossOrigin
     @PatchMapping("/{id}")
     public ResponseEntity<Gate> update(@PathVariable UUID id,
                                              @RequestParam(name = "number") int number,
@@ -68,6 +72,7 @@ public class GateController {
                 .body(updated);
     }
 
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<Gate> remove(@PathVariable UUID id){
         logger.debug("Controller removing gate with ID {}", id);
@@ -76,6 +81,7 @@ public class GateController {
                 .body(deleted);
     }
 
+    @CrossOrigin
     @GetMapping("/flight/{flightId}")
     public ResponseEntity<TimeSlot> getGateTimeSlotByFlightId(@PathVariable UUID flightId){
         logger.debug("Controller getting gate time slot for flight ID {}", flightId);

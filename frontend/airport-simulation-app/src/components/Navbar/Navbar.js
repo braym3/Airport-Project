@@ -1,6 +1,6 @@
 import React from "react";
 
-const Navbar = () => {
+const Navbar = ({onTimeJump}) => {
     return(
         <>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -28,7 +28,7 @@ const Navbar = () => {
                         </li>
                     </ul>
                 </div>
-                <button id="time-jump-button" className="btn btn-primary">+1 Hr</button>
+                <button id="time-jump-button" className="btn btn-primary" onClick={onTimeJump}>+1 Hr</button>
             </div>
         </nav>
         </>

@@ -1,11 +1,12 @@
-"use strict";
+import axios from "axios";
+import { formatDateTime } from "./formatDateTime";
 
-const alertContainer = document.getElementById('alert-container');
 
-const timeJumpButton = document.getElementById('time-jump-button');
-timeJumpButton.addEventListener('click', async () => {
+
+export const handleTimeJump = async () => {
+    const alertContainer = document.getElementById('alert-container');
     try{
-        const response = await axios.get(`${address}/api/impactEvents/timeJump`);
+        const response = await axios.get(`http://localhost:8080/api/impactEvents/timeJump`);
         const triggeredEvents = response.data;
         console.log(`Pressed`);
 
@@ -21,4 +22,4 @@ timeJumpButton.addEventListener('click', async () => {
     }catch (error){
         console.error('Error triggering impact events:', error);
     }
-});
+};

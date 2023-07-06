@@ -28,6 +28,7 @@ public class ImpactEventController {
         this.impactEventService = impactEventService;
     }
 
+    @CrossOrigin
     @GetMapping("/")
     public ResponseEntity<List<ImpactEvent>> getImpactEvents() {
         logger.debug("Controller getting all impact events");
@@ -36,6 +37,7 @@ public class ImpactEventController {
                 .body(impactEvents);
     }
 
+    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<ImpactEvent> getImpactEventById(@PathVariable UUID id){
         logger.debug("Controller getting impact event with ID {}", id);
@@ -44,6 +46,7 @@ public class ImpactEventController {
                 .body(impactEvent);
     }
 
+    @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<ImpactEvent> createImpactEvent(@Valid @NotNull @RequestBody ImpactEvent impactEvent){
         logger.debug("Controller creating impact event");
@@ -57,6 +60,7 @@ public class ImpactEventController {
                 .body(created);
     }
 
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<ImpactEvent> remove(@PathVariable UUID id){
         logger.debug("Controller removing impact event with ID {}", id);
@@ -65,6 +69,7 @@ public class ImpactEventController {
                 .body(deleted);
     }
 
+    @CrossOrigin
     @GetMapping("/timeJump")
     public ResponseEntity<List<TimeSlot>> timeJump(){
         logger.debug("Controller randomising impact events");

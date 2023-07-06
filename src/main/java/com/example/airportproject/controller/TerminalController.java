@@ -27,6 +27,7 @@ public class TerminalController {
         this.terminalService = terminalService;
     }
 
+    @CrossOrigin
     @GetMapping("/")
     public ResponseEntity<List<Terminal>> getTerminals() {
         logger.debug("Controller getting all terminals");
@@ -35,6 +36,7 @@ public class TerminalController {
                 .body(terminals);
     }
 
+    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<Terminal> getTerminalById(@PathVariable UUID id){
         logger.debug("Controller getting terminal with ID {}", id);
@@ -43,6 +45,7 @@ public class TerminalController {
                 .body(found);
     }
 
+    @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Terminal> createTerminal(@Valid @NotNull @RequestBody Terminal terminal){
         logger.debug("Controller creating terminal");
@@ -56,6 +59,7 @@ public class TerminalController {
                 .body(created);
     }
 
+    @CrossOrigin
     @PatchMapping("/{id}")
     public ResponseEntity<Terminal> updateNumber(@PathVariable UUID id, @RequestParam(name = "number", required = true) int number){
         logger.debug("Controller updating terminal with ID {}", id);
@@ -64,6 +68,7 @@ public class TerminalController {
                 .body(updated);
     }
 
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<Terminal> remove(@PathVariable UUID id){
         logger.debug("Controller removing terminal with ID {}", id);

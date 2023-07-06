@@ -29,6 +29,7 @@ public class FlightController {
         this.flightService = flightService;
     }
 
+    @CrossOrigin
     @GetMapping("/")
     public ResponseEntity<List<Flight>> getFlights() {
         logger.debug("Controller getting all flights");
@@ -37,6 +38,7 @@ public class FlightController {
                 .body(flights);
     }
 
+    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<Flight> getFlightById(@PathVariable UUID id){
         logger.debug("Controller getting flight with ID {}", id);
@@ -45,6 +47,7 @@ public class FlightController {
                 .body(flight);
     }
 
+    @CrossOrigin
     @PostMapping("/")
     public ResponseEntity<Flight> createFlight(@Valid @NotNull @RequestBody Flight flight){
         logger.debug("Controller creating flight");
@@ -58,6 +61,7 @@ public class FlightController {
                 .body(created);
     }
 
+    @CrossOrigin
     @PatchMapping("/{id}")
     public ResponseEntity<Flight> update(@PathVariable UUID id,
                                          @RequestParam(name = "airlineIata", required = false) String airlineIata,
@@ -76,6 +80,7 @@ public class FlightController {
                 .body(updated);
     }
 
+    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<Flight> remove(@PathVariable UUID id){
         logger.debug("Controller removing flight with ID {}", id);
@@ -84,6 +89,7 @@ public class FlightController {
                 .body(deleted);
     }
 
+    @CrossOrigin
     @GetMapping("/departures/{depIata}")
     public ResponseEntity<List<Flight>> getByDepartureAirport(@PathVariable String depIata){
         logger.debug("Controller getting all departing flights from airport {}", depIata);
@@ -92,6 +98,7 @@ public class FlightController {
                 .body(departures);
     }
 
+    @CrossOrigin
     @GetMapping("/arrivals/{arrIata}")
     public ResponseEntity<List<Flight>> getByArrivalAirport(@PathVariable String arrIata){
         logger.debug("Controller getting all arriving flights to airport {}", arrIata);
@@ -100,6 +107,7 @@ public class FlightController {
                 .body(arrivals);
     }
 
+    @CrossOrigin
     @GetMapping("/ordered/{airportIata}")
     public ResponseEntity<List<Flight>> getOrderedFlights(@PathVariable String airportIata){
         logger.debug("Controller getting all ordered flights to airport {}", airportIata);
@@ -108,6 +116,7 @@ public class FlightController {
                 .body(flights);
     }
 
+    @CrossOrigin
     @GetMapping("/first/{airportIata}")
     public ResponseEntity<LocalDateTime> getFirstFlightTime(@PathVariable String airportIata){
         logger.debug("Controller getting the time of the first flight at airport {}", airportIata);
@@ -116,6 +125,7 @@ public class FlightController {
                 .body(firstFlightTime);
     }
 
+    @CrossOrigin
     @GetMapping("/last/{airportIata}")
     public ResponseEntity<LocalDateTime> getLastFlightTime(@PathVariable String airportIata){
         logger.debug("Controller getting last flight at airport {}", airportIata);

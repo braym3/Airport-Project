@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {formatDateTime} from "../../utils/formatDateTime";
 
 const ArrivalsDepartures = () => {
     const [flights, setFlights] = useState([]);
     const [isArrivals, setIsArrivals] = useState(false);
-    // set empty string for relative url
-    const [address, setAddress] = useState("");
 
     useEffect(() => {
         toggleTable();
@@ -15,25 +14,13 @@ const ArrivalsDepartures = () => {
         setIsArrivals(!isArrivals);
         try {
             const response = await axios.get(
-                `/api/flights/${isArrivals ? "arrivals" : "departures"}/MAN`
+                `http://localhost:8080/api/flights/${isArrivals ? "arrivals" : "departures"}/MAN`
             );
             const flightsData = response.data;
             setFlights(flightsData);
         } catch (error) {
             console.error(`Error fetching ${isArrivals ? "arrivals" : "departures"} data:`, error);
         }
-    };
-
-    const formatDateTime = (flightTimeUTC) => {
-        const localFlightTime = new Date(flightTimeUTC + 'Z');
-        const options = {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric'
-        };
-        return new Intl.DateTimeFormat(navigator.language, options).format(localFlightTime);
     };
 
     return (

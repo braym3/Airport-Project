@@ -14,7 +14,7 @@ public interface TimeSlotMapper {
             "INSERT INTO gate_slots (gate_id, flight_id, start_time, end_time, impact_event_id) VALUES (#{gateId}, #{timeSlot.flightId}, #{timeSlot.startTime}, #{timeSlot.endTime}, #{timeSlot.impactEventId})")
     void createTimeSlotForGate(TimeSlot timeSlot, UUID gateId);
 
-    @Select("SELECT gate_slots.id, gate_slots.flight_id, gate_slots.start_time, gate_slots.end_time, gate_slots.impact_event_id FROM gate_slots LEFT JOIN gates ON gate_slots.gate_id = gates.id WHERE gates.id = #{gateId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    @Select("SELECT gate_slots.id, gate_slots.flight_id, gate_slots.start_time, gate_slots.end_time, gate_slots.impact_event_id FROM gate_slots LEFT JOIN gates ON gate_slots.gate_id = gates.id WHERE gates.id = #{gateId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler} ORDER BY gate_slots.start_time ASC")
     @Results(id = "gateSlotResults", value = {
             @Result(property = "id", column = "id", javaType = UUID.class),
             @Result(property = "flightId", column = "flight_id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class),
