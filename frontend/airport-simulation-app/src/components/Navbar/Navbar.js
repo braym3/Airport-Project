@@ -1,6 +1,22 @@
-import React from "react";
+import React, {useState} from "react";
+import {handleTimeJumpEvents} from "../../utils/timeJumpUtils";
+import axios from "axios";
+
 
 const Navbar = ({onTimeJump}) => {
+    const handleTimeJumpButton = async () => {
+        try{
+            const response = await axios.get(`http://localhost:8080/api/impactEvents/timeJump`);
+            const triggeredEvents = response.data;
+            console.log(`Pressed`);
+
+            onTimeJump();
+
+            handleTimeJumpEvents(triggeredEvents);
+        }catch (error){
+            console.error('Error triggering impact events:', error);
+        }
+    }
     return(
         <>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -28,7 +44,7 @@ const Navbar = ({onTimeJump}) => {
                         </li>
                     </ul>
                 </div>
-                <button id="time-jump-button" className="btn btn-primary" onClick={onTimeJump}>+1 Hr</button>
+                <button id="time-jump-button" className="btn btn-primary" onClick={handleTimeJumpButton}>+1 Hr</button>
             </div>
         </nav>
         </>

@@ -9,13 +9,14 @@ import ArrivalsDepartures from "./components/ArrivalsDepartures/ArrivalsDepartur
 import OrderedFlights from "./components/OrderedFlights/OrderedFlights";
 import Gates from "./components/Gates/Gates";
 import Terminals from "./components/Terminals/Terminals";
-import TimeJumpAlerts from "./components/Navbar/TimeJumpAlerts";
-import {handleTimeJump} from "./utils/timeJumpUtils";
+import TimeJumpAlerts from "./components/Navbar/TimeJumpAlert";
+import {handleTimeJumpEvents} from "./utils/timeJumpUtils";
 
 function App() {
     const [timeJumpTriggered, setTimeJumpTriggered] = useState(false);
-    const handleTimeJumpTriggered = () => {
-        handleTimeJump();
+
+    // to refresh gate/flight data
+    const handleTimeJumpDataRefresh = () => {
         setTimeJumpTriggered(true);
         // set the time jump triggered boolean back to false after 2 seconds
         setTimeout(() => {
@@ -25,9 +26,8 @@ function App() {
 
     return (
         <div className="App">
-            <Navbar onTimeJump={handleTimeJumpTriggered}/>
+            <Navbar onTimeJump={handleTimeJumpDataRefresh}/>
             <div className="container">
-                {/*<TimeJumpAlerts/>*/}
                 <div id="alert-container"></div>
                 <Routes>
                     <Route path='/' element={<Home/>} />
