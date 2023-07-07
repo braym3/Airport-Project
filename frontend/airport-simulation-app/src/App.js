@@ -1,7 +1,7 @@
 import './App.css';
 import React, {useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Navbar from "./components/Navbar/Navbar";
+import NavigationBar from "./components/Navbar/NavigationBar";
 import { Routes, Route } from "react-router";
 import { Navigate } from "react-router-dom";
 import Home from "./components/Home/Home";
@@ -9,8 +9,6 @@ import ArrivalsDepartures from "./components/ArrivalsDepartures/ArrivalsDepartur
 import OrderedFlights from "./components/OrderedFlights/OrderedFlights";
 import Gates from "./components/Gates/Gates";
 import Terminals from "./components/Terminals/Terminals";
-import TimeJumpAlerts from "./components/Navbar/TimeJumpAlert";
-import {handleTimeJumpEvents} from "./utils/timeJumpUtils";
 
 function App() {
     const [timeJumpTriggered, setTimeJumpTriggered] = useState(false);
@@ -26,7 +24,7 @@ function App() {
 
     return (
         <div className="App">
-            <Navbar onTimeJump={handleTimeJumpDataRefresh}/>
+            <NavigationBar onTimeJump={handleTimeJumpDataRefresh}/>
             <div className="container">
                 <div id="alert-container"></div>
                 <Routes>

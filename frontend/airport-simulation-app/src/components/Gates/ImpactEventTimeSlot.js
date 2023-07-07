@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {formatDateTime} from "../../utils/formatDateTime";
+import {formatDateTime, formatTime} from "../../utils/formatDateTime";
 
 const ImpactEventTimeSlot = ({impactEventId, startTime, endTime}) => {
     const [impactEventType, setImpactEventType] = useState('');
@@ -25,8 +25,8 @@ const ImpactEventTimeSlot = ({impactEventId, startTime, endTime}) => {
     return(
         <>
             <p style={{color: "red"}}><b>{impactEventType}</b></p>
-            <p><small>Start: <i>{formatDateTime(startTime)}</i></small></p>
-            <p><small>End: <i>{formatDateTime(endTime)}</i></small></p>
+            <p><small>Start: <i>{formatTime(startTime)}</i></small></p>
+            <p><small>End: <i>{formatTime(endTime)}</i></small></p>
         </>
     );
 }

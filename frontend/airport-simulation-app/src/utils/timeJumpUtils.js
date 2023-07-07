@@ -1,5 +1,5 @@
 import axios from "axios";
-import { formatDateTime } from "./formatDateTime";
+import { formatDateTime, formatTime } from "./formatDateTime";
 
 
 
@@ -7,7 +7,7 @@ export const handleTimeJumpEvents = (triggeredEvents) => {
     const alertContainer = document.getElementById('alert-container');
 
     triggeredEvents.forEach(event => {
-        const message = `${formatDateTime(event.startTime)} - ${formatDateTime(event.endTime)}`;
+        const message = `${formatTime(event.startTime)} - ${formatTime(event.endTime)}`;
 
         const alertDiv = document.createElement('div');
         alertDiv.classList.add('alert', 'alert-primary', 'alert-dismissible', 'fade', 'show');

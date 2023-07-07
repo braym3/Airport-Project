@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {formatDateTime} from "../../utils/formatDateTime";
+import {formatDateTime, formatTime} from "../../utils/formatDateTime";
 
 const FlightTimeSlot = ({flightId, startTime, endTime}) => {
     const [flightCode, setFlightCode] = useState('');
@@ -25,8 +25,8 @@ const FlightTimeSlot = ({flightId, startTime, endTime}) => {
     return(
         <>
             <p><small><b>Flight <i>{flightCode}</i></b></small></p>
-            <p><small>Start: <i>{formatDateTime(startTime)}</i></small></p>
-            <p><small>End: <i>{formatDateTime(endTime)}</i></small></p>
+            <p><small>Start: <i>{formatTime(startTime)}</i></small></p>
+            <p><small>End: <i>{formatTime(endTime)}</i></small></p>
         </>
     );
 }
