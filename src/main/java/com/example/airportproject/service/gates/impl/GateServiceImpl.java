@@ -70,8 +70,8 @@ public class GateServiceImpl implements GateService {
 
     @Override
     @Transactional
-    public void addGateSlot(UUID gateId, TimeSlot timeSlot){
-        gateRepo.addGateSlot(gateId, timeSlot);
+    public void addGateSlot(TimeSlot timeSlot){
+        gateRepo.addGateSlot(timeSlot);
     }
 
     @Override

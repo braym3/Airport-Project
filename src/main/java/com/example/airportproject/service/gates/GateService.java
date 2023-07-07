@@ -50,7 +50,7 @@ public interface GateService {
      */
     Gate update(UUID id, Integer number, Terminal terminal, List<TimeSlot> schedule);
 
-    void addGateSlot(UUID gateId, TimeSlot timeSlot);
+    void addGateSlot(TimeSlot timeSlot);
 
     TimeSlot getGateTimeSlotByFlightId(UUID flightId);
 

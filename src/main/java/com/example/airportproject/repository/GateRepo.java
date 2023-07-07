@@ -22,7 +22,7 @@ public interface GateRepo{
     // clear table
     void clear();
 
-    void addGateSlot(UUID gateId, TimeSlot timeSlot);
+    void addGateSlot(TimeSlot timeSlot);
 
     TimeSlot getGateTimeSlotByFlightId(UUID flightId);
 

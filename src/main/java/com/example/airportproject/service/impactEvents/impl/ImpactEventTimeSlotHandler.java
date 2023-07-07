@@ -2,6 +2,7 @@ package com.example.airportproject.service.impactEvents.impl;
 
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.Gate;
+import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.service.flights.FlightService;
 import com.example.airportproject.service.gates.GateService;
@@ -50,7 +51,7 @@ public class ImpactEventTimeSlotHandler{
         return eventStartTime.plusMinutes(randomDuration);
     }
 
-    public TimeSlot createImpactEventTimeSlot(UUID impactEventId){
+    public TimeSlot createImpactEventTimeSlot(Gate gate, ImpactEvent impactEvent){
         // event should happen in time period between first and last flight
         // get the time of the first flight
         LocalDateTime firstFlightTime = flightService.getFirstFlightTime(airportCode);
@@ -60,10 +61,10 @@ public class ImpactEventTimeSlotHandler{
         // generate random start and end time for the event (between these 2 flight times)
         LocalDateTime eventStartTime = createRandomStartTime(firstFlightTime, lastFlightTime);
         LocalDateTime eventEndTime = createRandomEndTime(eventStartTime, lastFlightTime);
-        return new TimeSlot(null, eventStartTime, eventEndTime, impactEventId);
+        return new TimeSlot(gate, null, eventStartTime, eventEndTime, impactEvent);
     }
 
-    public TimeSlot closeRandomGate(UUID impactEventId){
+    public TimeSlot closeRandomGate(ImpactEvent impactEvent){
         // get all gates
         List<Gate> gates = gateService.getAll();
 
@@ -72,9 +73,9 @@ public class ImpactEventTimeSlotHandler{
         Gate selectedGate = gates.get(randomIndex);
 
         // create impact event for gate closure
-        TimeSlot gateClosedSlot = createImpactEventTimeSlot(impactEventId);
+        TimeSlot gateClosedSlot = createImpactEventTimeSlot(selectedGate, impactEvent);
         // save the gate closed time slot to the gate slots table
-        gateService.addGateSlot(selectedGate.getId(), gateClosedSlot);
+        gateService.addGateSlot(gateClosedSlot);
 
         System.out.println("T" + selectedGate.getTerminal().getNumber() + " gate " + selectedGate.getNumber() + " closed from: " + gateClosedSlot.getStartTime() + " until " + gateClosedSlot.getEndTime());
 
@@ -87,8 +88,8 @@ public class ImpactEventTimeSlotHandler{
     private List<Flight> getImpactedFlights(Gate affectedGate, TimeSlot newTimeSlot){
         List<Flight> impactedFlights = new ArrayList<>();
         for(TimeSlot gateOccupiedSlot : affectedGate.getSchedule()){
-            if(gateOccupiedSlot.getFlightId() != null && gateOccupiedSlot.overlaps(newTimeSlot.getStartTime(), newTimeSlot.getEndTime())){
-                impactedFlights.add(flightService.get(gateOccupiedSlot.getFlightId()));
+            if(gateOccupiedSlot.getFlight() != null && gateOccupiedSlot.overlaps(newTimeSlot.getStartTime(), newTimeSlot.getEndTime())){
+                impactedFlights.add(gateOccupiedSlot.getFlight());
             }
         }
         return impactedFlights;
@@ -164,17 +165,18 @@ public class ImpactEventTimeSlotHandler{
                     "\nbest end time = " + bestAvailableEndTime + "\n");
             // create new best time slot and add it to the gate schedule
             assert bestAvailableStartTime != null;
-            TimeSlot newTimeSlot = new TimeSlot(impactedFlight.getId(), bestAvailableStartTime, bestAvailableEndTime, null);
+            TimeSlot newTimeSlot = new TimeSlot(bestAvailableGate, impactedFlight, bestAvailableStartTime, bestAvailableEndTime, null);
 
             // add and save the new time slot for the flight to the best available gate found
             bestAvailableGate.addTimeSlot(newTimeSlot);
-            gateService.addGateSlot(bestAvailableGate.getId(), newTimeSlot);
+            gateService.addGateSlot(newTimeSlot);
         }
     }
 
     public List<TimeSlot> triggerImpactEvents() {
         List<TimeSlot> triggeredEvents = new ArrayList<>();
-        triggeredEvents.add(closeRandomGate(UUID.fromString("291a6406-c2ab-473a-b138-225e75ee9c8a")));
+        List<ImpactEvent> impactEvents = impactEventService.getAll();
+        triggeredEvents.add(closeRandomGate(impactEvents.get(0)));
         // get all impact events
         // randomise the chance of each of them happening based on their probability
         // carry out the triggered impact events - reassign schedule accordingly
