@@ -11,7 +11,9 @@ export const handleTimeJumpEvents = (triggeredEvents) => {
 
         const alertDiv = document.createElement('div');
         alertDiv.classList.add('alert', 'alert-primary', 'alert-dismissible', 'fade', 'show');
-        alertDiv.innerHTML = `<strong>Impact Event:</strong> ${message}
+        alertDiv.innerHTML = `<strong>${event.impactEvent.type}:</strong> ${'gate' in event ? 
+            (`T${event.gate.terminal.number} gate ${event.gate.number}`) : (`runway ${event.runway.number}`)}
+                              <p>${message}</p>
                               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
 
         // attach event listener to close button
