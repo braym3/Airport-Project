@@ -34,12 +34,12 @@ const Gates = ({timeJumpTriggered}) => {
                         <h6 className='schedule-header'>Schedule:</h6>
 
                         <div className='time-slots-grid'>
-                            {gate.schedule.map(timeSlot => (
+                            {gate.schedule?.map(timeSlot => (
                                 <div key={timeSlot.id} className='time-slot-card'>
-                                    {timeSlot.flightId ? (
-                                        <FlightTimeSlot flightId={timeSlot.flightId} startTime={timeSlot.startTime} endTime={timeSlot.endTime}/>
+                                    {'flight' in timeSlot ? (
+                                        <FlightTimeSlot flightId={timeSlot.flight.id} startTime={timeSlot.startTime} endTime={timeSlot.endTime}/>
                                     ) : (
-                                        <ImpactEventTimeSlot impactEventId={timeSlot.impactEventId} startTime={timeSlot.startTime} endTime={timeSlot.endTime}/>
+                                        <ImpactEventTimeSlot impactEventId={timeSlot.impactEvent.id} startTime={timeSlot.startTime} endTime={timeSlot.endTime}/>
                                     )}
                                 </div>
                             ))}
