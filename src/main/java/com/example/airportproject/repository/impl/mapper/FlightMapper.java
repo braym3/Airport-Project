@@ -1,5 +1,6 @@
 package com.example.airportproject.repository.impl.mapper;
 
+import com.example.airportproject.dto.FlightDTO;
 import com.example.airportproject.model.Flight;
 import org.apache.ibatis.annotations.*;
 
@@ -25,7 +26,7 @@ public interface FlightMapper {
             @Result(property = "depTime", column = "dep_time"),
             @Result(property = "arrTime", column = "arr_time"),
             @Result(property = "duration", column = "duration"),
-            @Result(property = "gate", column = "gate_id", one = @One(select = "com.example.airportproject.repository.impl.mapper.GateMapper.get"))
+            @Result(property = "gate", column = "gate_id", one = @One(select = "com.example.airportproject.repository.impl.mapper.GateMapper.getGateWithoutSchedule"))
     })
     List<Flight> getAll();
 

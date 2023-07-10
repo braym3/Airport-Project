@@ -1,9 +1,11 @@
 package com.example.airportproject.controller;
 
+import com.example.airportproject.dto.Views;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.service.gates.GateService;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;

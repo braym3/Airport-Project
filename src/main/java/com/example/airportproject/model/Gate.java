@@ -1,6 +1,7 @@
 package com.example.airportproject.model;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -16,8 +17,10 @@ public class Gate {
     @Min(0)
     @Max(50)
     private Integer number;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Terminal terminal;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TimeSlot> schedule;
 
     /**
