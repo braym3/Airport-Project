@@ -133,7 +133,7 @@ public class Gate {
     }
 
     public List<TimeSlot> getSchedule() {
-        return schedule;
+        return new ArrayList<>(schedule);
     }
 
     public void setSchedule(List<TimeSlot> schedule) {
