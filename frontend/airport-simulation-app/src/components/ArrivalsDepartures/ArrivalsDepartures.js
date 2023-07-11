@@ -33,15 +33,15 @@ const ArrivalsDepartures = () => {
                 </div>
                 <div className="col-auto toggle-container">
                     <div className="form-check form-switch">
-                        <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="toggle-switch"
-                            onChange={toggleTable}
-                            checked={isArrivals}
-                        />
-                        <label className="form-check-label" htmlFor="toggle-switch">
+                        <label className="form-check-label">
                             {isArrivals ? "Departures/Arrivals" : "Arrivals/Departures"}
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="toggle-switch"
+                                onChange={toggleTable}
+                                checked={isArrivals}
+                            />
                         </label>
                     </div>
                 </div>
