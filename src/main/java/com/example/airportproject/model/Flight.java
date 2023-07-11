@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -17,9 +18,8 @@ public class Flight {
     private String flightIata, depIata, arrIata, status;
     @Length(max = 10)
     private String airlineIata, aircraftIcao;
-    @NotNull
     @Min(0)
-    private Integer duration;
+    private int duration;
     @NotNull
     private LocalDateTime depTime, arrTime;
     private Gate gate;
@@ -36,7 +36,7 @@ public class Flight {
      * @param arrTime Arrival time
      * @param duration Flight duration in minutes
     */
-    public Flight(String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration) {
+    public Flight(String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, int duration) {
 
         this.airlineIata = airlineIata; // airline code
         this.depIata = depIata; // departure airport code
@@ -65,7 +65,7 @@ public class Flight {
      * @param arrTime Arrival time
      * @param duration Flight duration in minutes
     */
-    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration) {
+    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, int duration) {
         this.id = id;
         this.airlineIata = airlineIata;
         this.depIata = depIata;
@@ -94,7 +94,7 @@ public class Flight {
      * @param duration Flight duration in minutes
      * @param gate The assigned Gate object
      */
-    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration, Gate gate){
+    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, int duration, Gate gate){
         this.id = id;
         this.airlineIata = airlineIata;
         this.depIata = depIata;
@@ -108,32 +108,6 @@ public class Flight {
         this.gate = gate;
     }
 
-    /**
-     * Constructor with ID and assigned Gate
-     * @param id Unique ID used in the database
-     * @param airlineIata Airline IATA code
-     * @param depIata Departure airport IATA code
-     * @param arrIata Arrival airport IATA code
-     * @param status Status of the flight
-     * @param aircraftIcao Aircraft ICAO code
-     * @param flightIata Flight IATA code
-     * @param depTime Departure time
-     * @param arrTime Arrival time
-     * @param duration Flight duration in minutes
-     * @param gateId The assigned Gate ID
-     */
-    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, @NotNull Integer duration, UUID gateId){
-        this.id = id;
-        this.airlineIata = airlineIata;
-        this.depIata = depIata;
-        this.arrIata = arrIata;
-        this.status = status;
-        this.aircraftIcao = aircraftIcao;
-        this.flightIata = flightIata;
-        this.depTime = depTime;
-        this.arrTime = arrTime;
-        this.duration = duration;
-    }
 
     public UUID getId() {
         return id;
@@ -207,11 +181,11 @@ public class Flight {
         this.arrTime = arrTime;
     }
 
-    public @NotNull Integer getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(@NotNull @Min(0) Integer duration) {
+    public void setDuration(@Min(0) int duration) {
         this.duration = duration;
     }
 
@@ -221,5 +195,35 @@ public class Flight {
 
     public void setGate(Gate gate) {
         this.gate = gate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight) o;
+        return getDuration() == flight.getDuration() && Objects.equals(getId(), flight.getId()) && Objects.equals(getFlightIata(), flight.getFlightIata()) && Objects.equals(getDepIata(), flight.getDepIata()) && Objects.equals(getArrIata(), flight.getArrIata()) && Objects.equals(getStatus(), flight.getStatus()) && Objects.equals(getAirlineIata(), flight.getAirlineIata()) && Objects.equals(getAircraftIcao(), flight.getAircraftIcao()) && Objects.equals(getDepTime(), flight.getDepTime()) && Objects.equals(getArrTime(), flight.getArrTime()) && Objects.equals(getGate(), flight.getGate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getFlightIata(), getDepIata(), getArrIata(), getStatus(), getAirlineIata(), getAircraftIcao(), getDuration(), getDepTime(), getArrTime(), getGate());
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id=" + id +
+                ", flightIata='" + flightIata + '\'' +
+                ", depIata='" + depIata + '\'' +
+                ", arrIata='" + arrIata + '\'' +
+                ", status='" + status + '\'' +
+                ", airlineIata='" + airlineIata + '\'' +
+                ", aircraftIcao='" + aircraftIcao + '\'' +
+                ", duration=" + duration +
+                ", depTime=" + depTime +
+                ", arrTime=" + arrTime +
+                ", gate=" + gate +
+                '}';
     }
 }

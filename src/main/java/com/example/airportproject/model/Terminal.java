@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -15,10 +16,9 @@ import java.util.UUID;
 public class Terminal {
     private UUID id;
 
-    @NotNull
     @Min(0)
     @Max(10)
-    private Integer number;
+    private int number;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Gate> gates;
@@ -27,7 +27,7 @@ public class Terminal {
     * Constructs a new Terminal object with the specified terminal number.
      * @param number the terminal number
     */
-    public Terminal(@NotNull Integer number){
+    public Terminal(int number){
         this.number = number;
         this.gates = new ArrayList<>();
     }
@@ -37,7 +37,7 @@ public class Terminal {
      * @param id the unique ID of the terminal
      * @param number the terminal number
     */
-    public Terminal(UUID id, @NotNull Integer number){
+    public Terminal(UUID id, int number){
         this.id = id;
         this.number = number;
         this.gates = new ArrayList<>();
@@ -49,7 +49,7 @@ public class Terminal {
      * @param number the terminal number
      * @param gates the List of Gates that belong to the terminal
      */
-    public Terminal(UUID id, @NotNull Integer number, List<Gate> gates){
+    public Terminal(UUID id, int number, List<Gate> gates){
         this.id = id;
         this.number = number;
         this.gates = gates;
@@ -75,7 +75,7 @@ public class Terminal {
      * Returns the terminal number.
      * @return the terminal number
      */
-    public @NotNull Integer getNumber() {
+    public int getNumber() {
         return number;
     }
 
@@ -84,7 +84,7 @@ public class Terminal {
     * Sets the terminal number.
      * @param number the terminal number
     */
-    public void setNumber(@NotNull @Min(0) @Max(10) Integer number) {
+    public void setNumber(@Min(0) @Max(10) int number) {
         this.number = number;
     }
 
@@ -102,5 +102,27 @@ public class Terminal {
     */
     public void setGates(List<Gate> gates) {
         this.gates = gates;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Terminal terminal = (Terminal) o;
+        return getNumber() == terminal.getNumber() && Objects.equals(getId(), terminal.getId()) && Objects.equals(getGates(), terminal.getGates());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getNumber(), getGates());
+    }
+
+    @Override
+    public String toString() {
+        return "Terminal{" +
+                "id=" + id +
+                ", number=" + number +
+                ", gates=" + gates +
+                '}';
     }
 }

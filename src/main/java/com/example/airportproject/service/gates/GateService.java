@@ -48,7 +48,7 @@ public interface GateService {
      * @param schedule The List of TimeSlot objects that represent the gate's schedule of occupied times
      * @return The updated Gate object
      */
-    Gate update(UUID id, Integer number, Terminal terminal, List<TimeSlot> schedule);
+    Gate update(UUID id, int number, Terminal terminal, List<TimeSlot> schedule);
 
     void addGateSlot(TimeSlot timeSlot);
 

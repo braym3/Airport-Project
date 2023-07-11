@@ -13,10 +13,9 @@ import java.util.*;
 */
 public class Gate {
     private UUID id;
-    @NotNull
     @Min(0)
     @Max(50)
-    private Integer number;
+    private int number;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Terminal terminal;
 
@@ -28,7 +27,7 @@ public class Gate {
      * @param id the gate ID
      * @param number the gate number
      */
-    public Gate(UUID id, @NotNull Integer number) {
+    public Gate(UUID id, int number) {
         this.id = id;
         this.number = number;
         this.terminal = null;
@@ -41,7 +40,7 @@ public class Gate {
      * @param number the gate number
      * @param terminal the Terminal object that this gate belongs to
      */
-    public Gate(UUID id, @NotNull Integer number, @NotNull Terminal terminal) {
+    public Gate(UUID id, int number, @NotNull Terminal terminal) {
         this.id = id;
         this.number = number;
         this.terminal = terminal;
@@ -53,7 +52,7 @@ public class Gate {
      * @param number the gate number
      * @param terminal the Terminal object that the Gate belongs to
     */
-    public Gate(@NotNull Integer number, @NotNull Terminal terminal) {
+    public Gate(int number, @NotNull Terminal terminal) {
         this.number = number;
         this.terminal = terminal;
         this.schedule = new ArrayList<>();
@@ -65,7 +64,7 @@ public class Gate {
      * @param terminal the Terminal object that the Gate belongs to
      * @param schedule a List of time slots for when the gate is occupied
      */
-    public Gate(@NotNull Integer number, @NotNull Terminal terminal, List<TimeSlot> schedule) {
+    public Gate(int number, @NotNull Terminal terminal, List<TimeSlot> schedule) {
         this.number = number;
         this.terminal = terminal;
         this.schedule = schedule;
@@ -78,7 +77,7 @@ public class Gate {
      * @param terminal the Terminal object that the Gate belongs to
      * @param schedule a List of time slots for when the gate is occupied
      */
-    public Gate(UUID id, @NotNull Integer number, @NotNull Terminal terminal, List<TimeSlot> schedule) {
+    public Gate(UUID id, int number, @NotNull Terminal terminal, List<TimeSlot> schedule) {
         this.id = id;
         this.number = number;
         this.terminal = terminal;
@@ -104,7 +103,7 @@ public class Gate {
      * Returns the gate number.
      * @return the gate number
      */
-    public @NotNull Integer getNumber() {
+    public int getNumber() {
         return number;
     }
 
@@ -112,7 +111,7 @@ public class Gate {
     * Sets the gate number.
      * @param number the gate number
     */
-    public void setNumber(@NotNull @Min(0) @Max(50) Integer number) {
+    public void setNumber(@Min(0) @Max(50) int number) {
         this.number = number;
     }
 

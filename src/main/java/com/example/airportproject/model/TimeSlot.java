@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -60,7 +61,6 @@ public class TimeSlot {
     }
 
     public TimeSlot(){
-
     }
 
     public Gate getGate() {
@@ -145,6 +145,19 @@ public class TimeSlot {
 
     public boolean overlaps(LocalDateTime otherStartTime, LocalDateTime otherEndTime){
         return this.startTime.isBefore(otherEndTime) && otherStartTime.isBefore(this.endTime);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimeSlot timeSlot = (TimeSlot) o;
+        return Objects.equals(getId(), timeSlot.getId()) && Objects.equals(getStartTime(), timeSlot.getStartTime()) && Objects.equals(getEndTime(), timeSlot.getEndTime()) && Objects.equals(getGate(), timeSlot.getGate()) && Objects.equals(getFlight(), timeSlot.getFlight()) && Objects.equals(getImpactEvent(), timeSlot.getImpactEvent());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getStartTime(), getEndTime(), getGate(), getFlight(), getImpactEvent());
     }
 
     @Override

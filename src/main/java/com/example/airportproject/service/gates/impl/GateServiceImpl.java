@@ -51,11 +51,11 @@ public class GateServiceImpl implements GateService {
 
     @Override
     @Transactional
-    public Gate update(UUID id, Integer number, Terminal terminal, List<TimeSlot> schedule) {
+    public Gate update(UUID id, int number, Terminal terminal, List<TimeSlot> schedule) {
         Gate gate = this.get(id);
 
         // update the gate attributes if the corresponding parameters are provided
-        if(number != null){
+        if(number != gate.getNumber()){
             gate.setNumber(number);
         }
         if(terminal != null){

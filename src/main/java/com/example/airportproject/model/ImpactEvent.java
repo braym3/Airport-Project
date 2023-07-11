@@ -1,6 +1,7 @@
 package com.example.airportproject.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.UUID;
 
 public class ImpactEvent {
@@ -53,5 +54,28 @@ public class ImpactEvent {
 
     public void setProbability(BigDecimal probability) {
         this.probability = probability;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ImpactEvent that = (ImpactEvent) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getType(), that.getType()) && Objects.equals(getDescription(), that.getDescription()) && Objects.equals(getProbability(), that.getProbability());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getType(), getDescription(), getProbability());
+    }
+
+    @Override
+    public String toString() {
+        return "ImpactEvent{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                ", probability=" + probability +
+                '}';
     }
 }
