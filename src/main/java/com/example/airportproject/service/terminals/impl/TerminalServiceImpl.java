@@ -2,7 +2,6 @@ package com.example.airportproject.service.terminals.impl;
 
 import com.example.airportproject.dao.TerminalDao;
 import com.example.airportproject.model.Terminal;
-import com.example.airportproject.repository.TerminalRepo;
 import com.example.airportproject.service.terminals.TerminalService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;

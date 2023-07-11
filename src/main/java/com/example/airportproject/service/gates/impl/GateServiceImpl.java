@@ -4,7 +4,6 @@ import com.example.airportproject.dao.GateDao;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
-import com.example.airportproject.repository.GateRepo;
 import com.example.airportproject.service.gates.GateService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;

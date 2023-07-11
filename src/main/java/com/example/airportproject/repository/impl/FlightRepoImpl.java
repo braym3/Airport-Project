@@ -1,6 +1,5 @@
 package com.example.airportproject.repository.impl;
 
-import com.example.airportproject.dto.FlightDTO;
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.repository.FlightRepo;
 import com.example.airportproject.repository.impl.mapper.FlightMapper;

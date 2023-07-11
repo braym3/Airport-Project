@@ -1,6 +1,5 @@
 package com.example.airportproject.repository.impl.mapper;
 
-import com.example.airportproject.dto.FlightDTO;
 import com.example.airportproject.model.Flight;
 import org.apache.ibatis.annotations.*;
 

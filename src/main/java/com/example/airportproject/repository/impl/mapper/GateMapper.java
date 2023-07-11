@@ -2,7 +2,6 @@ package com.example.airportproject.repository.impl.mapper;
 
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
-import com.example.airportproject.model.TimeSlot;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

@@ -1,10 +1,8 @@
 package com.example.airportproject.service.impactEvents.impl;
 
 import com.example.airportproject.dao.ImpactEventDao;
-import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.model.TimeSlot;
-import com.example.airportproject.repository.ImpactEventRepo;
 import com.example.airportproject.service.impactEvents.ImpactEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

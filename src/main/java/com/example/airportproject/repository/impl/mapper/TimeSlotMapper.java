@@ -1,7 +1,6 @@
 package com.example.airportproject.repository.impl.mapper;
 
 import com.example.airportproject.model.*;
-import com.example.airportproject.typehandler.UUIDTypeHandler;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;

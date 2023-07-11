@@ -1,6 +1,5 @@
 package com.example.airportproject.controller;
 
-import com.example.airportproject.dto.FlightDTO;
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.service.flights.FlightService;

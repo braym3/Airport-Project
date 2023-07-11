@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -61,7 +60,7 @@ public class TerminalController {
 
     @CrossOrigin
     @PatchMapping("/{id}")
-    public ResponseEntity<Terminal> updateNumber(@PathVariable UUID id, @RequestParam(name = "number", required = true) int number){
+    public ResponseEntity<Terminal> updateNumber(@PathVariable UUID id, @RequestParam(name = "number") int number){
         logger.debug("Controller updating terminal with ID {}", id);
         Terminal updated = terminalService.updateNumber(id, number);
         return ResponseEntity.ok()

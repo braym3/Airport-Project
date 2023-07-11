@@ -1,6 +1,5 @@
 package com.example.airportproject.controller;
 
-import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.service.impactEvents.ImpactEventService;

@@ -1,6 +1,5 @@
 package com.example.airportproject.repository;
 
-import com.example.airportproject.dto.FlightDTO;
 import com.example.airportproject.model.Flight;
 
 import java.util.List;
