@@ -108,6 +108,8 @@ public class Flight {
         this.gate = gate;
     }
 
+    public Flight() {
+    }
 
     public UUID getId() {
         return id;
