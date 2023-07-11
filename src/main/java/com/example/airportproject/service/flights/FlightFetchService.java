@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -35,10 +36,11 @@ public class FlightFetchService {
      * @param flightRepository the FlightRepository to use for persisting the flight data
      * @param flightDAO the FlightDAO to use for fetching flight data from the external API
     */
-    public FlightFetchService(FlightRepo flightRepository, FlightDaoImpl flightDAO) {
+    @Autowired
+    public FlightFetchService(FlightRepo flightRepository, FlightDaoImpl flightDAO, ObjectMapper objectMapper) {
         this.flightRepository = flightRepository;
         this.flightDAO = flightDAO;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = objectMapper;
         this.timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     }
 
