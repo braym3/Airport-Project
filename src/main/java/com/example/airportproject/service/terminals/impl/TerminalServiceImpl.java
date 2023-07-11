@@ -1,5 +1,6 @@
 package com.example.airportproject.service.terminals.impl;
 
+import com.example.airportproject.dao.TerminalDao;
 import com.example.airportproject.model.Terminal;
 import com.example.airportproject.repository.TerminalRepo;
 import com.example.airportproject.service.terminals.TerminalService;
@@ -13,36 +14,36 @@ import java.util.UUID;
 @Primary
 @Service
 public class TerminalServiceImpl implements TerminalService {
-    private final TerminalRepo terminalRepo;
+    private final TerminalDao terminalDao;
 
-    public TerminalServiceImpl(TerminalRepo terminalRepo) {
-        this.terminalRepo = terminalRepo;
+    public TerminalServiceImpl(TerminalDao terminalDao) {
+        this.terminalDao = terminalDao;
     }
 
     @Override
     @Transactional
     public Terminal create(Terminal terminal) {
         UUID terminalId = UUID.randomUUID();
-        return terminalRepo.create(terminal, terminalId);
+        return terminalDao.create(terminal, terminalId);
     }
 
     @Override
     @Transactional
     public Terminal get(UUID id) {
-        return terminalRepo.get(id); //.orElseThrow(TerminalNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
+        return terminalDao.get(id); //.orElseThrow(TerminalNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
     }
 
     @Override
     @Transactional
     public List<Terminal> getAll() {
-        return terminalRepo.getAll();
+        return terminalDao.getAll();
     }
 
     @Override
     @Transactional
     public Terminal remove(UUID id) {
         Terminal removed = this.get(id);
-        terminalRepo.remove(id);
+        terminalDao.remove(id);
         return removed;
     }
 
@@ -53,6 +54,6 @@ public class TerminalServiceImpl implements TerminalService {
 
         terminal.setNumber(number);
 
-        return terminalRepo.update(terminal);               // save the updated Gate and return it
+        return terminalDao.update(terminal);               // save the updated Gate and return it
     }
 }

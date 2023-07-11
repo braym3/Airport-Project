@@ -1,9 +1,9 @@
 package com.example.airportproject.service.impactEvents;
 
-import com.example.airportproject.model.Flight;
-import com.example.airportproject.model.ImpactEvent;
-import com.example.airportproject.model.TimeSlot;
+import com.example.airportproject.model.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +31,16 @@ public interface ImpactEventService {
      * @return List of all ImpactEvent objects found
      */
     List<ImpactEvent> getAll();
+
+    /**
+     * Updates the impact event record of the corresponding id with the specified attributes
+     * @param id The id used to identify the Gate to update
+     * @param type The impact event type
+     * @param description The description of the impact event
+     * @param probability The probability of the impact event occurring
+     * @return The updated ImpactEvent object
+     */
+    ImpactEvent update(UUID id, String type, String description, BigDecimal probability);
 
     /**
      * Removes the ImpactEvent with the corresponding id from the database

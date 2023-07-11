@@ -1,5 +1,6 @@
 package com.example.airportproject.service.gates.impl;
 
+import com.example.airportproject.dao.GateDao;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
@@ -15,16 +16,16 @@ import java.util.UUID;
 @Primary
 @Service
 public class GateServiceImpl implements GateService {
-    private final GateRepo gateRepo;
+    private final GateDao gateDao;
 
-    public GateServiceImpl(GateRepo gateRepo) {
-        this.gateRepo = gateRepo;
+    public GateServiceImpl(GateDao gateDao) {
+        this.gateDao = gateDao;
     }
 
     @Override
     @Transactional
     public Gate createGate(Gate gate) {
-        return gateRepo.create(gate);
+        return gateDao.create(gate);
     }
 
 
@@ -32,20 +33,20 @@ public class GateServiceImpl implements GateService {
     @Override
     @Transactional
     public Gate get(UUID id) {
-        return gateRepo.get(id); //.orElseThrow(GateNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
+        return gateDao.get(id); //.orElseThrow(GateNotFoundException::new);  // orElseThrows takes a supplier (functional interface) - so use lambda
     }
 
     @Override
     @Transactional
     public List<Gate> getAll() {
-        return gateRepo.getAll();
+        return gateDao.getAll();
     }
 
     @Override
     @Transactional
     public Gate remove(UUID id) {
         Gate removed = this.get(id);
-        gateRepo.remove(id);
+        gateDao.remove(id);
         return removed;
     }
 
@@ -65,22 +66,22 @@ public class GateServiceImpl implements GateService {
             gate.setSchedule(schedule);
         }
         // save and return the updated gate record
-        return gateRepo.update(gate);               // save the updated Gate and return it
+        return gateDao.update(gate);               // save the updated Gate and return it
     }
 
     @Override
     @Transactional
     public void addGateSlot(TimeSlot timeSlot){
-        gateRepo.addGateSlot(timeSlot);
+        gateDao.addGateSlot(timeSlot);
     }
 
     @Override
     public TimeSlot getGateTimeSlotByFlightId(UUID flightId) {
-        return gateRepo.getGateTimeSlotByFlightId(flightId);
+        return gateDao.getGateTimeSlotByFlightId(flightId);
     }
 
     @Override
     public void removeTimeSlotForGate(UUID timeSlotId){
-        gateRepo.removeTimeSlotForGate(timeSlotId);
+        gateDao.removeTimeSlotForGate(timeSlotId);
     }
 }

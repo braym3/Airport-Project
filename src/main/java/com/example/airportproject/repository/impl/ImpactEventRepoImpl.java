@@ -34,6 +34,11 @@ public class ImpactEventRepoImpl implements ImpactEventRepo {
     }
 
     @Override
+    public ImpactEvent update(ImpactEvent impactEvent) {
+        return impactEventMapper.update(impactEvent);
+    }
+
+    @Override
     public ImpactEvent remove(UUID id) {
         return impactEventMapper.remove(id);
     }

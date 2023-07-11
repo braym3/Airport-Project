@@ -1,13 +1,9 @@
 package com.example.airportproject.repository.impl.mapper;
 
-import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.ImpactEvent;
-import com.example.airportproject.model.TimeSlot;
-import com.example.airportproject.typehandler.UUIDTypeHandler;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +25,9 @@ public interface ImpactEventMapper {
     @ResultMap("impactEventResults")
     @Select("SELECT id, type, description, probability FROM impact_events WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     ImpactEvent get(@Param("id") UUID id);
+
+    @Update("UPDATE impact_events SET type = #{type}, description = #{description}, probability = #{probability} WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    ImpactEvent update(ImpactEvent impactEvent);
 
     @Delete("DELETE FROM impact_events WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     ImpactEvent remove(@Param("id") UUID id);
