@@ -27,7 +27,7 @@ function App() {
         <div className="App">
             <NavigationBar onTimeJump={handleTimeJumpDataRefresh}/>
             <div className="container">
-                <Alerts timeJumpTriggered={timeJumpTriggered}/>
+                <Alerts />
                 <Routes>
                     <Route path='/' element={<Home/>} />
                     <Route path='arrivals-departures' element={<ArrivalsDepartures />} />

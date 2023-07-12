@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {formatTime} from "../../utils/formatDateTime";
-import axios from "axios";
-import {handleTimeJumpEvents} from "../../utils/timeJumpUtils";
 import {Alert} from "react-bootstrap";
 
-const Alerts = ({timeJumpTriggered}) => {
+const Alerts = () => {
     const [alerts, setAlerts] = useState([]);
 
 
