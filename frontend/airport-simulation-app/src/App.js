@@ -9,6 +9,7 @@ import ArrivalsDepartures from "./components/ArrivalsDepartures/ArrivalsDepartur
 import OrderedFlights from "./components/OrderedFlights/OrderedFlights";
 import Gates from "./components/Gates/Gates";
 import Terminals from "./components/Terminals/Terminals";
+import Alerts from "./components/Alerts/Alerts";
 
 function App() {
     const [timeJumpTriggered, setTimeJumpTriggered] = useState(false);
@@ -26,7 +27,7 @@ function App() {
         <div className="App">
             <NavigationBar onTimeJump={handleTimeJumpDataRefresh}/>
             <div className="container">
-                <div id="alert-container"></div>
+                <Alerts timeJumpTriggered={timeJumpTriggered}/>
                 <Routes>
                     <Route path='/' element={<Home/>} />
                     <Route path='arrivals-departures' element={<ArrivalsDepartures />} />
