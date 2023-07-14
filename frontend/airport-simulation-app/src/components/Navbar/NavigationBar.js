@@ -37,6 +37,9 @@ const NavigationBar = ({onTimeJump}) => {
                             <Nav.Link href="/gates" className="p-2">
                                 Gates
                             </Nav.Link>
+                            <Nav.Link href="/gate-calendar" className="p-2">
+                                Gate Schedule
+                            </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                     <Button id="time-jump-button" variant="primary" className="ml-auto" onClick={handleTimeJumpButton}>+1 Hr</Button>

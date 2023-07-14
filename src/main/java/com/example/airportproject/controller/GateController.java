@@ -86,7 +86,25 @@ public class GateController {
     public ResponseEntity<TimeSlot> getGateTimeSlotByFlightId(@PathVariable UUID flightId){
         logger.debug("Controller getting gate time slot for flight ID {}", flightId);
         TimeSlot found = gateService.getGateTimeSlotByFlightId(flightId);
-        return ResponseEntity.status(HttpStatus.FOUND)
+        return ResponseEntity.ok()
+                .body(found);
+    }
+
+    @CrossOrigin
+    @GetMapping("/schedule/{gateId}")
+    public ResponseEntity<List<TimeSlot>> getScheduleForGate(@PathVariable UUID gateId){
+        logger.debug("Controller getting schedule for gate ID {}", gateId);
+        List<TimeSlot> found = gateService.getScheduleForGate(gateId);
+        return ResponseEntity.ok()
+                .body(found);
+    }
+
+    @CrossOrigin
+    @GetMapping("/schedule/")
+    public ResponseEntity<List<TimeSlot>> getAllGatesTimeSlots(){
+        logger.debug("Controller getting schedules for all gates");
+        List<TimeSlot> found = gateService.getAllGatesTimeSlots();
+        return ResponseEntity.ok()
                 .body(found);
     }
 }

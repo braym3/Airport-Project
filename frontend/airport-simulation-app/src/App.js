@@ -10,6 +10,7 @@ import OrderedFlights from "./components/OrderedFlights/OrderedFlights";
 import Gates from "./components/Gates/Gates";
 import Terminals from "./components/Terminals/Terminals";
 import Alerts from "./components/Alerts/Alerts";
+import GateSchedule from "./components/Gates/GateCalendar/Schedule/GateSchedule";
 
 function App() {
     const [timeJumpTriggered, setTimeJumpTriggered] = useState(false);
@@ -34,6 +35,7 @@ function App() {
                     <Route path='ordered-flights' element={<OrderedFlights />} />
                     <Route path='terminals' element={<Terminals />} />
                     <Route path='gates' element={<Gates timeJumpTriggered={timeJumpTriggered}/>} />
+                    <Route path='gate-calendar' element={<GateSchedule/>}/>
                     <Route path='*' element={<Navigate to='/' />} />
                 </Routes>
             </div>

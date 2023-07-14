@@ -25,6 +25,10 @@ public interface TimeSlotMapper {
     List<TimeSlot> selectTimeSlotsForGate(@Param("gateId") UUID gateId);
 
     @ResultMap("gateSlotResults")
+    @Select("SELECT id, gate_id, flight_id, start_time, end_time, impact_event_id FROM gate_slots ORDER BY gate_id")
+    List<TimeSlot> selectAllGatesTimeSlots();
+
+    @ResultMap("gateSlotResults")
     @Select("SELECT id, gate_id, flight_id, start_time, end_time, impact_event_id FROM gate_slots WHERE flight_id = #{flightId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     TimeSlot getGateTimeSlotByFlightId(UUID flightId);
 

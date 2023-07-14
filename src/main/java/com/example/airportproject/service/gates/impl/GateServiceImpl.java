@@ -80,6 +80,16 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
+    public List<TimeSlot> getScheduleForGate(UUID gateId) {
+        return gateDao.getScheduleForGate(gateId);
+    }
+
+    @Override
+    public List<TimeSlot> getAllGatesTimeSlots() {
+        return gateDao.getAllGatesTimeSlots();
+    }
+
+    @Override
     public void removeTimeSlotForGate(UUID timeSlotId){
         gateDao.removeTimeSlotForGate(timeSlotId);
     }

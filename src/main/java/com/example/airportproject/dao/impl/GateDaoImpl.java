@@ -55,6 +55,17 @@ public class GateDaoImpl implements GateDao {
     }
 
     @Override
+    public List<TimeSlot> getScheduleForGate(UUID gateId) {
+        return gateRepo.getScheduleForGate(gateId);
+    }
+
+    @Override
+    public List<TimeSlot> getAllGatesTimeSlots() {
+        return gateRepo.getAllGatesTimeSlots();
+    }
+
+
+    @Override
     public void removeTimeSlotForGate(UUID timeSlotId) {
         gateRepo.removeTimeSlotForGate(timeSlotId);
     }

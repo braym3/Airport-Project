@@ -4,7 +4,7 @@ import ImpactEventTimeSlot from "./ImpactEventTimeSlot";
 import FlightTimeSlot from "./FlightTimeSlot";
 import './gates.css';
 
-const Gates = ({timeJumpTriggered}) => {
+const GateTimeline = ({timeJumpTriggered}) => {
     const [gates, setGates] = useState([]);
     const [expandedGates, setExpandedGates] = useState({});
 
@@ -23,6 +23,25 @@ const Gates = ({timeJumpTriggered}) => {
         });
     };
 
+    const calculateTimeSlotWidth = (startTime, endTime) => {
+        const startDate = new Date(startTime);
+        const endDate = new Date(endTime);
+
+        const startHour = startDate.getHours();
+        const startMinutes = startDate.getMinutes();
+        const endHour = endDate.getHours();
+        const endMinutes = endDate.getMinutes();
+
+        const startTotalMinutes = startHour * 60 + startMinutes;
+        const endTotalMinutes = endHour * 60 + endMinutes;
+
+        const totalMinutes = endTotalMinutes - startTotalMinutes;
+        // for a 24-hour day
+        const widthPercentage = (totalMinutes / 1440) * 100
+
+        return `${widthPercentage}%`;
+    };
+
     const toggleGateExpansion = (gateId) => {
         setExpandedGates(prevExpandedGates => ({
             ...prevExpandedGates, [gateId]: !prevExpandedGates[gateId]
@@ -39,7 +58,7 @@ const Gates = ({timeJumpTriggered}) => {
                         <div className={"time-slots-grid"}>
                             {gate.schedule?.map(timeSlot => {
                                 return(
-                                    <div key={timeSlot.id} className={"time-slot-card"}>
+                                    <div key={timeSlot.id} className={"time-slot-card"} style={{width: calculateTimeSlotWidth(timeSlot.startTime, timeSlot.endTime)}}>
                                         {'flight' in timeSlot ? (
                                             <FlightTimeSlot flightCode={timeSlot.flight.flightIata} startTime={timeSlot.startTime} endTime={timeSlot.endTime}/>
                                         ) : (
@@ -70,4 +89,4 @@ const Gates = ({timeJumpTriggered}) => {
     )
 }
 
-export default Gates;
+export default GateTimeline;

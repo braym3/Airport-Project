@@ -54,5 +54,9 @@ public interface GateService {
 
     TimeSlot getGateTimeSlotByFlightId(UUID flightId);
 
+    List<TimeSlot> getScheduleForGate(UUID gateId);
+
+    List<TimeSlot> getAllGatesTimeSlots();
+
     void removeTimeSlotForGate(UUID timeSlotId);
 }
