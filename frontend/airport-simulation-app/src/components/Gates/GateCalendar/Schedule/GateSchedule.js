@@ -13,7 +13,7 @@ function GateSchedule() {
 
     return (
         <div>
-            <div style={{ height: "80vh", width: "100%" }}>
+            <div style={{ paddingTop: "20px",height: "80vh", width: "100%" }}>
                 <Epg isLoading={isLoading} {...getEpgProps()}>
                     <Layout
                         {...getLayoutProps()}

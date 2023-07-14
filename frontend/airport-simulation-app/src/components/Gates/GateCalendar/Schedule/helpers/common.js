@@ -1,4 +1,6 @@
 import axios from "axios";
+import planeIcon from "../helpers/white-plane-icon.png";
+import errorIcon from "../helpers/white-error-icon.png";
 
 export const fetchChannels = async () => {
     try{
@@ -50,12 +52,15 @@ const initializeTimeSlots = (schedulesData) => {
     return schedulesData.map(timeSlot => {
         let title = '';
         let description = '';
+        let image = '';
         if('flight' in timeSlot){
             title = `Flight ${timeSlot.flight.flightIata}`;
-            description = `${timeSlot.flight.depIata} - ${timeSlot.flight.arrIata}`
+            description = `${timeSlot.flight.depIata} - ${timeSlot.flight.arrIata}`;
+            image = planeIcon;
         }else if('impactEvent' in timeSlot){
-            title = `${timeSlot.impactEvent.type}`
-            description = `${timeSlot.impactEvent.description}`
+            title = `${timeSlot.impactEvent.type}`;
+            description = `${timeSlot.impactEvent.description}`;
+            image = errorIcon;
         }
         return {
             id: timeSlot.id,
@@ -63,7 +68,8 @@ const initializeTimeSlots = (schedulesData) => {
             title: title,
             description: description,
             since: timeSlot.startTime,
-            till: timeSlot.endTime
+            till: timeSlot.endTime,
+            image: image
         };
     });
 }

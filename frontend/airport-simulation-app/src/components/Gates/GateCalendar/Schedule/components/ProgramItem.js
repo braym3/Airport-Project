@@ -33,7 +33,7 @@ export const ProgramItem = ({ program, ...rest }) => {
                 <ProgramFlex>
                     {isLive && isMinWidth && <ProgramImage src={image} alt="Preview" />}
                     <ProgramStack>
-                        <ProgramTitle>{title}</ProgramTitle>
+                        <ProgramTitle><img src={image} id={"time-slot-icon"} alt={"event icon"}/> {title}</ProgramTitle>
                         <ProgramText>
                             {description}
                         </ProgramText>

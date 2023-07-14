@@ -6,7 +6,6 @@ import { useEpg } from "planby";
 
 // Import theme
 import { theme } from "./helpers/theme";
-import axios from "axios";
 
 export function useApp() {
     const [channels, setChannels] = React.useState([]);
