@@ -14,7 +14,7 @@ const ArrivalsDepartures = () => {
         setIsArrivals(!isArrivals);
         try {
             const response = await axios.get(
-                `http://localhost:8080/api/flights/${isArrivals ? "arrivals" : "departures"}/MAN`
+                `${process.env.REACT_APP_API_URL}/api/flights/${isArrivals ? "arrivals" : "departures"}/MAN`
             );
             const flightsData = response.data;
             setFlights(flightsData);

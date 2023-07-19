@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from "react";
-import axios from "axios";
-import {formatTime} from "../../utils/formatDateTime";
+import React from "react";
+import {formatTime} from "../../../utils/formatDateTime";
 
 const ImpactEventTimeSlot = ({impactEventType, startTime, endTime}) => {
     return(

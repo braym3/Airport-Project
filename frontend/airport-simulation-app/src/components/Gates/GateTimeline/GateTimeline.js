@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
-import ImpactEventTimeSlot from "./ImpactEventTimeSlot";
-import FlightTimeSlot from "./FlightTimeSlot";
+import ImpactEventTimeSlot from "../GatesOverview/ImpactEventTimeSlot";
+import FlightTimeSlot from "../GatesOverview/FlightTimeSlot";
 import './gates.css';
 
 const GateTimeline = ({timeJumpTriggered}) => {
@@ -14,7 +14,7 @@ const GateTimeline = ({timeJumpTriggered}) => {
 
     const fetchGates = () => {
         axios.get(
-            `http://localhost:8080/api/gates/`
+            `${process.env.REACT_APP_API_URL}/api/gates/`
         ).then(response => {
             const gatesData = response.data;
             setGates(gatesData);

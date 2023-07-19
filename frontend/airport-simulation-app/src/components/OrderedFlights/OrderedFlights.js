@@ -12,7 +12,7 @@ const OrderedFlights = () => {
     const fetchOrderedFlights = () => {
         // fetch ordered flights from API
         axios
-            .get(`http://localhost:8080/api/flights/ordered/MAN`)
+            .get(`${process.env.REACT_APP_API_URL}/api/flights/ordered/MAN`)
             .then((response) => {
                 const orderedFlights = response.data;
                 setOrderedFlights(orderedFlights);

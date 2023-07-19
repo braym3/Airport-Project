@@ -11,7 +11,7 @@ const Terminals = () => {
 
     const fetchTerminals = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/terminals/`);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/terminals/`);
             const terminals = response.data;
             setTerminals(terminals);
         } catch (error) {

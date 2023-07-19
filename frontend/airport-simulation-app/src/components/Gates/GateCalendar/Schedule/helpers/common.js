@@ -5,7 +5,7 @@ import errorIcon from "../helpers/white-error-icon.png";
 export const fetchChannels = async () => {
     try{
         const response = await axios.get(
-            `http://localhost:8080/api/gates/`
+            `${process.env.REACT_APP_API_URL}/api/gates/`
         );
         const gatesData = response.data;
         return initializeGates(gatesData);
@@ -17,7 +17,7 @@ export const fetchChannels = async () => {
 export const fetchEpg = async () => {
     try{
         const response = await axios.get(
-            `http://localhost:8080/api/gates/schedule/`
+            `${process.env.REACT_APP_API_URL}/api/gates/schedule/`
         );
         const timeSlotsData = response.data;
         return initializeTimeSlots(timeSlotsData);
@@ -29,7 +29,7 @@ export const fetchEpg = async () => {
 export const fetchEarliestFlightTime = async () => {
     try{
         const response = await axios.get(
-            `http://localhost:8080/api/flights/first/MAN`
+            `${process.env.REACT_APP_API_URL}/api/flights/first/MAN`
         );
         return response.data;
     } catch (error){
@@ -40,7 +40,7 @@ export const fetchEarliestFlightTime = async () => {
 export const fetchLastFlightTime = async () => {
     try{
         const response = await axios.get(
-            `http://localhost:8080/api/flights/last/MAN`
+            `${process.env.REACT_APP_API_URL}/api/flights/last/MAN`
         );
         return response.data;
     } catch (error){

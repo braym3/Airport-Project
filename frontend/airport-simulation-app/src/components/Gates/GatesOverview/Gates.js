@@ -14,7 +14,7 @@ const Gates = ({timeJumpTriggered}) => {
 
     const fetchGates = () => {
         axios.get(
-            `http://localhost:8080/api/gates/`
+            `${process.env.REACT_APP_API_URL}/api/gates/`
         ).then(response => {
             const gatesData = response.data;
             setGates(gatesData);

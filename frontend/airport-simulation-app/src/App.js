@@ -7,7 +7,7 @@ import { Navigate } from "react-router-dom";
 import Home from "./components/Home/Home";
 import ArrivalsDepartures from "./components/ArrivalsDepartures/ArrivalsDepartures";
 import OrderedFlights from "./components/OrderedFlights/OrderedFlights";
-import Gates from "./components/Gates/Gates";
+import Gates from "./components/Gates/GatesOverview/Gates";
 import Terminals from "./components/Terminals/Terminals";
 import Alerts from "./components/Alerts/Alerts";
 import GateSchedule from "./components/Gates/GateCalendar/Schedule/GateSchedule";
