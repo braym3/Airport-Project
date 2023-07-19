@@ -42,7 +42,7 @@ const NavigationBar = ({onTimeJump}) => {
                             </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
-                    <Button id="time-jump-button" variant="primary" className="ml-auto" onClick={handleTimeJumpButton}>+1 Hr</Button>
+                    <Button id="time-jump-button" variant="primary" className="ml-auto" onClick={handleTimeJumpButton}>Trigger Events</Button>
                 </div>
             </Navbar>
         </>
