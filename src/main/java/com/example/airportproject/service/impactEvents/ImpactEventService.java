@@ -1,6 +1,7 @@
 package com.example.airportproject.service.impactEvents;
 
 import com.example.airportproject.model.*;
+import com.example.airportproject.model.enums.Entity;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -39,7 +40,7 @@ public interface ImpactEventService {
      * @param probability The probability of the impact event occurring
      * @return The updated ImpactEvent object
      */
-    ImpactEvent update(UUID id, String type, String description, BigDecimal probability);
+    ImpactEvent update(UUID id, String type, String description, BigDecimal probability, int minDuration, int maxDuration, Entity impacts);
 
     /**
      * Removes the ImpactEvent with the corresponding id from the database

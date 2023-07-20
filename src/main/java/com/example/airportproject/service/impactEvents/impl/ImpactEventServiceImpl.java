@@ -3,6 +3,7 @@ package com.example.airportproject.service.impactEvents.impl;
 import com.example.airportproject.dao.ImpactEventDao;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.model.TimeSlot;
+import com.example.airportproject.model.enums.Entity;
 import com.example.airportproject.service.impactEvents.ImpactEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -39,7 +40,7 @@ public class ImpactEventServiceImpl implements ImpactEventService {
     }
 
     @Override
-    public ImpactEvent update(UUID id, String type, String description, BigDecimal probability) {
+    public ImpactEvent update(UUID id, String type, String description, BigDecimal probability, int minDuration, int maxDuration, Entity impacts) {
         ImpactEvent impactEvent = this.get(id);
 
         // update the impact event attributes if the corresponding parameters are provided
@@ -51,6 +52,11 @@ public class ImpactEventServiceImpl implements ImpactEventService {
         }
         if(probability != null){
             impactEvent.setProbability(probability);
+        }
+        impactEvent.setMinDuration(minDuration);
+        impactEvent.setMaxDuration(maxDuration);
+        if(impacts != null){
+            impactEvent.setImpacts(impacts);
         }
         // save and return the updated impact event record
         return impactEventDao.update(impactEvent);

@@ -41,11 +41,10 @@ public class ImpactEventTimeSlotHandler{
         ));
     }
 
-    public LocalDateTime createRandomEndTime(LocalDateTime eventStartTime, LocalDateTime lastFlightTime){
-        // calculate max duration based on the time remaining until the last flight
-        long maxDuration = ChronoUnit.MINUTES.between(eventStartTime, lastFlightTime);
-        // generate random duration between 1 minute and the maximum duration
-        long randomDuration = ThreadLocalRandom.current().nextLong(1, maxDuration + 1);
+    public LocalDateTime createRandomEndTime(LocalDateTime eventStartTime, ImpactEvent impactEvent){
+        // generate random duration between the event's minimum duration and maximum duration
+        long randomDuration =
+            ThreadLocalRandom.current().nextLong(impactEvent.getMinDuration(), impactEvent.getMaxDuration());
         // generate a random end time by adding the random duration to the event start time
         return eventStartTime.plusMinutes(randomDuration);
     }
@@ -59,7 +58,7 @@ public class ImpactEventTimeSlotHandler{
 
         // generate random start and end time for the event (between these 2 flight times)
         LocalDateTime eventStartTime = createRandomStartTime(firstFlightTime, lastFlightTime);
-        LocalDateTime eventEndTime = createRandomEndTime(eventStartTime, lastFlightTime);
+        LocalDateTime eventEndTime = createRandomEndTime(eventStartTime, impactEvent);
         return new TimeSlot(gate, null, eventStartTime, eventEndTime, impactEvent);
     }
 
@@ -168,6 +167,12 @@ public class ImpactEventTimeSlotHandler{
         List<TimeSlot> triggeredEvents = new ArrayList<>();
         List<ImpactEvent> impactEvents = impactEventService.getAll();
         triggeredEvents.add(closeRandomGate(impactEvents.get(0)));
+
+        // random probability of event happening
+        double randomValue = ThreadLocalRandom.current().nextDouble();
+        if(randomValue <= impactEvents.get(2).getProbability().doubleValue()){
+            triggeredEvents.add(closeRandomGate(impactEvents.get(2)));
+        }
         // get all impact events
         // randomise the chance of each of them happening based on their probability
         // carry out the triggered impact events - reassign schedule accordingly
