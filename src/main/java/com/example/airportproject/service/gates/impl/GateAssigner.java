@@ -20,6 +20,10 @@ public class GateAssigner {
 
     @Value("${airportproject.airportcode}")
     String airportCode;
+    @Value("${gate.departureSlot}")
+    int departureSlotLength;
+    @Value("${gate.arrivalSlot}")
+    int arrivalSlotLength;
     private final Logger logger = LoggerFactory.getLogger(GateAssigner.class);
 
 
@@ -69,10 +73,10 @@ public class GateAssigner {
     private LocalDateTime getStartTime(Flight flight){
         LocalDateTime startTime = null;
         if(isDeparture(flight)){
-            // if flight is departing - the flight occupies the gate from 45 minutes before departure until departure time
-            startTime = flight.getDepTime().minusMinutes(45);
+            // if flight is departing - the flight occupies the gate from a number of minutes (gate departure slot length) before departure until departure time
+            startTime = flight.getDepTime().minusMinutes(departureSlotLength);
         }else {
-            // if flight is arriving - the flight occupies the gate from arrival time until 15 minutes after arrival
+            // if flight is arriving - the flight occupies the gate from arrival time until a number of minutes (gate arrival slot length) after arrival
             startTime = flight.getArrTime();
         }
         return startTime;
@@ -81,11 +85,11 @@ public class GateAssigner {
     private LocalDateTime getEndTime(Flight flight){
         LocalDateTime endTime = null;
         if(isDeparture(flight)){
-            // if flight is departing - the flight occupies the gate from 45 minutes before departure until departure time
+            // if flight is departing - the flight occupies the gate from a number of minutes (gate departure slot length) before departure until departure time
             endTime = flight.getDepTime();
         }else {
-            // if flight is arriving - the flight occupies the gate from arrival time until 15 minutes after arrival
-            endTime = flight.getArrTime().plusMinutes(15);
+            // if flight is arriving - the flight occupies the gate from arrival time until a number of minutes (gate arrival slot length) after arrival
+            endTime = flight.getArrTime().plusMinutes(arrivalSlotLength);
         }
         return endTime;
     }
