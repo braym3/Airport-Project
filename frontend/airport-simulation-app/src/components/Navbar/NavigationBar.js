@@ -1,11 +1,12 @@
 import React from "react";
 import {handleTimeJumpEvents} from "../../utils/timeJumpUtils";
 import axios from "axios";
-import {Navbar, Nav, Button} from 'react-bootstrap';
+import {Navbar, Nav, Button, NavDropdown, Badge} from 'react-bootstrap';
 import './navbar.css'
+import {formatSimulationTime, formatTime} from "../../utils/formatDateTime";
 
 
-const NavigationBar = ({onTimeJump}) => {
+const NavigationBar = ({onTimeJump, currentTime}) => {
     const handleTimeJumpButton = async () => {
         try{
             const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/impactEvents/timeJump`);
@@ -34,15 +35,17 @@ const NavigationBar = ({onTimeJump}) => {
                             <Nav.Link href="/terminals" className="p-2">
                                 Terminals
                             </Nav.Link>
-                            <Nav.Link href="/gates" className="p-2">
-                                Gates
-                            </Nav.Link>
-                            <Nav.Link href="/gate-calendar" className="p-2">
-                                Gate Schedule
+                            <NavDropdown title="Gates" id="basic-nav-dropdown">
+                                <NavDropdown.Item href="/gates">Gates Overview</NavDropdown.Item>
+                                <NavDropdown.Item href="/gate-calendar">Gate Schedule</NavDropdown.Item>
+                            </NavDropdown>
+                            <Nav.Link href="/" className="p-2">
+                                Schedule History
                             </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
-                    <Button id="time-jump-button" variant="primary" className="ml-auto" onClick={handleTimeJumpButton}>Trigger Events</Button>
+                    <h5><Badge bg="secondary" className="ml-auto">{formatSimulationTime(currentTime)}</Badge></h5>
+                    <Button id="time-jump-button" variant="primary" className="ml-auto" onClick={handleTimeJumpButton}>+1 Hr</Button>
                 </div>
             </Navbar>
         </>

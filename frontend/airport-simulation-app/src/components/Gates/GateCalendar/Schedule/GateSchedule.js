@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import "./styles.css";
 import { Epg, Layout } from "planby";
+import InfoModal from "./components/InfoModal";
 
 // Import hooks
 import { useApp } from "./useApp";
@@ -8,12 +9,12 @@ import { useApp } from "./useApp";
 // Import components
 import { Timeline, ChannelItem, ProgramItem } from "./components";
 
-function GateSchedule() {
-    const { isLoading, getEpgProps, getLayoutProps } = useApp();
+function GateSchedule({timeJumpTriggered}) {
+    const { isLoading, getEpgProps, getLayoutProps } = useApp({timeJumpTriggered});
 
     return (
         <div>
-            <div style={{ paddingTop: "20px",height: "80vh", width: "100%" }}>
+            <div style={{ paddingTop: "20px",height: "90vh", width: "100%" }}>
                 <Epg isLoading={isLoading} {...getEpgProps()}>
                     <Layout
                         {...getLayoutProps()}

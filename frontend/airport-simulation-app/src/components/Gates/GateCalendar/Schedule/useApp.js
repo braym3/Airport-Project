@@ -7,7 +7,7 @@ import { useEpg } from "planby";
 // Import theme
 import { theme } from "./helpers/theme";
 
-export function useApp() {
+export function useApp({timeJumpTriggered}) {
     const [channels, setChannels] = React.useState([]);
     const [epg, setEpg] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
@@ -47,7 +47,7 @@ export function useApp() {
 
     React.useEffect(() => {
         handleFetchResources();
-    }, [handleFetchResources]);
+    }, [timeJumpTriggered]);
 
     return { getEpgProps, getLayoutProps, isLoading };
 }
