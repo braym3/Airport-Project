@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Runway {
+public class Runway implements Schedulable{
     private UUID id;
     @Min(0)
     @Max(50)
@@ -71,6 +72,62 @@ public class Runway {
 
     public void setSchedule(List<TimeSlot> schedule) {
         this.schedule = schedule;
+    }
+
+    public boolean isAvailableAtTimeSlot(LocalDateTime startTime, LocalDateTime endTime){
+        for(TimeSlot timeSlot : this.schedule){
+            if(timeSlot.overlaps(startTime, endTime)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void addTimeSlot(TimeSlot timeSlot) {
+
+    }
+
+    public TimeSlot findClosestAvailableSlot(LocalDateTime startTime, LocalDateTime endTime){
+        // keep track of the minimum difference between the original slot time and the chosen slot time
+//        Duration minDifference;
+//        for(TimeSlot timeSlot : this.schedule){
+//            if()
+//        }
+        return null;
+    }
+
+    @Override
+    public List<TimeSlot> getScheduleOfAvailability(LocalDateTime scheduleStartTime, LocalDateTime scheduleEndTime) {
+        // copy of gate schedule
+        List<TimeSlot> occupiedSchedule = new ArrayList<>(schedule);
+        List<TimeSlot> availableTimes = new ArrayList<>();
+
+        // if the schedule is empty add a slot of availability for the whole duration
+        if (schedule.isEmpty()) {
+            availableTimes.add(new TimeSlot(this, scheduleStartTime, scheduleEndTime));
+        }else{
+            // check if the schedule is ordered -- print times
+            System.out.println("\nNEW RUNWAY:");
+            occupiedSchedule.forEach(timeSlot -> System.out.println("\nStart time: " + timeSlot.getStartTime() + ", End time: " + timeSlot.getEndTime()));
+
+            // check time between schedule start time and the first occupied slot
+            TimeSlot firstSlot = schedule.get(0);
+            if(!scheduleStartTime.isEqual(firstSlot.getStartTime())){
+                availableTimes.add(new TimeSlot(this, scheduleStartTime, firstSlot.getStartTime()));
+            }
+
+            // calculate available slots between the occupied slots
+            for(int i = 0; i < schedule.size() - 1; i++){
+                TimeSlot currentSlot = schedule.get(i);
+                TimeSlot nextSlot = schedule.get(i + 1);
+
+                if(!currentSlot.getEndTime().isEqual(nextSlot.getStartTime())){
+                    availableTimes.add(new TimeSlot(this, currentSlot.getEndTime(), nextSlot.getStartTime()));
+                }
+            }
+        }
+        return availableTimes;
     }
 
     @Override

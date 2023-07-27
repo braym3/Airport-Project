@@ -3,6 +3,7 @@ package com.example.airportproject.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class TimeSlot {
 
     // time slot can be held by gate or runway
     private Gate gate;
+    private Runway runway;
 
     // time slot can be occupied by a flight (using a gate/runway), impact event (closing a gate/runway)
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -25,6 +27,32 @@ public class TimeSlot {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private ImpactEvent impactEvent;
 
+
+    /**
+     * Constructs a TimeSlot object for a Runway with the specified Runway object, start time, and end time.
+     * @param runway the Runway object that the time slot belongs to (can be null if the time slot belongs to a gate)
+     * @param startTime the start time of the time slot
+     * @param endTime the end time of the time slot
+     */
+    public TimeSlot(Runway runway, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime) {
+        this.gate = null;
+        this.runway = runway;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    /**
+     * Constructs a TimeSlot object for a Gate with the specified Gate object, start time, and end time.
+     * @param gate the Gate object that the time slot belongs to (can be null if the time slot belongs to a runway)
+     * @param startTime the start time of the time slot
+     * @param endTime the end time of the time slot
+     */
+    public TimeSlot(Gate gate, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime) {
+        this.gate = gate;
+        this.runway = null;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
     /**
      * Constructs a TimeSlot object with the specified ID, Gate object, Flight object, start time, end time, and ImpactEvent object.
@@ -69,6 +97,14 @@ public class TimeSlot {
 
     public void setGate(Gate gate) {
         this.gate = gate;
+    }
+
+    public Runway getRunway() {
+        return runway;
+    }
+
+    public void setRunway(Runway runway) {
+        this.runway = runway;
     }
 
     public UUID getId() {
@@ -145,6 +181,10 @@ public class TimeSlot {
 
     public boolean overlaps(LocalDateTime otherStartTime, LocalDateTime otherEndTime){
         return this.startTime.isBefore(otherEndTime) && otherStartTime.isBefore(this.endTime);
+    }
+
+    public Duration getTimeSlotDuration(){
+        return Duration.between(this.startTime, this.endTime);
     }
 
     @Override
