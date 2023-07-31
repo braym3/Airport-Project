@@ -3,6 +3,7 @@ package com.example.airportproject.model;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -23,6 +24,7 @@ public class Flight {
     @NotNull
     private LocalDateTime depTime, arrTime;
     private Gate gate;
+    private Runway runway;
 
     /**
     * Constructor with no ID
@@ -47,8 +49,9 @@ public class Flight {
         this.depTime = depTime; // actual departure date/time
         this.arrTime = arrTime; // actual arrival date/time
         this.duration = duration; // flight duration (minutes)
-        // initialise gate as null until gate has been assigned
+        // initialise gate and runway as null until they have been assigned
         this.gate = null;
+        this.runway = null;
     }
 
 
@@ -76,12 +79,13 @@ public class Flight {
         this.depTime = depTime;
         this.arrTime = arrTime;
         this.duration = duration;
-        // initialise gate as null until gate has been assigned
+        // initialise gate and runway as null until they have been assigned
         this.gate = null;
+        this.runway = null;
     }
 
     /**
-     * Constructor with ID and assigned Gate
+     * Constructor with ID and assigned Gate and Runway
      * @param id Unique ID used in the database
      * @param airlineIata Airline IATA code
      * @param depIata Departure airport IATA code
@@ -94,7 +98,7 @@ public class Flight {
      * @param duration Flight duration in minutes
      * @param gate The assigned Gate object
      */
-    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, int duration, Gate gate){
+    public Flight(UUID id, String airlineIata, @NotNull String depIata, @NotNull String arrIata, @NotNull String status, String aircraftIcao, @NotNull String flightIata, @NotNull LocalDateTime depTime, @NotNull LocalDateTime arrTime, int duration, Gate gate, Runway runway){
         this.id = id;
         this.airlineIata = airlineIata;
         this.depIata = depIata;
@@ -106,6 +110,7 @@ public class Flight {
         this.arrTime = arrTime;
         this.duration = duration;
         this.gate = gate;
+        this.runway = runway;
     }
 
     public Flight() {
@@ -199,17 +204,45 @@ public class Flight {
         this.gate = gate;
     }
 
+    public Runway getRunway() {
+        return runway;
+    }
+
+    public void setRunway(Runway runway) {
+        this.runway = runway;
+    }
+
+    // returns true if the flight is departing from the specified airport
+    public boolean isDeparture(String airportCode){
+        return this.getDepIata().equals(airportCode);
+    }
+
+    // returns true if the flight is arriving to the specified airport
+    public boolean isArrival(String airportCode){
+        return this.getArrIata().equals(airportCode);
+    }
+
+    // returns the flight time for the specified airport (departure time for departures or arrival time for arrivals)
+    public LocalDateTime getFlightTimeForAirport(String airportCode){
+        if(isDeparture(airportCode)){
+            return this.getDepTime();
+        }else if(isArrival(airportCode)){
+            return this.getArrTime();
+        }
+        return null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Flight flight = (Flight) o;
-        return getDuration() == flight.getDuration() && Objects.equals(getId(), flight.getId()) && Objects.equals(getFlightIata(), flight.getFlightIata()) && Objects.equals(getDepIata(), flight.getDepIata()) && Objects.equals(getArrIata(), flight.getArrIata()) && Objects.equals(getStatus(), flight.getStatus()) && Objects.equals(getAirlineIata(), flight.getAirlineIata()) && Objects.equals(getAircraftIcao(), flight.getAircraftIcao()) && Objects.equals(getDepTime(), flight.getDepTime()) && Objects.equals(getArrTime(), flight.getArrTime()) && Objects.equals(getGate(), flight.getGate());
+        return getDuration() == flight.getDuration() && Objects.equals(getId(), flight.getId()) && Objects.equals(getFlightIata(), flight.getFlightIata()) && Objects.equals(getDepIata(), flight.getDepIata()) && Objects.equals(getArrIata(), flight.getArrIata()) && Objects.equals(getStatus(), flight.getStatus()) && Objects.equals(getAirlineIata(), flight.getAirlineIata()) && Objects.equals(getAircraftIcao(), flight.getAircraftIcao()) && Objects.equals(getDepTime(), flight.getDepTime()) && Objects.equals(getArrTime(), flight.getArrTime()) && Objects.equals(getGate(), flight.getGate()) && Objects.equals(getRunway(), flight.getRunway());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getFlightIata(), getDepIata(), getArrIata(), getStatus(), getAirlineIata(), getAircraftIcao(), getDuration(), getDepTime(), getArrTime(), getGate());
+        return Objects.hash(getId(), getFlightIata(), getDepIata(), getArrIata(), getStatus(), getAirlineIata(), getAircraftIcao(), getDuration(), getDepTime(), getArrTime(), getGate(), getRunway());
     }
 
     @Override
@@ -226,6 +259,7 @@ public class Flight {
                 ", depTime=" + depTime +
                 ", arrTime=" + arrTime +
                 ", gate=" + gate +
+                ", runway=" + runway +
                 '}';
     }
 }

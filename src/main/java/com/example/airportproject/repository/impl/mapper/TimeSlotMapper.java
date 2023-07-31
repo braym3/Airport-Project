@@ -49,6 +49,9 @@ public interface TimeSlotMapper {
     @Delete("DELETE FROM gate_slots WHERE gate_id = #{gateId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     void removeAllTimeSlotsForGate(UUID gateId);
 
+    @Delete("DELETE FROM gate_slots WHERE flight_id = #{flightId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    TimeSlot removeGateTimeSlotByFlightId(UUID flightId);
+
     @Insert(
             "INSERT INTO runway_slots (runway_id, flight_id, start_time, end_time, impact_event_id) VALUES (#{runway.id}, #{flight.id}, #{impactEvent.id}, #{startTime}, #{endTime})")
     void createTimeSlotForRunway(TimeSlot timeSlot);
@@ -66,4 +69,7 @@ public interface TimeSlotMapper {
 
     @Delete("DELETE FROM runway_slots WHERE runway_id = #{runwayId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     void removeAllTimeSlotsForRunway(UUID runwayId);
+
+    @Delete("DELETE FROM runway_slots WHERE flight_id = #{flightId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId);
 }

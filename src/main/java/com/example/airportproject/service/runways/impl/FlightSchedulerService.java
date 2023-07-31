@@ -2,24 +2,28 @@ package com.example.airportproject.service.runways.impl;
 
 import com.example.airportproject.model.*;
 import com.example.airportproject.repository.FlightRepo;
+import com.example.airportproject.service.flights.FlightService;
 import com.example.airportproject.service.gates.GateService;
 import com.example.airportproject.service.runways.RunwayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class FlightSchedulerService {
 
     private final FlightRepo flightRepo;
+    private final FlightService flightService;
     private final GateService gateService;
     private final RunwayService runwayService;
 
-    @Value("#{${airportproject.airportcode}}")
+    @Value("${airportproject.airportcode}")
     String airportCode;
     @Value("${gate.departureSlot}")
     int gateDepartureSlotDuration;
@@ -31,282 +35,225 @@ public class FlightSchedulerService {
     int runwayArrivalSlotDuration;
     private final Logger logger = LoggerFactory.getLogger(FlightSchedulerService.class);
 
-    public FlightSchedulerService(FlightRepo flightRepo, GateService gateService, RunwayService runwayService) {
+    public FlightSchedulerService(FlightRepo flightRepo, FlightService flightService, GateService gateService, RunwayService runwayService) {
         this.flightRepo = flightRepo;
+        this.flightService = flightService;
         this.gateService = gateService;
         this.runwayService = runwayService;
     }
 
-    public void scheduleFlights(){
+    // initialize runway and gate assignments for each flight in the airport
+    public void assignRunwaysAndGates(){
         // Get the list of sorted flights (both arrivals and departures)
-        logger.debug("RunwayAssigner getting ordered flights with airport code {}", airportCode);
+        logger.debug("FlightSchedulerService getting ordered flights with airport code {}", airportCode);
         List<Flight> sortedFlights = flightRepo.getOrderedFlights(airportCode);
 
+        // assign a runway and a gate to each flight
+        scheduleFlights(sortedFlights, false);
+    }
+
+    public void scheduleFlights(List<Flight> flights, boolean reassigning){
         // Get the list of runways at the airport
-        logger.debug("RunwayAssigner getting all runways");
+        logger.debug("FlightSchedulerService getting all runways");
         List<Runway> runways = runwayService.getAll();
 
         // Get the list of gates at the airport
-        logger.debug("RunwayAssigner getting all runways");
+        logger.debug("FlightSchedulerService getting all runways");
         List<Gate> gates = gateService.getAll();
 
-        for(Flight flight : sortedFlights){
-            // calculate the start and end time of the runway slot wanted for the flight's departure/arrival time
-            LocalDateTime runwayStartTime = getRunwaySlotStartTime(flight);
-            LocalDateTime runwayEndTime = getRunwaySlotEndTime(flight);
+        // Get the start and end time of the daily schedule (first and last flight times)
+        logger.debug("FlightSchedulerService getting first and last flight times with airport code {}", airportCode);
+        LocalDateTime firstFlightTime = flightService.getFirstFlightTime(airportCode);
+        LocalDateTime lastFlightTime = flightService.getLastFlightTime(airportCode);
 
-//            Runway assignedRunway = assignRunwayToFlight(flight, runways);
-//
-//            if(assignedRunway != null){
-//                // try to assign gate
-//                // set the allotted start and end time of the flight using the gate
-//                LocalDateTime gateStartTime = getGateSlotStartTime(flight);
-//                LocalDateTime gateEndTime = getGateSlotEndTime(flight);
-//
-//                // find all available gates for the preferred time of the flight
-//                List<Gate> availableGates = findAvailableGates(gateStartTime, gateEndTime, gates); // could add preference for min taxi time to chosen runway
-//                // assign the flight to a random gate from the list of those available
-//                assignGate(flight, gateStartTime, gateEndTime, availableGates);
-//            }else {
-//                // handle conflict - no space in runway schedule
-//
-//            }
+        // Get the schedules of available times for all runways and gates
+        Map<Runway, List<TimeSlot>> runwaySchedulesOfAvailability = runways.stream().collect(Collectors.toMap(runway -> runway, runway -> runway.getScheduleOfAvailability(firstFlightTime, lastFlightTime)));
+        Map<Gate, List<TimeSlot>> gateSchedulesOfAvailability = gates.stream().collect(Collectors.toMap(gate -> gate, gate -> gate.getScheduleOfAvailability(firstFlightTime, lastFlightTime)));
+
+        for(Flight flight : flights){
+            boolean successfullyAssigned = findClosestAvailableSlots(flight, flight.isDeparture(airportCode), runwaySchedulesOfAvailability, gateSchedulesOfAvailability, reassigning);
         }
-
     }
 
-    // returns a list of gates that are available between the specified start and end time
-    private List<Gate> findAvailableGates(LocalDateTime startTime, LocalDateTime endTime, List<Gate> gates){
-        List<Gate> availableGates = new ArrayList<>();
-        for(Gate gate : gates){
-            // check if the gate is available during the start time and end time
-            if(gate.isAvailableAtTimeSlot(startTime, endTime)){
-                availableGates.add(gate);
+    // returns a boolean for whether it was successful in assigning a suitable pair of runway and gate time slots for the flight
+    private boolean findClosestAvailableSlots(Flight flight, boolean isDeparture, Map<Runway, List<TimeSlot>> runwayAvailabilityMap, Map<Gate, List<TimeSlot>> gateAvailabilityMap, boolean reassigning){
+        LocalDateTime originalTime = flight.getFlightTimeForAirport(airportCode);
+        LocalDateTime closestIntersectingTime = null;
+        Gate closestGate = null;
+        Runway closestRunway = null;
+        long closestDuration = Long.MAX_VALUE;
+
+        for (Map.Entry<Gate, List<TimeSlot>> gateEntry : gateAvailabilityMap.entrySet()) {
+            Gate gate = gateEntry.getKey();
+            List<TimeSlot> gateTimeSlots = gateEntry.getValue();
+
+//            System.out.println("Gate = T" + gate.getTerminal().getNumber() + " " + gate.getNumber());
+//            System.out.println(gateTimeSlots.toString());
+//            System.out.println();
+
+            for (TimeSlot gateTimeSlot : gateTimeSlots) {
+                LocalDateTime gateStartTime = gateTimeSlot.getStartTime();
+                LocalDateTime gateEndTime = gateTimeSlot.getEndTime();
+
+                for (Map.Entry<Runway, List<TimeSlot>> runwayEntry : runwayAvailabilityMap.entrySet()) {
+                    Runway runway = runwayEntry.getKey();
+                    List<TimeSlot> runwayTimeSlots = runwayEntry.getValue();
+
+//                    System.out.println("Runway = " + runway.getNumber());
+//                    System.out.println(runwayTimeSlots.toString());
+//                    System.out.println();
+
+                    for (TimeSlot runwayTimeSlot : runwayTimeSlots) {
+                        LocalDateTime runwayStartTime = runwayTimeSlot.getStartTime();
+                        LocalDateTime runwayEndTime = runwayTimeSlot.getEndTime();
+
+                        // Calculate the intersecting time range
+                        LocalDateTime intersectingStartTime = null, intersectingEndTime = null;
+                        if(isDeparture){
+                            intersectingStartTime = gateStartTime.plusMinutes(gateDepartureSlotDuration);
+                            intersectingEndTime = runwayEndTime.minusMinutes(runwayDepartureSlotDuration);
+                        }else{
+                            intersectingStartTime = runwayStartTime.plusMinutes(runwayArrivalSlotDuration);
+                            intersectingEndTime = gateEndTime.minusMinutes(gateArrivalSlotDuration);
+                        }
+
+                        // Check if the intersecting time range overlaps with the originalTime
+                        if (intersectingStartTime.isBefore(originalTime) && intersectingEndTime.isAfter(originalTime)) {
+                            // Calculate the duration between originalTime and the intersecting start time
+                            Duration duration = Duration.between(originalTime, intersectingStartTime);
+
+                            // Check if the duration is positive or zero, meaning intersectingStartTime is after or equal to originalTime
+                            if (!duration.isNegative()) {
+                                long currentDuration = duration.toMinutes();
+                                if (currentDuration < closestDuration) {
+                                    closestDuration = currentDuration;
+                                    closestIntersectingTime = intersectingStartTime;
+                                    closestGate = gate;
+                                    closestRunway = runway;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        if(availableGates.isEmpty()){
-            // handle conflict - no available gate for corresponding runway slot
-            return null;
-//            Map<Gate, TimeSlot> closestAvailable = findClosestAvailableGateSlot();
-//            if(!closestAvailable.isEmpty()){
-//                closestAvailable
+
+        if (closestIntersectingTime != null) {
+            System.out.println("Closest intersecting time: " + closestIntersectingTime);
+            System.out.println("Gate: " + closestGate);
+            System.out.println("Runway: " + closestRunway);
+            // if the flight is being reassigned - delete any old time slots for the flight
+            if(reassigning){
+                clearOldTimeSlots(flight);
+            }
+            // assign the chosen runway and gate to the flight, and if the flight is being reassigned log the changes
+            assignFlight(flight, closestIntersectingTime, closestGate, closestRunway, reassigning);
+            return true;
+        } else {
+            System.out.println("No suitable time found.");
+            return false;
         }
-        return availableGates;
     }
 
-    private Map<Gate, TimeSlot> findClosestAvailableRunwaySlot() {
-        Map<Gate, TimeSlot> closestAvailableSlot = new HashMap<>();
-        return closestAvailableSlot;
-    }
-
-    // assigns a randomly chosen gate, from a list of available gates, to a flight
-    private void assignGate(Flight flight, LocalDateTime startTime, LocalDateTime endTime, List<Gate> availableGates){
-        if(availableGates.size() > 0){
-            // choose a random gate from those available
-            Gate chosenGate = availableGates.get(new Random().nextInt(availableGates.size()));
+    private void assignFlight(Flight flight, LocalDateTime flightTime, Gate availableGate, Runway availableRunway, boolean reassigning){
+        if(availableGate != null && availableRunway != null){
+            boolean isDeparture = flight.isDeparture(airportCode);
 
             // add a new time slot to the gate schedule
-            TimeSlot timeSlot = new TimeSlot(chosenGate, flight, startTime, endTime, null);
-            chosenGate.addTimeSlot(timeSlot);
+            TimeSlot gateTimeSlot = new TimeSlot(availableGate, flight, getGateSlotStartTime(isDeparture, flightTime), getGateSlotEndTime(isDeparture, flightTime), null);
+            availableGate.addTimeSlot(gateTimeSlot);
             // add the new time slot to the database
-            gateService.addGateSlot(timeSlot);
+            gateService.addGateSlot(gateTimeSlot);
 
-            // set the Gate ID in the Flight object
-            flight.setGate(chosenGate);
-            flightRepo.update(flight);
+            // add a new time slot to the runway schedule
+            TimeSlot runwayTimeSlot = new TimeSlot(availableRunway, flight, getRunwaySlotStartTime(isDeparture, flightTime), getRunwaySlotEndTime(isDeparture, flightTime), null);
+            availableRunway.addTimeSlot(runwayTimeSlot);
+            // add the new time slot to the database
+            runwayService.addRunwaySlot(runwayTimeSlot);
+
+            Flight updatedFlight = updateFlightInfo(flight, availableGate, availableRunway, flightTime, isDeparture, reassigning);
+
+            flightRepo.update(updatedFlight);
         }
 
     }
 
-    private boolean isDeparture(Flight flight){
-        return flight.getDepIata().equals(airportCode);
+    // Update a Flight object with a new Gate, Runway, time, and status
+    public Flight updateFlightInfo(Flight flight, Gate newGate, Runway newRunway, LocalDateTime flightTime, boolean isDeparture, boolean reassigning){
+        flight.setGate(newGate);
+        flight.setRunway(newRunway);
+
+        // update the flight arrival/departure time
+        LocalDateTime oldFlightTime = null;
+        if(isDeparture){
+            oldFlightTime = flight.getDepTime();
+            flight.setArrTime(flightTime.plusMinutes(flight.getDuration()));
+        }else{
+            oldFlightTime = flight.getArrTime();
+            // update the departure time of a delayed arrival if this is first assignment
+            if(!reassigning){
+                flight.setDepTime(flightTime.minusMinutes(flight.getDuration()));
+            }
+        }
+
+        // if this flight is being reassigned - update the flight's status accordingly
+        if(reassigning && !oldFlightTime.isBefore(flightTime)){
+            flight.setStatus("Delayed");
+        }
+        return flight;
     }
 
-    private LocalDateTime getGateSlotStartTime(Flight flight){
-        LocalDateTime startTime = null;
-        if(isDeparture(flight)){
+    public void clearOldTimeSlots(Flight flight){
+        UUID flightId = flight.getId();
+        // remove runway slot
+        runwayService.removeRunwayTimeSlotByFlightId(flightId);
+        // remove gate slot
+        gateService.removeGateTimeSlotByFlightId(flightId);
+    }
+
+    private LocalDateTime getGateSlotStartTime(boolean isDeparture, LocalDateTime flightTime){
+        if(isDeparture){
             // if flight is departing - the flight occupies the gate from a number of minutes (gate departure slot length) before departure until departure time
-            startTime = flight.getDepTime().minusMinutes(gateDepartureSlotDuration);
-        }else {
+            return flightTime.minusMinutes(gateDepartureSlotDuration);
+        }else{
             // if flight is arriving - the flight occupies the gate from arrival time until a number of minutes (gate arrival slot length) after arrival
-            startTime = flight.getArrTime();
+            return flightTime;
         }
-        return startTime;
     }
 
-    private LocalDateTime getGateSlotEndTime(Flight flight){
-        LocalDateTime endTime = null;
-        if(isDeparture(flight)){
+    private LocalDateTime getGateSlotEndTime(boolean isDeparture, LocalDateTime flightTime){
+        if(isDeparture){
             // if flight is departing - the flight occupies the gate from a number of minutes (gate departure slot length) before departure until departure time
-            endTime = flight.getDepTime();
-        }else {
+            return flightTime;
+        }else{
             // if flight is arriving - the flight occupies the gate from arrival time until a number of minutes (gate arrival slot length) after arrival
-            endTime = flight.getArrTime().plusMinutes(gateArrivalSlotDuration);
+            return flightTime.plusMinutes(gateArrivalSlotDuration);
         }
-        return endTime;
     }
 
-    private LocalDateTime getRunwaySlotStartTime(Flight flight){
-        LocalDateTime startTime = null;
-        if(isDeparture(flight)){
+    private LocalDateTime getRunwaySlotStartTime(boolean isDeparture, LocalDateTime flightTime){
+        if(isDeparture){
             // if flight is departing - the flight occupies the runway from departure time until a number of minutes after departure time (runway departure slot duration)
-            startTime = flight.getDepTime();
-        }else {
+            return flightTime;
+        }else{
             // if flight is arriving - the flight occupies the runway from a number of minutes before arrival time (runway arrival slot duration) until the arrival time
-            startTime = flight.getArrTime().minusMinutes(runwayArrivalSlotDuration);
+            return flightTime.minusMinutes(runwayArrivalSlotDuration);
         }
-        return startTime;
     }
 
-    private LocalDateTime getRunwaySlotEndTime(Flight flight){
-        LocalDateTime endTime = null;
-        if(isDeparture(flight)){
+    private LocalDateTime getRunwaySlotEndTime(boolean isDeparture, LocalDateTime flightTime){
+        if(isDeparture){
             // if flight is departing - the flight occupies the runway from departure time until a number of minutes after departure time (runway departure slot duration)
-            endTime = flight.getDepTime().plusMinutes(runwayDepartureSlotDuration);
-        }else {
+            return flightTime.plusMinutes(runwayDepartureSlotDuration);
+        }else{
             // if flight is arriving - the flight occupies the runway from a number of minutes before arrival time (runway arrival slot duration) until the arrival time
-            endTime = flight.getArrTime();
+            return flightTime;
         }
-        return endTime;
     }
 
-
-
-
-//    public Gate assignGateToFlight(F){
-//        for(Gate gate : gates){
-//            // check if the gate is available during the start time and end time
-//            if(gate.isAvailableAtTimeSlot(startTime, endTime)){
-//                return gate;
-//            }
-//        }
-//        // if no runway is available between the preferred start and end time, find the closest available time
-//        Runway closestAvailableRunway = null;
-//        TimeSlot closestAvailableTime = null;
-//        Duration runwaySlotDuration = Duration.between(startTime, endTime);
-//
-//
-//        return null;
-//    }
-//
-//    private Duration calculateTimeDifference(LocalDateTime start, LocalDateTime end){
-//        return Duration.between(start, end);
-//    }
-
-    // find the closest available runway to the flight time
-//    public List<Object> assignRunwayToFlight(LocalDateTime startTime, LocalDateTime endTime, List<Runway> runways){
-//        for(Runway runway : runways){
-//            // check if the runway is available during the start time and end time
-//            if(runway.isAvailableAtTimeSlot(startTime, endTime)){
-//                return Arrays.asList(runway, startTime, endTime);
-//            }
-//        }
-//        // if no runway is available between the preferred start and end time, find the closest available time
-//        Runway closestAvailableRunway = null;
-//        LocalDateTime closestStartTime = null, closestEndTime = null;
-//        Duration minTimeDifference = null;
-//        Duration runwaySlotDuration = Duration.between(startTime, endTime);
-//
-//        // the amount of time (minutes) that the flight requires to occupy the runway
-//        long requiredMinutes = calculateTimeDifference(startTime, endTime).toMinutes();
-//
-//        // for every runway check best suitable availability
-//        for(Runway runway : runways){
-//            // get the schedule for the current runway
-//            List<TimeSlot> runwaySchedule = runway.getSchedule();
-//
-//            if(runwaySchedule.isEmpty()){
-//                closestAvailableRunway = runway;
-//                closestStartTime = startTime;
-//                closestEndTime = endTime;
-//                // exit the loop if an empty runway is found - the minimum time difference has been found
-//                break;
-//            }else{
-//                for(int i = 0; i < runwaySchedule.size(); i++){
-//                    TimeSlot currentSlot = runwaySchedule.get(i);
-//                    // set the previous time slot if the current time slot is not the first in the schedule
-//                    TimeSlot previousSlot = (i > 0) ? runwaySchedule.get(i-1) : null;
-//
-//                    // check if there's a previous slot to look between, and the space between slots contains time after the original start time (don't want to reschedule a slot to before the original time)
-//                    if(previousSlot != null && currentSlot.getStartTime().isAfter(previousSlot.getEndTime()) && (previousSlot.getEndTime().isAfter(startTime) || currentSlot.getStartTime().isAfter(endTime))){
-//                        // calculate the gap between the current time slot and the previous time slot
-//                        long gapMinutes = calculateTimeDifference(previousSlot.getEndTime(), currentSlot.getStartTime()).toMinutes();
-//                        // if the flight can fit into this gap, set the current best fit to the closest time slot in the gap
-//                        if(gapMinutes >= requiredMinutes){
-//                            Duration timeDifference = calculateTimeDifference(startTime, previousSlot.getEndTime());
-//
-//                            if(closestStartTime == null || timeDifference.abs().compareTo(minTimeDifference.abs()) < 0){
-//                                closestAvailableRunway = runway;
-//                                closestStartTime = previousSlot.getEndTime();
-//                                closestEndTime = previousSlot.getEndTime().plusMinutes(requiredMinutes);
-//                                minTimeDifference = timeDifference; // could add runway taxi time
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//        }
-//        // try to find gate that matches
-//        assert bestAvailableStartTime != null;
-//        TimeSlot newTimeSlot = new TimeSlot(bestAvailableGate, impactedFlight, bestAvailableStartTime, bestAvailableEndTime, null);
-//
-//
-//
-//        return null;
-//    }
-
-//    public void assignFlight(Flight flight, List<Runway> runways, List<Gate> gates){
-//        // for one flight
-//        // calculate the start and end time of the runway slot wanted for the flight's departure/arrival time
-//        LocalDateTime runwayStartTime = getRunwaySlotStartTime(flight);
-//        LocalDateTime runwayEndTime = getRunwaySlotEndTime(flight);
-//
-//        Runway assignedRunway = assignRunwayToFlight(flight, runways);
-//
-//        if(assignedRunway != null){
-//            // try to assign gate
-//            // set the allotted start and end time of the flight using the gate
-//            LocalDateTime gateStartTime = getGateSlotStartTime(flight);
-//            LocalDateTime gateEndTime = getGateSlotEndTime(flight);
-//
-//        // go through all runways
-//
-//            // assign a runway (based on startTime, endTime)
-//            Map<Runway, TimeSlot> runwayAvailable = assignRunwayToFlight(runwayStartTime, runwayEndTime, runways);
-//            TimeSlot runwayTimeSlot = runwayAvailable.g
-//        // go through all gates
-//            // does a gate match the runway slot?
-//            // no
-//                // recursive call using startTime + 1 min, endTime + 1 min
-//            // yes
-//                // assign the runway & gate - persist
-//        }
-//
-//    }
-
-
-//    public void assignFlights(List<Flight> flights, List<Runway> runways, List<Gate> gates){
-//        // uses simple greedy algorithm
-//        // the goal is to minimise the deviation from the original flight times
-//
-//        // for each runway
-//        for(Runway runway : runways){
-//            runway.getSchedule().sort(Comparator.comparing(TimeSlot::getStartTime));
-//        }
-//        for(Gate gate : gates){
-//            gate.getSchedule().sort(Comparator.comparing(TimeSlot::getStartTime));
-//        }
-//        // iterate through all flights to optimise runway and gate allocations
-//        for(Flight flight : flights){
-//            if(flight.getDepIata().equals(airportCode)){
-//                // if departing
-//                //
-//            }else if(flight.getArrIata().equals(airportCode)){
-//                // if arriving
-//            }
-//        }
-//    }
+    private Duration calculateTimeDifference(LocalDateTime start, LocalDateTime end){
+        return Duration.between(start, end);
+    }
 
     public void optimiseSchedule(){
 

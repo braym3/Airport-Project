@@ -82,6 +82,15 @@ public class GateController {
     }
 
     @CrossOrigin
+    @GetMapping("/flight/delete/{flightId}")
+    public ResponseEntity<TimeSlot> removeGateTimeSlotByFlightId(@PathVariable UUID flightId){
+        logger.debug("Controller removing gate time slot for flight ID {}", flightId);
+        TimeSlot deleted = gateService.removeGateTimeSlotByFlightId(flightId);
+        return ResponseEntity.ok()
+                .body(deleted);
+    }
+
+    @CrossOrigin
     @GetMapping("/flight/{flightId}")
     public ResponseEntity<TimeSlot> getGateTimeSlotByFlightId(@PathVariable UUID flightId){
         logger.debug("Controller getting gate time slot for flight ID {}", flightId);

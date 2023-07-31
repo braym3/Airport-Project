@@ -28,4 +28,6 @@ public interface RunwayRepo {
     List<TimeSlot> getAllRunwayTimeSlots();
 
     void removeTimeSlotForRunway(UUID timeSlotId);
+
+    TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId);
 }

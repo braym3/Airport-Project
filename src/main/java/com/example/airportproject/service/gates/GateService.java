@@ -59,4 +59,6 @@ public interface GateService {
     List<TimeSlot> getAllGatesTimeSlots();
 
     void removeTimeSlotForGate(UUID timeSlotId);
+
+    TimeSlot removeGateTimeSlotByFlightId(UUID flightId);
 }

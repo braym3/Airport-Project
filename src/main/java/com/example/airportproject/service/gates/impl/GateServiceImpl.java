@@ -27,8 +27,6 @@ public class GateServiceImpl implements GateService {
         return gateDao.create(gate);
     }
 
-
-
     @Override
     @Transactional
     public Gate get(UUID id) {
@@ -93,4 +91,7 @@ public class GateServiceImpl implements GateService {
     public void removeTimeSlotForGate(UUID timeSlotId){
         gateDao.removeTimeSlotForGate(timeSlotId);
     }
+
+    @Override
+    public TimeSlot removeGateTimeSlotByFlightId(UUID flightId){return gateDao.removeGateTimeSlotByFlightId(flightId);}
 }

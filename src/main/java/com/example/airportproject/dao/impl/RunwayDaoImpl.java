@@ -64,9 +64,13 @@ public class RunwayDaoImpl implements RunwayDao {
         return runwayRepo.getAllRunwayTimeSlots();
     }
 
-
     @Override
     public void removeTimeSlotForRunway(UUID timeSlotId) {
         runwayRepo.removeTimeSlotForRunway(timeSlotId);
+    }
+
+    @Override
+    public TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId) {
+        return runwayRepo.removeRunwayTimeSlotByFlightId(flightId);
     }
 }

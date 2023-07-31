@@ -82,6 +82,24 @@ public class TimeSlot {
      */
     public TimeSlot(Gate gate, Flight flight, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime, ImpactEvent impactEvent) {
         this.gate = gate;
+        this.runway = null;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.flight = flight;
+        this.impactEvent = impactEvent;
+    }
+
+    /**
+     * Constructs a TimeSlot object with the specified Runway object, Flight object, start time, end time, and ImpactEvent object.
+     * @param runway the Runway object that the time slot belongs to
+     * @param flight the Flight object occupying the time slot
+     * @param startTime the start time of the time slot
+     * @param endTime the end time of the time slot
+     * @param impactEvent the ImpactEvent object occupying the time slot
+     */
+    public TimeSlot(Runway runway, Flight flight, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime, ImpactEvent impactEvent) {
+        this.gate = null;
+        this.runway = runway;
         this.startTime = startTime;
         this.endTime = endTime;
         this.flight = flight;
@@ -204,11 +222,12 @@ public class TimeSlot {
     public String toString() {
         return "TimeSlot{" +
                 "id=" + id +
-                ", gate= T" + gate.getTerminal().getNumber() + " gate " + gate.getNumber() +
+                (gate != null ? ", gate= T" + gate.getTerminal().getNumber() + " gate " + gate.getNumber() : "") +
+                (runway != null ? ", runway= " + runway.getNumber() : "") +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", flight=" + flight.getFlightIata() +
-                ", impactEvent=" + impactEvent.getType() +
+                (flight != null ? ", flight=" + flight.getFlightIata() : "") +
+                (impactEvent != null ? ", impactEvent=" + impactEvent.getType() : "") +
                 '}';
     }
 }

@@ -69,4 +69,9 @@ public class GateDaoImpl implements GateDao {
     public void removeTimeSlotForGate(UUID timeSlotId) {
         gateRepo.removeTimeSlotForGate(timeSlotId);
     }
+
+    @Override
+    public TimeSlot removeGateTimeSlotByFlightId(UUID flightId) {
+        return gateRepo.removeGateTimeSlotByFlightId(flightId);
+    }
 }

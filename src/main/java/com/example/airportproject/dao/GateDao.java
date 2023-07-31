@@ -26,4 +26,6 @@ public interface GateDao {
     List<TimeSlot> getAllGatesTimeSlots();
 
     void removeTimeSlotForGate(UUID timeSlotId);
+
+    TimeSlot removeGateTimeSlotByFlightId(UUID flightId);
 }

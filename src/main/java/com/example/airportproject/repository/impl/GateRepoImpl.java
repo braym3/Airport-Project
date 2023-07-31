@@ -75,4 +75,9 @@ public class GateRepoImpl implements GateRepo {
     public void removeTimeSlotForGate(UUID timeSlotId){
         timeSlotMapper.removeTimeSlotForGate(timeSlotId);
     }
+
+    @Override
+    public TimeSlot removeGateTimeSlotByFlightId(UUID flightId) {
+        return timeSlotMapper.removeGateTimeSlotByFlightId(flightId);
+    }
 }

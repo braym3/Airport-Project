@@ -104,7 +104,7 @@ public class Runway implements Schedulable{
         List<TimeSlot> availableTimes = new ArrayList<>();
 
         // if the schedule is empty add a slot of availability for the whole duration
-        if (schedule.isEmpty()) {
+        if (occupiedSchedule.isEmpty()) {
             availableTimes.add(new TimeSlot(this, scheduleStartTime, scheduleEndTime));
         }else{
             // check if the schedule is ordered -- print times
@@ -112,22 +112,32 @@ public class Runway implements Schedulable{
             occupiedSchedule.forEach(timeSlot -> System.out.println("\nStart time: " + timeSlot.getStartTime() + ", End time: " + timeSlot.getEndTime()));
 
             // check time between schedule start time and the first occupied slot
-            TimeSlot firstSlot = schedule.get(0);
+            TimeSlot firstSlot = occupiedSchedule.get(0);
             if(!scheduleStartTime.isEqual(firstSlot.getStartTime())){
                 availableTimes.add(new TimeSlot(this, scheduleStartTime, firstSlot.getStartTime()));
             }
 
             // calculate available slots between the occupied slots
-            for(int i = 0; i < schedule.size() - 1; i++){
-                TimeSlot currentSlot = schedule.get(i);
-                TimeSlot nextSlot = schedule.get(i + 1);
+            for(int i = 0; i < occupiedSchedule.size() - 1; i++){
+                TimeSlot currentSlot = occupiedSchedule.get(i);
+                TimeSlot nextSlot = occupiedSchedule.get(i + 1);
 
                 if(!currentSlot.getEndTime().isEqual(nextSlot.getStartTime())){
                     availableTimes.add(new TimeSlot(this, currentSlot.getEndTime(), nextSlot.getStartTime()));
                 }
             }
+
+            // check time between the last occupied slot and the schedule end time
+            TimeSlot lastSlot = occupiedSchedule.get(occupiedSchedule.size()-1);
+            if(!scheduleEndTime.isEqual(lastSlot.getEndTime())){
+                availableTimes.add(new TimeSlot(this, lastSlot.getEndTime(), scheduleEndTime));
+            }
         }
         return availableTimes;
+    }
+
+    public void printSchedule(){
+        System.out.println(getSchedule().toString());
     }
 
     @Override
@@ -148,7 +158,7 @@ public class Runway implements Schedulable{
         return "Runway{" +
                 "id=" + id +
                 ", number=" + number +
-                ", schedule=" + schedule +
+                ", schedule=" + schedule.toString() +
                 '}';
     }
 }

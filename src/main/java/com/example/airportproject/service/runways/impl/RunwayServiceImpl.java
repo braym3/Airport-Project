@@ -89,4 +89,9 @@ public class RunwayServiceImpl implements RunwayService {
     public void removeTimeSlotForRunway(UUID timeSlotId){
         runwayDao.removeTimeSlotForRunway(timeSlotId);
     }
+
+    @Override
+    public TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId) {
+        return runwayDao.removeRunwayTimeSlotByFlightId(flightId);
+    }
 }

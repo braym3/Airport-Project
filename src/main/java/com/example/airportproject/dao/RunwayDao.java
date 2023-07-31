@@ -26,4 +26,6 @@ public interface RunwayDao {
     List<TimeSlot> getAllRunwayTimeSlots();
 
     void removeTimeSlotForRunway(UUID timeSlotId);
+
+    TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId);
 }
