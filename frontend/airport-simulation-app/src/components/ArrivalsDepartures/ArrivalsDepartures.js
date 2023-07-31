@@ -71,8 +71,8 @@ const ArrivalsDepartures = () => {
                         <td>{flight.flightIata}</td>
                         <td>{flight.depIata}</td>
                         <td>{flight.arrIata}</td>
-                        <td>{flight.gate.terminal.number}</td>
-                        <td>{flight.gate.number}</td>
+                        <td>{flight.gate? flight.gate.terminal.number : ""}</td>
+                        <td>{flight.gate? flight.gate.number : ""}</td>
                         <td>
                             {isArrivals
                                 ? formatDateTime(flight.arrTime)
