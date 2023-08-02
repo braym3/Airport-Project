@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
-* Represents a time slot during which a flight occupies a gate.
+* Represents a time slot during which a flight or impact event occupies a gate or runway.
 */
 public class TimeSlot {
 
@@ -211,11 +211,6 @@ public class TimeSlot {
         if (o == null || getClass() != o.getClass()) return false;
         TimeSlot timeSlot = (TimeSlot) o;
         return Objects.equals(getId(), timeSlot.getId()) && Objects.equals(getStartTime(), timeSlot.getStartTime()) && Objects.equals(getEndTime(), timeSlot.getEndTime()) && Objects.equals(getGate(), timeSlot.getGate()) && Objects.equals(getFlight(), timeSlot.getFlight()) && Objects.equals(getImpactEvent(), timeSlot.getImpactEvent());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getStartTime(), getEndTime(), getGate(), getFlight(), getImpactEvent());
     }
 
     @Override

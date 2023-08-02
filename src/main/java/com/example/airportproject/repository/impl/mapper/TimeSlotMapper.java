@@ -53,7 +53,7 @@ public interface TimeSlotMapper {
     TimeSlot removeGateTimeSlotByFlightId(UUID flightId);
 
     @Insert(
-            "INSERT INTO runway_slots (runway_id, flight_id, start_time, end_time, impact_event_id) VALUES (#{runway.id}, #{flight.id}, #{impactEvent.id}, #{startTime}, #{endTime})")
+            "INSERT INTO runway_slots (runway_id, flight_id, impact_event_id, start_time, end_time) VALUES (#{runway.id}, #{flight.id}, #{impactEvent.id}, #{startTime}, #{endTime})")
     void createTimeSlotForRunway(TimeSlot timeSlot);
 
     @ResultMap("runwaySlotResults")

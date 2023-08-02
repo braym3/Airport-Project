@@ -58,42 +58,59 @@ public class FlightSchedulerService {
         List<Runway> runways = runwayService.getAll();
 
         // Get the list of gates at the airport
-        logger.debug("FlightSchedulerService getting all runways");
+        logger.debug("FlightSchedulerService getting all gates");
         List<Gate> gates = gateService.getAll();
 
         // Get the start and end time of the daily schedule (first and last flight times)
         logger.debug("FlightSchedulerService getting first and last flight times with airport code {}", airportCode);
-        LocalDateTime firstFlightTime = flightService.getFirstFlightTime(airportCode);
-        LocalDateTime lastFlightTime = flightService.getLastFlightTime(airportCode);
+        LocalDateTime firstFlightTime = flightService.getFirstFlightTime(airportCode).minusMinutes(gateDepartureSlotDuration);
+        LocalDateTime lastFlightTime = flightService.getLastFlightTime(airportCode).plusMinutes(gateDepartureSlotDuration);
 
-        // Get the schedules of available times for all runways and gates
-        Map<Runway, List<TimeSlot>> runwaySchedulesOfAvailability = runways.stream().collect(Collectors.toMap(runway -> runway, runway -> runway.getScheduleOfAvailability(firstFlightTime, lastFlightTime)));
-        Map<Gate, List<TimeSlot>> gateSchedulesOfAvailability = gates.stream().collect(Collectors.toMap(gate -> gate, gate -> gate.getScheduleOfAvailability(firstFlightTime, lastFlightTime)));
+
 
         for(Flight flight : flights){
-            boolean successfullyAssigned = findClosestAvailableSlots(flight, flight.isDeparture(airportCode), runwaySchedulesOfAvailability, gateSchedulesOfAvailability, reassigning);
+            // Get the schedules of available times for all runways and gates
+            Map<Runway, List<TimeSlot>> runwaySchedulesOfAvailability = runways.stream().collect(Collectors.toMap(runway -> runway, runway -> runway.getScheduleOfAvailability(firstFlightTime, lastFlightTime)));
+            Map<Gate, List<TimeSlot>> gateSchedulesOfAvailability = gates.stream().collect(Collectors.toMap(gate -> gate, gate -> gate.getScheduleOfAvailability(firstFlightTime, lastFlightTime)));
+            // find the closest matching gate and runway slots available for the original flight time and assign them to the flight
+            // returns the chosen gate and runway objects (updated with their new occupied timeslots)
+            List<Schedulable> assignedGateAndRunway = findClosestAvailableSlots(flight, flight.isDeparture(airportCode), runwaySchedulesOfAvailability, gateSchedulesOfAvailability, reassigning);
+            // update the runways and gates lists (replace the chosen gate and runway with the updated objects)
+            if(assignedGateAndRunway != null){
+                gates = updateGatesWithChange(gates, (Gate) assignedGateAndRunway.get(0));
+                runways = updateRunwaysWithChange(runways, (Runway) assignedGateAndRunway.get(1));
+            }
         }
     }
 
     // returns a boolean for whether it was successful in assigning a suitable pair of runway and gate time slots for the flight
-    private boolean findClosestAvailableSlots(Flight flight, boolean isDeparture, Map<Runway, List<TimeSlot>> runwayAvailabilityMap, Map<Gate, List<TimeSlot>> gateAvailabilityMap, boolean reassigning){
+    private List<Schedulable> findClosestAvailableSlots(Flight flight, boolean isDeparture, Map<Runway, List<TimeSlot>> runwayAvailabilityMap, Map<Gate, List<TimeSlot>> gateAvailabilityMap, boolean reassigning){
+        for(Map.Entry<Runway, List<TimeSlot>> runwayEntry : runwayAvailabilityMap.entrySet()){
+            System.out.println("runway: " + runwayEntry.getKey().getNumber());
+            runwayEntry.getValue().forEach(timeSlot -> System.out.println("Start time: " + timeSlot.getStartTime() + ", End time: " + timeSlot.getEndTime()));
+        }
+
         LocalDateTime originalTime = flight.getFlightTimeForAirport(airportCode);
         LocalDateTime closestIntersectingTime = null;
         Gate closestGate = null;
         Runway closestRunway = null;
         long closestDuration = Long.MAX_VALUE;
+        boolean finished = false;
+
+        System.out.println("Original time = " + originalTime);
 
         for (Map.Entry<Gate, List<TimeSlot>> gateEntry : gateAvailabilityMap.entrySet()) {
             Gate gate = gateEntry.getKey();
             List<TimeSlot> gateTimeSlots = gateEntry.getValue();
 
 //            System.out.println("Gate = T" + gate.getTerminal().getNumber() + " " + gate.getNumber());
-//            System.out.println(gateTimeSlots.toString());
-//            System.out.println();
 
             for (TimeSlot gateTimeSlot : gateTimeSlots) {
                 LocalDateTime gateStartTime = gateTimeSlot.getStartTime();
                 LocalDateTime gateEndTime = gateTimeSlot.getEndTime();
+
+//                System.out.println("start = " + gateStartTime + "     end = " + gateEndTime);
+//                System.out.println();
 
                 for (Map.Entry<Runway, List<TimeSlot>> runwayEntry : runwayAvailabilityMap.entrySet()) {
                     Runway runway = runwayEntry.getKey();
@@ -108,33 +125,60 @@ public class FlightSchedulerService {
                         LocalDateTime runwayEndTime = runwayTimeSlot.getEndTime();
 
                         // Calculate the intersecting time range
-                        LocalDateTime intersectingStartTime = null, intersectingEndTime = null;
+                        LocalDateTime gateIntersectionStart = null, gateIntersectionEnd = null, runwayIntersectionStart = null, runwayIntersectionEnd = null;
                         if(isDeparture){
-                            intersectingStartTime = gateStartTime.plusMinutes(gateDepartureSlotDuration);
-                            intersectingEndTime = runwayEndTime.minusMinutes(runwayDepartureSlotDuration);
+                            gateIntersectionStart = gateStartTime.plusMinutes(gateDepartureSlotDuration);
+                            gateIntersectionEnd = gateEndTime;
+                            runwayIntersectionStart = runwayStartTime;
+                            runwayIntersectionEnd = runwayEndTime.minusMinutes(runwayDepartureSlotDuration);
+
                         }else{
-                            intersectingStartTime = runwayStartTime.plusMinutes(runwayArrivalSlotDuration);
-                            intersectingEndTime = gateEndTime.minusMinutes(gateArrivalSlotDuration);
+                            runwayIntersectionStart = runwayStartTime.plusMinutes(runwayArrivalSlotDuration);
+                            runwayIntersectionEnd = runwayEndTime;
+                            gateIntersectionStart = gateStartTime;
+                            gateIntersectionEnd = gateEndTime.minusMinutes(gateArrivalSlotDuration);
                         }
 
+                        LocalDateTime[] overlap = findOverlap(gateIntersectionStart, gateIntersectionEnd, runwayIntersectionStart, runwayIntersectionEnd);
+                        if(overlap == null){
+                            break;
+                        }
+                        LocalDateTime intersectionStartTime = overlap[0];
+                        LocalDateTime intersectionEndTime = overlap[1];
+                        intersectionStartTime = originalTime.isAfter(intersectionStartTime) && originalTime.isBefore(intersectionEndTime) ? originalTime : intersectionStartTime;
+
+
                         // Check if the intersecting time range overlaps with the originalTime
-                        if (intersectingStartTime.isBefore(originalTime) && intersectingEndTime.isAfter(originalTime)) {
+                        if ((originalTime.isAfter(intersectionStartTime) || originalTime.isEqual(intersectionStartTime)) && originalTime.isBefore(intersectionEndTime)) {
                             // Calculate the duration between originalTime and the intersecting start time
-                            Duration duration = Duration.between(originalTime, intersectingStartTime);
+                            Duration duration = Duration.between(originalTime, intersectionStartTime);
 
                             // Check if the duration is positive or zero, meaning intersectingStartTime is after or equal to originalTime
                             if (!duration.isNegative()) {
                                 long currentDuration = duration.toMinutes();
                                 if (currentDuration < closestDuration) {
                                     closestDuration = currentDuration;
-                                    closestIntersectingTime = intersectingStartTime;
+                                    closestIntersectingTime = intersectionStartTime;
                                     closestGate = gate;
                                     closestRunway = runway;
+                                    if(closestDuration == 0){
+                                        finished = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
+                    if(finished){
+                        break;
+                    }
                 }
+                if(finished){
+                    break;
+                }
+            }
+            if(finished){
+                break;
             }
         }
 
@@ -142,20 +186,32 @@ public class FlightSchedulerService {
             System.out.println("Closest intersecting time: " + closestIntersectingTime);
             System.out.println("Gate: " + closestGate);
             System.out.println("Runway: " + closestRunway);
+            System.out.println();
             // if the flight is being reassigned - delete any old time slots for the flight
             if(reassigning){
                 clearOldTimeSlots(flight);
             }
             // assign the chosen runway and gate to the flight, and if the flight is being reassigned log the changes
-            assignFlight(flight, closestIntersectingTime, closestGate, closestRunway, reassigning);
-            return true;
+            // returns a list containing the selected gate and selected runways (updated with their new timeslots)
+            return assignFlight(flight, closestIntersectingTime, closestGate, closestRunway, reassigning);
         } else {
             System.out.println("No suitable time found.");
-            return false;
+            return null;
         }
     }
 
-    private void assignFlight(Flight flight, LocalDateTime flightTime, Gate availableGate, Runway availableRunway, boolean reassigning){
+    public static LocalDateTime[] findOverlap(LocalDateTime startTime1, LocalDateTime endTime1, LocalDateTime startTime2, LocalDateTime endTime2){
+        LocalDateTime startOverlap = startTime1.isAfter(startTime2)? startTime1 : startTime2;
+        LocalDateTime endOverlap = endTime1.isBefore(endTime2) ? endTime1 : endTime2;
+
+        if(startOverlap.isBefore(endOverlap)){
+            return new LocalDateTime[]{startOverlap, endOverlap};
+        }
+        // no overlap
+        return null;
+    }
+
+    private List<Schedulable> assignFlight(Flight flight, LocalDateTime flightTime, Gate availableGate, Runway availableRunway, boolean reassigning){
         if(availableGate != null && availableRunway != null){
             boolean isDeparture = flight.isDeparture(airportCode);
 
@@ -174,8 +230,11 @@ public class FlightSchedulerService {
             Flight updatedFlight = updateFlightInfo(flight, availableGate, availableRunway, flightTime, isDeparture, reassigning);
 
             flightRepo.update(updatedFlight);
-        }
 
+            // return the chosen gate object and runway object updated with the new timeslots
+            return new ArrayList<>(List.of(availableGate, availableRunway));
+        }
+        return null;
     }
 
     // Update a Flight object with a new Gate, Runway, time, and status
@@ -201,6 +260,34 @@ public class FlightSchedulerService {
             flight.setStatus("Delayed");
         }
         return flight;
+    }
+
+    // takes a list of gates and a specific Gate object that has had a new timeslot added and needs to be updated in the list
+    public List<Gate> updateGatesWithChange(List<Gate> gates, Gate updatedGate){
+        // loop through each gate in the list until the matching gate is found
+        for(int i = 0; i < gates.size(); i++){
+            // if the id of the current gate matches the gate to update - update that gate
+            if(gates.get(i).getId().equals(updatedGate.getId())){
+                gates.set(i, updatedGate);
+                return gates;
+            }
+        }
+        logger.debug("FlightSchedulerService could not find matching gate with id {} in the list to update", updatedGate.getId());
+        return null;
+    }
+
+    // takes a list of runways and a specific Runway object that has had a new timeslot added and needs to be updated in the list
+    public List<Runway> updateRunwaysWithChange(List<Runway> runways, Runway updatedRunway){
+        // loop through each runway in the list until the matching runway is found
+        for(int i = 0; i < runways.size(); i++){
+            // if the id of the current runway matches the runway to update - update that runway
+            if(runways.get(i).getId().equals(updatedRunway.getId())){
+                runways.set(i, updatedRunway);
+                return runways;
+            }
+        }
+        logger.debug("FlightSchedulerService could not find matching runway with id {} in the list to update", updatedRunway.getId());
+        return null;
     }
 
     public void clearOldTimeSlots(Flight flight){

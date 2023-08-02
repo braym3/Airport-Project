@@ -67,7 +67,8 @@ public class Runway implements Schedulable{
     }
 
     public List<TimeSlot> getSchedule() {
-        return schedule;
+        this.schedule.sort((slot1, slot2) -> slot1.getStartTime().compareTo(slot2.getStartTime()));
+        return new ArrayList<>(schedule);
     }
 
     public void setSchedule(List<TimeSlot> schedule) {
@@ -85,7 +86,7 @@ public class Runway implements Schedulable{
 
     @Override
     public void addTimeSlot(TimeSlot timeSlot) {
-
+        this.schedule.add(timeSlot);
     }
 
     public TimeSlot findClosestAvailableSlot(LocalDateTime startTime, LocalDateTime endTime){
@@ -100,20 +101,21 @@ public class Runway implements Schedulable{
     @Override
     public List<TimeSlot> getScheduleOfAvailability(LocalDateTime scheduleStartTime, LocalDateTime scheduleEndTime) {
         // copy of gate schedule
-        List<TimeSlot> occupiedSchedule = new ArrayList<>(schedule);
+        List<TimeSlot> occupiedSchedule = new ArrayList<>(getSchedule());
         List<TimeSlot> availableTimes = new ArrayList<>();
 
         // if the schedule is empty add a slot of availability for the whole duration
         if (occupiedSchedule.isEmpty()) {
+//            System.out.println("\nEMPTY RUNWAY SCHEDULE:");
             availableTimes.add(new TimeSlot(this, scheduleStartTime, scheduleEndTime));
         }else{
             // check if the schedule is ordered -- print times
-            System.out.println("\nNEW RUNWAY:");
-            occupiedSchedule.forEach(timeSlot -> System.out.println("\nStart time: " + timeSlot.getStartTime() + ", End time: " + timeSlot.getEndTime()));
+//            System.out.println("\nNEW RUNWAY:");
+//            occupiedSchedule.forEach(timeSlot -> System.out.println("Start time: " + timeSlot.getStartTime() + ", End time: " + timeSlot.getEndTime()));
 
             // check time between schedule start time and the first occupied slot
             TimeSlot firstSlot = occupiedSchedule.get(0);
-            if(!scheduleStartTime.isEqual(firstSlot.getStartTime())){
+            if(scheduleStartTime.isBefore(firstSlot.getStartTime())){
                 availableTimes.add(new TimeSlot(this, scheduleStartTime, firstSlot.getStartTime()));
             }
 
@@ -129,7 +131,7 @@ public class Runway implements Schedulable{
 
             // check time between the last occupied slot and the schedule end time
             TimeSlot lastSlot = occupiedSchedule.get(occupiedSchedule.size()-1);
-            if(!scheduleEndTime.isEqual(lastSlot.getEndTime())){
+            if(scheduleEndTime.isAfter(lastSlot.getEndTime())){
                 availableTimes.add(new TimeSlot(this, lastSlot.getEndTime(), scheduleEndTime));
             }
         }
@@ -146,11 +148,6 @@ public class Runway implements Schedulable{
         if (o == null || getClass() != o.getClass()) return false;
         Runway runway = (Runway) o;
         return getNumber() == runway.getNumber() && Objects.equals(getId(), runway.getId()) && Objects.equals(getSchedule(), runway.getSchedule());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getNumber(), getSchedule());
     }
 
     @Override

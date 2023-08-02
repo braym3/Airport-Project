@@ -133,6 +133,7 @@ public class Gate implements Schedulable{
     }
 
     public List<TimeSlot> getSchedule() {
+        this.schedule.sort((slot1, slot2) -> slot1.getStartTime().compareTo(slot2.getStartTime()));
         return new ArrayList<>(schedule);
     }
 
@@ -152,7 +153,7 @@ public class Gate implements Schedulable{
     @Override
     public List<TimeSlot> getScheduleOfAvailability(LocalDateTime scheduleStartTime, LocalDateTime scheduleEndTime) {
         // copy of gate schedule
-        List<TimeSlot> occupiedSchedule = new ArrayList<>(schedule);
+        List<TimeSlot> occupiedSchedule = new ArrayList<>(getSchedule());
         List<TimeSlot> availableTimes = new ArrayList<>();
 
         // if the schedule is empty add a slot of availability for the whole duration
@@ -160,12 +161,12 @@ public class Gate implements Schedulable{
             availableTimes.add(new TimeSlot(this, scheduleStartTime, scheduleEndTime));
         }else{
             // check if the schedule is ordered -- print times
-            System.out.println("\nNEW GATE:");
-            occupiedSchedule.forEach(timeSlot -> System.out.println("\nStart time: " + timeSlot.getStartTime() + ", End time: " + timeSlot.getEndTime()));
+//            System.out.println("\nNEW GATE:");
+//            occupiedSchedule.forEach(timeSlot -> System.out.println("\nStart time: " + timeSlot.getStartTime() + ", End time: " + timeSlot.getEndTime()));
 
             // check time between schedule start time and the first occupied slot
             TimeSlot firstSlot = occupiedSchedule.get(0);
-            if(!scheduleStartTime.isEqual(firstSlot.getStartTime())){
+            if(scheduleStartTime.isBefore(firstSlot.getStartTime())){
                 availableTimes.add(new TimeSlot(this, scheduleStartTime, firstSlot.getStartTime()));
             }
 
@@ -181,7 +182,7 @@ public class Gate implements Schedulable{
 
             // check time between the last occupied slot and the schedule end time
             TimeSlot lastSlot = occupiedSchedule.get(occupiedSchedule.size()-1);
-            if(!scheduleEndTime.isEqual(lastSlot.getEndTime())){
+            if(scheduleEndTime.isAfter(lastSlot.getEndTime())){
                 availableTimes.add(new TimeSlot(this, lastSlot.getEndTime(), scheduleEndTime));
             }
         }
@@ -217,10 +218,5 @@ public class Gate implements Schedulable{
         if (o == null || getClass() != o.getClass()) return false;
         Gate gate = (Gate) o;
         return Objects.equals(getId(), gate.getId()) && Objects.equals(getNumber(), gate.getNumber()) && Objects.equals(getTerminal(), gate.getTerminal()) && Objects.equals(getSchedule(), gate.getSchedule());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getNumber(), getTerminal(), getSchedule());
     }
 }
