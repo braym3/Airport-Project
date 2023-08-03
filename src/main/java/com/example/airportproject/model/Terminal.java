@@ -43,10 +43,10 @@ public class Terminal {
     }
 
     /**
-     * Constructs a new Terminal object with the specified ID, terminal number, and List of Gates belonging to it.
+     * Constructs a new Terminal object with the specified ID, terminal number, and List of Runways belonging to it.
      * @param id the unique ID of the terminal
      * @param number the terminal number
-     * @param gates the List of Gates that belong to the terminal
+     * @param gates the List of Runways that belong to the terminal
      */
     public Terminal(UUID id, int number, List<Gate> gates){
         this.id = id;
@@ -88,7 +88,7 @@ public class Terminal {
     }
 
     /**
-    * Returns the List of Gates associated with the terminal.
+    * Returns the List of Runways associated with the terminal.
      * @return the List of associated gates
     */
     public List<Gate> getGates() {
@@ -96,7 +96,7 @@ public class Terminal {
     }
 
     /**
-    * Sets the List of Gates associated with the terminal.
+    * Sets the List of Runways associated with the terminal.
      * @param gates the List of associated gates
     */
     public void setGates(List<Gate> gates) {

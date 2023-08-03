@@ -25,6 +25,7 @@ public class RunwayInitializer {
         // clear the runways table
         logger.debug("RunwayInitializer clearing 'runways' table");
         runwayRepo.clear();
+        runwayRepo.clearRunwayTimeSlots();
 
         // create number of runways specified
         for(int i = 1; i <= runwayAmount; i++){

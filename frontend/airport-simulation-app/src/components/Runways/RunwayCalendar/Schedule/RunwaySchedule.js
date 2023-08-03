@@ -9,15 +9,15 @@ import { useApp } from "./useApp";
 // Import components
 import { Timeline, ChannelItem, ProgramItem } from "./components";
 
-function GateSchedule({timeJumpTriggered}) {
+function RunwaySchedule({timeJumpTriggered}) {
     const { isLoading, getEpgProps, getLayoutProps } = useApp({timeJumpTriggered});
 
     return (
         <div>
             <header style={{paddingTop: '30px'}} >
-                <h3>Gate Schedules</h3>
+                <h3>Runway Schedules</h3>
             </header>
-            <div style={{ paddingTop: "20px",height: "90vh", width: "100%" }}>
+            <div style={{ paddingTop: "20px",height: "50vh", width: "100%" }}>
                 <Epg isLoading={isLoading} {...getEpgProps()}>
                     <Layout
                         {...getLayoutProps()}
@@ -35,4 +35,4 @@ function GateSchedule({timeJumpTriggered}) {
     );
 }
 
-export default GateSchedule;
+export default RunwaySchedule;

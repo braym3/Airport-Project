@@ -39,6 +39,10 @@ const NavigationBar = ({onTimeJump, currentTime}) => {
                                 <NavDropdown.Item href="/gates">Gates Overview</NavDropdown.Item>
                                 <NavDropdown.Item href="/gate-calendar">Gate Schedule</NavDropdown.Item>
                             </NavDropdown>
+                            <NavDropdown title="Runways" id="basic-nav-dropdown">
+                                <NavDropdown.Item href="/runways">Runways Overview</NavDropdown.Item>
+                                <NavDropdown.Item href="/runway-calendar">Runway Schedule</NavDropdown.Item>
+                            </NavDropdown>
                             <Nav.Link href="/" className="p-2">
                                 Schedule History
                             </Nav.Link>

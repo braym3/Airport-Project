@@ -73,6 +73,25 @@ public class TimeSlot {
     }
 
     /**
+     * Constructs a TimeSlot object with the specified ID, Runway object, Flight object, start time, end time, and ImpactEvent object.
+     * @param id the ID of the time slot
+     * @param runway the Runway object that the time slot belongs to
+     * @param flight the Flight object occupying the time slot
+     * @param startTime the start time of the time slot
+     * @param endTime the end time of the time slot
+     * @param impactEvent the ImpactEvent object occupying the time slot
+     */
+    public TimeSlot(UUID id, Runway runway, Flight flight, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime, ImpactEvent impactEvent) {
+        this.id = id;
+        this.gate = null;
+        this.runway = runway;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.flight = flight;
+        this.impactEvent = impactEvent;
+    }
+
+    /**
      * Constructs a TimeSlot object with the specified Gate object, Flight object, start time, end time, and ImpactEvent object.
      * @param gate the Gate object that the time slot belongs to
      * @param flight the Flight object occupying the time slot

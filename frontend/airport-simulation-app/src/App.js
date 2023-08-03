@@ -12,6 +12,8 @@ import Terminals from "./components/Terminals/Terminals";
 import Alerts from "./components/Alerts/Alerts";
 import GateSchedule from "./components/Gates/GateCalendar/Schedule/GateSchedule";
 import {fetchCurrentTime, handleFastForward} from "./services/time";
+import RunwaySchedule from "./components/Runways/RunwayCalendar/Schedule/RunwaySchedule";
+import Runways from "./components/Runways/RunwaysOverview/Runways";
 
 function App() {
     const [currentTime, setCurrentTime] = useState(null);
@@ -44,6 +46,8 @@ function App() {
                     <Route path='terminals' element={<Terminals />} />
                     <Route path='gates' element={<Gates timeJumpTriggered={timeJumpTriggered}/>} />
                     <Route path='gate-calendar' element={<GateSchedule timeJumpTriggered={timeJumpTriggered}/>}/>
+                    <Route path='runways' element={<Runways timeJumpTriggered={timeJumpTriggered}/>} />
+                    <Route path='runway-calendar' element={<RunwaySchedule timeJumpTriggered={timeJumpTriggered}/>}/>
                     <Route path='*' element={<Navigate to='/' />} />
                 </Routes>
             </div>

@@ -10,10 +10,10 @@ import java.util.UUID;
 public interface FlightMapper {
 
     @Insert(
-            "INSERT INTO flights (airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id) VALUES (#{airlineIata}, #{depIata}, #{arrIata}, #{status}, #{aircraftIcao}, #{flightIata}, #{depTime}, #{arrTime}, #{duration}, #{gate.id})")
+            "INSERT INTO flights (airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id, runway_id) VALUES (#{airlineIata}, #{depIata}, #{arrIata}, #{status}, #{aircraftIcao}, #{flightIata}, #{depTime}, #{arrTime}, #{duration}, #{gate.id}, #{runway.id})")
     void create(Flight flight);
 
-    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights")
+    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id, runway_id FROM flights")
     @Results(id="flightResults", value = {
             @Result(property = "id", column = "id"),
             @Result(property = "airlineIata", column = "airline_iata"),
@@ -25,7 +25,8 @@ public interface FlightMapper {
             @Result(property = "depTime", column = "dep_time"),
             @Result(property = "arrTime", column = "arr_time"),
             @Result(property = "duration", column = "duration"),
-            @Result(property = "gate", column = "gate_id", one = @One(select = "com.example.airportproject.repository.impl.mapper.GateMapper.getGateWithoutSchedule"))
+            @Result(property = "gate", column = "gate_id", one = @One(select = "com.example.airportproject.repository.impl.mapper.GateMapper.getGateWithoutSchedule")),
+            @Result(property = "runway", column = "runway_id", one = @One(select = "com.example.airportproject.repository.impl.mapper.RunwayMapper.getRunwayWithoutSchedule"))
     })
     List<Flight> getAll();
 
@@ -38,30 +39,30 @@ public interface FlightMapper {
 //    Gate selectGateForFlight(@Param("flightId") UUID flightId);
 
     @ResultMap("flightResults")
-    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id, runway_id FROM flights WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     Flight get(@Param("id") UUID id);
 
     @ResultMap("flightResults")
-    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights WHERE dep_iata = #{depIata} ORDER BY dep_time ASC")
+    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id, runway_id FROM flights WHERE dep_iata = #{depIata} ORDER BY dep_time ASC")
     List<Flight> getDepartures(@Param("depIata") String depIata);
 
     @ResultMap("flightResults")
-    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights WHERE arr_iata = #{arrIata} ORDER BY arr_time ASC")
+    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id, runway_id FROM flights WHERE arr_iata = #{arrIata} ORDER BY arr_time ASC")
     List<Flight> getArrivals(@Param("arrIata") String arrIata);
 
     @ResultMap("flightResults")
-    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END")
+    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id, runway_id FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END")
     List<Flight> getOrderedFlights(@Param("airportIata") String airportIata);
 
     @ResultMap("flightResults")
-    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END LIMIT 1")
+    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id, runway_id FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END LIMIT 1")
     Flight getFirstFlight(String airportIata);
 
     @ResultMap("flightResults")
-    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END DESC LIMIT 1")
+    @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id, runway_id FROM flights ORDER BY CASE WHEN dep_iata = #{airportIata} THEN dep_time WHEN arr_iata = #{airportIata} THEN arr_time END DESC LIMIT 1")
     Flight getLastFlight(String airportIata);
 
-    @Update("UPDATE flights SET airline_iata = #{airlineIata}, dep_iata = #{depIata}, arr_iata = #{arrIata}, status = #{status}, aircraft_icao = #{aircraftIcao}, flight_iata = #{flightIata}, dep_time = #{depTime}, arr_time = #{arrTime}, duration = #{duration}, gate_id = #{gate.id} WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    @Update("UPDATE flights SET airline_iata = #{airlineIata}, dep_iata = #{depIata}, arr_iata = #{arrIata}, status = #{status}, aircraft_icao = #{aircraftIcao}, flight_iata = #{flightIata}, dep_time = #{depTime}, arr_time = #{arrTime}, duration = #{duration}, gate_id = #{gate.id}, runway_id = #{runway.id} WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     void update(Flight flight);
 
     @Delete("DELETE FROM flights WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")

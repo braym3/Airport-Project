@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import axios from "axios";
 import ImpactEventTimeSlot from "../GatesOverview/ImpactEventTimeSlot";
 import FlightTimeSlot from "../GatesOverview/FlightTimeSlot";
-import './gates.css';
+import './runways.css';
 
 const GateTimeline = ({timeJumpTriggered}) => {
     const [gates, setGates] = useState([]);

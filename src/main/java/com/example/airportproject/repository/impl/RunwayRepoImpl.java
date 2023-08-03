@@ -80,4 +80,9 @@ public class RunwayRepoImpl implements RunwayRepo {
     public TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId) {
         return timeSlotMapper.removeRunwayTimeSlotByFlightId(flightId);
     }
+
+    @Override
+    public void clearRunwayTimeSlots() {
+        timeSlotMapper.clearRunwayTimeSlots();
+    }
 }

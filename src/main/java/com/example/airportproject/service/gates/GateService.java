@@ -28,7 +28,7 @@ public interface GateService {
     Gate get(UUID id);
 
     /**
-     * Returns a List of all Gates in the database
+     * Returns a List of all Runways in the database
      * @return List of all Gate objects found
      */
     List<Gate> getAll();

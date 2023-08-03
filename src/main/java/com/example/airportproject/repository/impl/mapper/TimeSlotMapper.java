@@ -72,4 +72,7 @@ public interface TimeSlotMapper {
 
     @Delete("DELETE FROM runway_slots WHERE flight_id = #{flightId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId);
+
+    @Delete("DELETE FROM runway_slots")
+    void clearRunwayTimeSlots();
 }

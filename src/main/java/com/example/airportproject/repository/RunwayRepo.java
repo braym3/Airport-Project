@@ -30,4 +30,6 @@ public interface RunwayRepo {
     void removeTimeSlotForRunway(UUID timeSlotId);
 
     TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId);
+
+    void clearRunwayTimeSlots();
 }
