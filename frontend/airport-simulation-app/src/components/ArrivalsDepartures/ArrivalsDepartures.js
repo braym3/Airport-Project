@@ -58,6 +58,7 @@ const ArrivalsDepartures = () => {
                     <th scope="col" id="gate-header">
                         {isArrivals ? "Arrival Gate" : "Departure Gate"}
                     </th>
+                    <th scope="col">Runway</th>
                     <th scope="col" id="time-header">
                         {isArrivals ? "Arrival Time" : "Departure Time"}
                     </th>
@@ -73,6 +74,7 @@ const ArrivalsDepartures = () => {
                         <td>{flight.arrIata}</td>
                         <td>{flight.gate? flight.gate.terminal.number : ""}</td>
                         <td>{flight.gate? flight.gate.number : ""}</td>
+                        <td>{flight.runway? flight.runway.number : ""}</td>
                         <td>
                             {isArrivals
                                 ? formatDateTime(flight.arrTime)

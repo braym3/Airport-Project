@@ -37,6 +37,7 @@ const OrderedFlights = () => {
                     <th scope="col">Destination</th>
                     <th scope="col">Terminal</th>
                     <th scope="col">Gate</th>
+                    <th scope="col">Runway</th>
                     <th scope="col">Departure Time</th>
                     <th scope="col">Arrival Time</th>
                     <th scope="col">Status</th>
@@ -51,6 +52,7 @@ const OrderedFlights = () => {
                         <td>{flight.arrIata}</td>
                         <td>{flight.gate? flight.gate.terminal.number : ""}</td>
                         <td>{flight.gate? flight.gate.number : ""}</td>
+                        <td>{flight.runway? flight.runway.number : ""}</td>
                         <td>{formatDateTime(flight.depTime)}</td>
                         <td>{formatDateTime(flight.arrTime)}</td>
                         <td>{flight.status}</td>
