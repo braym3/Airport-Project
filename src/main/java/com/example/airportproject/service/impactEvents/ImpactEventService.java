@@ -4,7 +4,9 @@ import com.example.airportproject.model.*;
 import com.example.airportproject.model.enums.Entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -50,4 +52,10 @@ public interface ImpactEventService {
     ImpactEvent remove(UUID id);
 
     List<TimeSlot> triggerImpactEvents();
+
+    void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId);
+
+    List<Objects> getAllHistory();
+
+    List<Objects> getHistoryForImpactEventTimeSlotId(UUID impactTimeSlotId);
 }

@@ -1,6 +1,7 @@
 package com.example.airportproject.service.impactEvents.impl;
 
 import com.example.airportproject.dao.ImpactEventDao;
+import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.model.enums.Entity;
@@ -10,7 +11,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -72,5 +75,20 @@ public class ImpactEventServiceImpl implements ImpactEventService {
     @Override
     public List<TimeSlot> triggerImpactEvents(){
         return impactEventTimeSlotHandler.triggerImpactEvents();
+    }
+
+    @Override
+    public void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId){
+        impactEventDao.createHistorySlot(flight, oldGateId, newGateId, oldDepTime, newDepTime, oldArrTime, newArrTime, impactTimeSlotId);
+    }
+
+    @Override
+    public List<Objects> getAllHistory(){
+        return impactEventDao.getAllHistory();
+    }
+
+    @Override
+    public List<Objects> getHistoryForImpactEventTimeSlotId(UUID impactTimeSlotId){
+        return impactEventDao.getHistoryForImpactEventTimeSlotId(impactTimeSlotId);
     }
 }

@@ -1,11 +1,14 @@
 package com.example.airportproject.repository.impl;
 
+import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.repository.ImpactEventRepo;
 import com.example.airportproject.repository.impl.mapper.ImpactEventMapper;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Repository
@@ -46,5 +49,20 @@ public class ImpactEventRepoImpl implements ImpactEventRepo {
     @Override
     public void clear() {
         impactEventMapper.clear();
+    }
+
+    @Override
+    public void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId){
+        impactEventMapper.createHistorySlot(flight, oldGateId, newGateId, oldDepTime, newDepTime, oldArrTime, newArrTime, impactTimeSlotId);
+    }
+
+    @Override
+    public List<Objects> getAllHistory(){
+        return impactEventMapper.getAllHistory();
+    }
+
+    @Override
+    public List<Objects> getHistoryForImpactEventTimeSlotId(UUID impactTimeSlotId){
+        return impactEventMapper.getHistoryForImpactEventTimeSlotId(impactTimeSlotId);
     }
 }

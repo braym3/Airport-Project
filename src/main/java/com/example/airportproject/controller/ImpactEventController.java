@@ -1,5 +1,6 @@
 package com.example.airportproject.controller;
 
+import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.service.impactEvents.ImpactEventService;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -77,5 +80,25 @@ public class ImpactEventController {
 
         return ResponseEntity.ok()
                 .body(triggeredEvents);
+    }
+
+    @CrossOrigin
+    @GetMapping("/history/")
+    public ResponseEntity<List<Objects>> getAllHistory(){
+        logger.debug("Controller getting all flight history");
+        // return all history records of how flights were impacted in the schedule
+        List<Objects> history = impactEventService.getAllHistory();
+        return ResponseEntity.ok()
+                .body(history);
+    }
+
+    @CrossOrigin
+    @GetMapping("/history/{impactTimeSlotId}")
+    public ResponseEntity<List<Objects>> getHistoryForImpactEventTimeSlotId(UUID impactTimeSlotId){
+        logger.debug("Controller getting flight history for impact event time-slot with ID {}", impactTimeSlotId);
+        // return all history records of how flights were impacted in the schedule due to the provided impact event time slot
+        List<Objects> history = impactEventService.getHistoryForImpactEventTimeSlotId(impactTimeSlotId);
+        return ResponseEntity.ok()
+                .body(history);
     }
 }

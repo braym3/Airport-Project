@@ -4,10 +4,12 @@ import com.example.airportproject.model.*;
 import com.example.airportproject.repository.FlightRepo;
 import com.example.airportproject.service.flights.FlightService;
 import com.example.airportproject.service.gates.GateService;
+import com.example.airportproject.service.impactEvents.ImpactEventService;
 import com.example.airportproject.service.runways.RunwayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -22,6 +24,7 @@ public class FlightSchedulerService {
     private final FlightService flightService;
     private final GateService gateService;
     private final RunwayService runwayService;
+    private final ImpactEventService impactEventService;
 
     @Value("${airportproject.airportcode}")
     String airportCode;
@@ -35,11 +38,12 @@ public class FlightSchedulerService {
     int runwayArrivalSlotDuration;
     private final Logger logger = LoggerFactory.getLogger(FlightSchedulerService.class);
 
-    public FlightSchedulerService(FlightRepo flightRepo, FlightService flightService, GateService gateService, RunwayService runwayService) {
+    public FlightSchedulerService(FlightRepo flightRepo, FlightService flightService, GateService gateService, RunwayService runwayService, ImpactEventService impactEventService) {
         this.flightRepo = flightRepo;
         this.flightService = flightService;
         this.gateService = gateService;
         this.runwayService = runwayService;
+        this.impactEventService = impactEventService;
     }
 
     // initialize runway and gate assignments for each flight in the airport
@@ -49,10 +53,13 @@ public class FlightSchedulerService {
         List<Flight> sortedFlights = flightRepo.getOrderedFlights(airportCode);
 
         // assign a runway and a gate to each flight
-        scheduleFlights(sortedFlights, false);
+        scheduleFlights(sortedFlights, null);
     }
 
-    public void scheduleFlights(List<Flight> flights, boolean reassigning){
+    public void scheduleFlights(List<Flight> flights, TimeSlot impactEventTimeSlot){
+        // set a flag to show if the flight is being reassigned - true if an impact event time-slot was provided
+        boolean reassigning = impactEventTimeSlot == null ? false : true;
+
         // Get the list of runways at the airport
         logger.debug("FlightSchedulerService getting all runways");
         List<Runway> runways = runwayService.getAll();
@@ -74,7 +81,7 @@ public class FlightSchedulerService {
             Map<Gate, List<TimeSlot>> gateSchedulesOfAvailability = gates.stream().collect(Collectors.toMap(gate -> gate, gate -> gate.getScheduleOfAvailability(firstFlightTime, lastFlightTime)));
             // find the closest matching gate and runway slots available for the original flight time and assign them to the flight
             // returns the chosen gate and runway objects (updated with their new occupied timeslots)
-            List<Schedulable> assignedGateAndRunway = findClosestAvailableSlots(flight, flight.isDeparture(airportCode), runwaySchedulesOfAvailability, gateSchedulesOfAvailability, reassigning);
+            List<Schedulable> assignedGateAndRunway = findClosestAvailableSlots(flight, flight.isDeparture(airportCode), runwaySchedulesOfAvailability, gateSchedulesOfAvailability, reassigning, impactEventTimeSlot);
             // update the runways and gates lists (replace the chosen gate and runway with the updated objects)
             if(assignedGateAndRunway != null){
                 gates = updateGatesWithChange(gates, (Gate) assignedGateAndRunway.get(0));
@@ -84,7 +91,7 @@ public class FlightSchedulerService {
     }
 
     // returns a boolean for whether it was successful in assigning a suitable pair of runway and gate time slots for the flight
-    private List<Schedulable> findClosestAvailableSlots(Flight flight, boolean isDeparture, Map<Runway, List<TimeSlot>> runwayAvailabilityMap, Map<Gate, List<TimeSlot>> gateAvailabilityMap, boolean reassigning){
+    private List<Schedulable> findClosestAvailableSlots(Flight flight, boolean isDeparture, Map<Runway, List<TimeSlot>> runwayAvailabilityMap, Map<Gate, List<TimeSlot>> gateAvailabilityMap, boolean reassigning, TimeSlot impactEventTimeSlot){
         for(Map.Entry<Runway, List<TimeSlot>> runwayEntry : runwayAvailabilityMap.entrySet()){
             System.out.println("runway: " + runwayEntry.getKey().getNumber());
             runwayEntry.getValue().forEach(timeSlot -> System.out.println("Start time: " + timeSlot.getStartTime() + ", End time: " + timeSlot.getEndTime()));
@@ -138,9 +145,6 @@ public class FlightSchedulerService {
                             gateIntersectionEnd = gateEndTime.minusMinutes(gateArrivalSlotDuration);
                         }
 
-                        System.out.println("Gate intersect = " + gateIntersectionStart + " - " + gateIntersectionEnd);
-                        System.out.println("Runway intersect = " + runwayIntersectionStart + " - " + runwayIntersectionEnd);
-
                         LocalDateTime[] overlap = findOverlap(gateIntersectionStart, gateIntersectionEnd, runwayIntersectionStart, runwayIntersectionEnd);
                         if(overlap == null){
                             System.out.println("no overlap");
@@ -149,9 +153,6 @@ public class FlightSchedulerService {
                         LocalDateTime intersectionStartTime = overlap[0];
                         LocalDateTime intersectionEndTime = overlap[1];
                         intersectionStartTime = originalTime.isAfter(intersectionStartTime) && originalTime.isBefore(intersectionEndTime) ? originalTime : intersectionStartTime;
-
-                        System.out.println("Intersection start time = " + intersectionStartTime);
-                        System.out.println("Intersection end time = " + intersectionEndTime);
 
                         // Check if the intersecting time range overlaps with the originalTime
                         if ((originalTime.isAfter(intersectionStartTime) || originalTime.isEqual(intersectionStartTime)) && originalTime.isBefore(intersectionEndTime)) {
@@ -198,7 +199,7 @@ public class FlightSchedulerService {
             }
             // assign the chosen runway and gate to the flight, and if the flight is being reassigned log the changes
             // returns a list containing the selected gate and selected runways (updated with their new timeslots)
-            return assignFlight(flight, closestIntersectingTime, closestGate, closestRunway, reassigning);
+            return assignFlight(flight, closestIntersectingTime, closestGate, closestRunway, reassigning, impactEventTimeSlot);
         } else {
             System.out.println("No suitable time found.");
             return null;
@@ -216,7 +217,7 @@ public class FlightSchedulerService {
         return null;
     }
 
-    private List<Schedulable> assignFlight(Flight flight, LocalDateTime flightTime, Gate availableGate, Runway availableRunway, boolean reassigning){
+    private List<Schedulable> assignFlight(Flight flight, LocalDateTime flightTime, Gate availableGate, Runway availableRunway, boolean reassigning, TimeSlot impactEventTimeSlot){
         if(availableGate != null && availableRunway != null){
             boolean isDeparture = flight.isDeparture(airportCode);
 
@@ -232,7 +233,7 @@ public class FlightSchedulerService {
             // add the new time slot to the database
             runwayService.addRunwaySlot(runwayTimeSlot);
 
-            Flight updatedFlight = updateFlightInfo(flight, availableGate, availableRunway, flightTime, isDeparture, reassigning);
+            Flight updatedFlight = updateFlightInfo(flight, availableGate, availableRunway, flightTime, isDeparture, reassigning, impactEventTimeSlot);
 
             flightRepo.update(updatedFlight);
 
@@ -243,27 +244,47 @@ public class FlightSchedulerService {
     }
 
     // Update a Flight object with a new Gate, Runway, time, and status
-    public Flight updateFlightInfo(Flight flight, Gate newGate, Runway newRunway, LocalDateTime flightTime, boolean isDeparture, boolean reassigning){
-        flight.setGate(newGate);
-        flight.setRunway(newRunway);
-
+    public Flight updateFlightInfo(Flight flight, Gate newGate, Runway newRunway, LocalDateTime flightTime, boolean isDeparture, boolean reassigning, TimeSlot impactEventTimeSlot){
         // update the flight arrival/departure time
         LocalDateTime oldFlightTime = null;
+        LocalDateTime oldDepTime = null, oldArrTime = null, newDepTime = null, newArrTime = null;
         if(isDeparture){
-            oldFlightTime = flight.getDepTime();
-            flight.setArrTime(flightTime.plusMinutes(flight.getDuration()));
+            oldDepTime = flight.getDepTime();
+            oldArrTime = flight.getArrTime();
+            newDepTime = flightTime;
+            newArrTime = flightTime.plusMinutes(flight.getDuration());
+            flight.setArrTime(newArrTime);
+            flight.setDepTime(newDepTime);
+            oldFlightTime = oldDepTime;
         }else{
-            oldFlightTime = flight.getArrTime();
+            oldArrTime = flight.getArrTime();
+            oldDepTime = flight.getDepTime();
+            newArrTime = flightTime;
+            newDepTime = oldDepTime;
+            oldFlightTime = oldArrTime;
+
             // update the departure time of a delayed arrival if this is first assignment
             if(!reassigning){
-                flight.setDepTime(flightTime.minusMinutes(flight.getDuration()));
+                newDepTime = flightTime.minusMinutes(flight.getDuration());
+                flight.setDepTime(newDepTime);
+            }
+            flight.setArrTime(newArrTime);
+        }
+        flight.setStatus("Scheduled");
+
+        // if the flight is being reassigned - create a history slot for it
+        if(reassigning){
+            impactEventService.createHistorySlot(flight, flight.getGate().getId(), newGate.getId(), oldDepTime, newDepTime, oldArrTime, newArrTime, impactEventTimeSlot.getId());
+            // if a reassigned flight is pushed back - update the flight's status to delayed
+            if(!oldFlightTime.isBefore(flightTime)){
+                flight.setStatus("Delayed");
             }
         }
 
-        // if this flight is being reassigned - update the flight's status accordingly
-        if(reassigning && !oldFlightTime.isBefore(flightTime)){
-            flight.setStatus("Delayed");
-        }
+        // update gate and runway
+        flight.setGate(newGate);
+        flight.setRunway(newRunway);
+
         return flight;
     }
 

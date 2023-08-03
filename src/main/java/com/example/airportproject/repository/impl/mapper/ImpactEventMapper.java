@@ -1,11 +1,14 @@
 package com.example.airportproject.repository.impl.mapper;
 
+import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.model.enums.Entity;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Mapper
@@ -38,4 +41,28 @@ public interface ImpactEventMapper {
 
     @Delete("DELETE FROM impact_events")
     void clear();
+
+    // insert new record into flight slots history table
+    @Insert(
+            "INSERT INTO flight_slots_history (flight_id, old_gate_id, new_gate_id, old_dep_time, old_arr_time, new_dep_time, new_arr_time, impact_time_slot_id) VALUES (#{flight.id}, #{oldGateId}, #{newGateId}, #{oldDepTime}, #{oldArrTime}, #{newDepTime}, #{newArrTime}, #{impactTimeSlotId})")
+    void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId);
+
+    @Select("SELECT id, timestamp, flight_id, old_gate_id, new_gate_id, old_dep_time, old_arr_time, new_dep_time, new_arr_time, impact_time_slot_id FROM flight_slots_history")
+    @Results(id = "historySlotResults", value = {
+            @Result(property = "id", column = "id", javaType = UUID.class),
+            @Result(property = "timestamp", column = "timestamp", javaType = LocalDateTime.class),
+            @Result(property = "flight", column = "flight_id", javaType = UUID.class),
+            @Result(property = "oldGate", column = "old_gate_id", javaType = UUID.class),
+            @Result(property = "newGate", column = "new_gate_id", javaType = UUID.class),
+            @Result(property = "oldDepTime", column = "old_dep_time", javaType = LocalDateTime.class),
+            @Result(property = "oldArrTime", column = "old_arr_time", javaType = LocalDateTime.class),
+            @Result(property = "newDepTime", column = "new_dep_time", javaType = LocalDateTime.class),
+            @Result(property = "newArrTime", column = "new_arr_time", javaType = LocalDateTime.class),
+            @Result(property = "impactEventTimeSlot", column = "impact_time_slot_id", javaType = UUID.class),
+    })
+    List<Objects> getAllHistory();
+
+    @Select("SELECT id, timestamp, flight_id, old_gate_id, new_gate_id, old_dep_time, old_arr_time, new_dep_time, new_arr_time, impact_time_slot_id FROM flight_slots_history WHERE impact_time_slot_id = #{impactTimeSlotId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    @ResultMap("historySlotResults")
+    List<Objects> getHistoryForImpactEventTimeSlotId(UUID impactTimeSlotId);
 }

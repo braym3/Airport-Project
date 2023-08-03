@@ -1,12 +1,15 @@
 package com.example.airportproject.dao.impl;
 
 import com.example.airportproject.dao.ImpactEventDao;
+import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.repository.ImpactEventRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Repository
@@ -41,5 +44,20 @@ public class ImpactEventDaoImpl implements ImpactEventDao {
     @Override
     public ImpactEvent remove(UUID id) {
         return impactEventRepo.remove(id);
+    }
+
+    @Override
+    public void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId){
+        impactEventRepo.createHistorySlot(flight, oldGateId, newGateId, oldDepTime, newDepTime, oldArrTime, newArrTime, impactTimeSlotId);
+    }
+
+    @Override
+    public List<Objects> getAllHistory(){
+        return impactEventRepo.getAllHistory();
+    }
+
+    @Override
+    public List<Objects> getHistoryForImpactEventTimeSlotId(UUID impactTimeSlotId){
+        return impactEventRepo.getHistoryForImpactEventTimeSlotId(impactTimeSlotId);
     }
 }

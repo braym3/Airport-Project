@@ -179,7 +179,7 @@ public class ImpactEventTimeSlotHandler{
         // identify which flights are assigned to this gate in the affected time frame
         List<Flight> impactedFlights = getImpactedFlightsFromGate(selectedGate, impactEventTimeSlot);
         // for each flight that needs to be re-assigned try to find the closest availability
-        flightSchedulerService.scheduleFlights(impactedFlights, true);
+        flightSchedulerService.scheduleFlights(impactedFlights, impactEventTimeSlot);
     }
 
     // redo schedules when a runway is disrupted
@@ -187,7 +187,7 @@ public class ImpactEventTimeSlotHandler{
         // identify which flights are assigned to this gate in the affected time frame
         List<Flight> impactedFlights = getImpactedFlightsFromRunway(selectedRunway, impactEventTimeSlot);
         // for each flight that needs to be re-assigned try to find the closest availability
-        flightSchedulerService.scheduleFlights(impactedFlights, true);
+        flightSchedulerService.scheduleFlights(impactedFlights, impactEventTimeSlot);
     }
 
     // redo schedules when a flight is disrupted
@@ -195,7 +195,7 @@ public class ImpactEventTimeSlotHandler{
         // identify which flights are assigned to this gate in the affected time frame
         List<Flight> impactedFlights = new ArrayList<>(Arrays.asList(selectedFlight));
         // for each flight that needs to be re-assigned try to find the closest availability
-        flightSchedulerService.scheduleFlights(impactedFlights, true);
+        flightSchedulerService.scheduleFlights(impactedFlights, impactEventTimeSlot);
     }
 
     public List<TimeSlot> triggerImpactEvents() {
