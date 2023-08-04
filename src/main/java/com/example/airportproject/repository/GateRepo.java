@@ -17,7 +17,7 @@ public interface GateRepo{
     // gate - updated gate object to save the updated values of
     Gate update(Gate gate);
 
-    Gate remove(UUID id);
+    void remove(UUID id);
 
     // clear table
     void clear();
@@ -32,5 +32,5 @@ public interface GateRepo{
 
     void removeTimeSlotForGate(UUID timeSlotId);
 
-    TimeSlot removeGateTimeSlotByFlightId(UUID flightId);
+    void removeGateTimeSlotByFlightId(UUID flightId);
 }

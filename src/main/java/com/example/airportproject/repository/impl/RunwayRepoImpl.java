@@ -42,8 +42,8 @@ public class RunwayRepoImpl implements RunwayRepo {
     }
 
     @Override
-    public Runway remove(UUID id) {
-        return runwayMapper.remove(id);
+    public void remove(UUID id) {
+        runwayMapper.remove(id);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class RunwayRepoImpl implements RunwayRepo {
 
     @Override
     public void addRunwaySlot(TimeSlot timeSlot){
-        timeSlotMapper.createTimeSlotForRunway(timeSlot);
+        timeSlotMapper.createTimeSlot(timeSlot);
     }
 
     @Override
@@ -73,16 +73,11 @@ public class RunwayRepoImpl implements RunwayRepo {
 
     @Override
     public void removeTimeSlotForRunway(UUID timeSlotId){
-        timeSlotMapper.removeTimeSlotForRunway(timeSlotId);
+        timeSlotMapper.removeTimeSlot(timeSlotId);
     }
 
     @Override
-    public TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId) {
-        return timeSlotMapper.removeRunwayTimeSlotByFlightId(flightId);
-    }
-
-    @Override
-    public void clearRunwayTimeSlots() {
-        timeSlotMapper.clearRunwayTimeSlots();
+    public void removeRunwayTimeSlotByFlightId(UUID flightId) {
+        timeSlotMapper.removeRunwayTimeSlotByFlightId(flightId);
     }
 }

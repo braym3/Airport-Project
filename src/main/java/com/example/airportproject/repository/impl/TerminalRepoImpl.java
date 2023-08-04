@@ -40,8 +40,8 @@ public class TerminalRepoImpl implements TerminalRepo {
     }
 
     @Override
-    public Terminal remove(UUID id) {
-        return terminalMapper.remove(id);
+    public void remove(UUID id) {
+        terminalMapper.remove(id);
     }
 
     @Override

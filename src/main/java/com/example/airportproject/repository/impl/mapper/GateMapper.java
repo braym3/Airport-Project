@@ -38,7 +38,7 @@ public interface GateMapper {
     Gate update(Gate gate);
 
     @Delete("DELETE FROM gates WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
-    Gate remove(@Param("id") UUID id);
+    void remove(@Param("id") UUID id);
 
     @Delete("DELETE FROM gates")
     void clear();

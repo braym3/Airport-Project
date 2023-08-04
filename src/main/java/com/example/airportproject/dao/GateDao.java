@@ -15,7 +15,7 @@ public interface GateDao {
 
     Gate update(Gate gate);
 
-    Gate remove(UUID id);
+    void remove(UUID id);
 
     void addGateSlot(TimeSlot timeSlot);
 
@@ -27,5 +27,5 @@ public interface GateDao {
 
     void removeTimeSlotForGate(UUID timeSlotId);
 
-    TimeSlot removeGateTimeSlotByFlightId(UUID flightId);
+    void removeGateTimeSlotByFlightId(UUID flightId);
 }

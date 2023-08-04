@@ -49,7 +49,7 @@ public interface TerminalMapper {
     Terminal update(@Param("id") UUID id, @Param("number") Integer number);
 
     @Delete("DELETE FROM terminals WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
-    Terminal remove(@Param("id") UUID id);
+    void remove(@Param("id") UUID id);
 
     @Delete("DELETE FROM terminals")
     void clear();

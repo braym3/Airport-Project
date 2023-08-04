@@ -40,8 +40,8 @@ public class GateDaoImpl implements GateDao {
     }
 
     @Override
-    public Gate remove(UUID id) {
-        return gateRepo.remove(id);
+    public void remove(UUID id) {
+        gateRepo.remove(id);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class GateDaoImpl implements GateDao {
     }
 
     @Override
-    public TimeSlot removeGateTimeSlotByFlightId(UUID flightId) {
-        return gateRepo.removeGateTimeSlotByFlightId(flightId);
+    public void removeGateTimeSlotByFlightId(UUID flightId) {
+        gateRepo.removeGateTimeSlotByFlightId(flightId);
     }
 }

@@ -92,11 +92,6 @@ public class FlightSchedulerService {
 
     // returns a boolean for whether it was successful in assigning a suitable pair of runway and gate time slots for the flight
     private List<Schedulable> findClosestAvailableSlots(Flight flight, boolean isDeparture, Map<Runway, List<TimeSlot>> runwayAvailabilityMap, Map<Gate, List<TimeSlot>> gateAvailabilityMap, boolean reassigning, TimeSlot impactEventTimeSlot){
-        for(Map.Entry<Runway, List<TimeSlot>> runwayEntry : runwayAvailabilityMap.entrySet()){
-            System.out.println("runway: " + runwayEntry.getKey().getNumber());
-            runwayEntry.getValue().forEach(timeSlot -> System.out.println("Start time: " + timeSlot.getStartTime() + ", End time: " + timeSlot.getEndTime()));
-        }
-
         LocalDateTime originalTime = flight.getFlightTimeForAirport(airportCode);
         LocalDateTime closestIntersectingTime = null;
         Gate closestGate = null;
@@ -115,9 +110,6 @@ public class FlightSchedulerService {
             for (TimeSlot gateTimeSlot : gateTimeSlots) {
                 LocalDateTime gateStartTime = gateTimeSlot.getStartTime();
                 LocalDateTime gateEndTime = gateTimeSlot.getEndTime();
-
-//                System.out.println("start = " + gateStartTime + "     end = " + gateEndTime);
-//                System.out.println();
 
                 for (Map.Entry<Runway, List<TimeSlot>> runwayEntry : runwayAvailabilityMap.entrySet()) {
                     Runway runway = runwayEntry.getKey();
@@ -146,30 +138,28 @@ public class FlightSchedulerService {
                         }
 
                         LocalDateTime[] overlap = findOverlap(gateIntersectionStart, gateIntersectionEnd, runwayIntersectionStart, runwayIntersectionEnd);
-                        if(overlap == null){
-                            System.out.println("no overlap");
-                            continue;
-                        }
-                        LocalDateTime intersectionStartTime = overlap[0];
-                        LocalDateTime intersectionEndTime = overlap[1];
-                        intersectionStartTime = originalTime.isAfter(intersectionStartTime) && originalTime.isBefore(intersectionEndTime) ? originalTime : intersectionStartTime;
+                        if(overlap != null){
+                            LocalDateTime intersectionStartTime = overlap[0];
+                            LocalDateTime intersectionEndTime = overlap[1];
+                            intersectionStartTime = originalTime.isAfter(intersectionStartTime) && originalTime.isBefore(intersectionEndTime) ? originalTime : intersectionStartTime;
 
-                        // Check if the intersecting time range overlaps with the originalTime
-                        if ((originalTime.isAfter(intersectionStartTime) || originalTime.isEqual(intersectionStartTime)) && originalTime.isBefore(intersectionEndTime)) {
-                            // Calculate the duration between originalTime and the intersecting start time
-                            Duration duration = Duration.between(originalTime, intersectionStartTime);
+                            // Check if the intersecting time range overlaps with the originalTime
+                            if ((intersectionStartTime.isAfter(originalTime) || originalTime.isEqual(intersectionStartTime)) && originalTime.isBefore(intersectionEndTime)) {
+                                // Calculate the duration between originalTime and the intersecting start time
+                                Duration duration = Duration.between(originalTime, intersectionStartTime);
 
-                            // Check if the duration is positive or zero, meaning intersectingStartTime is after or equal to originalTime
-                            if (!duration.isNegative()) {
-                                long currentDuration = duration.toMinutes();
-                                if (currentDuration < closestDuration) {
-                                    closestDuration = currentDuration;
-                                    closestIntersectingTime = intersectionStartTime;
-                                    closestGate = gate;
-                                    closestRunway = runway;
-                                    if(closestDuration == 0){
-                                        finished = true;
-                                        break;
+                                // Check if the duration is positive or zero, meaning intersectingStartTime is after or equal to originalTime
+                                if (!duration.isNegative()) {
+                                    long currentDuration = duration.toMinutes();
+                                    if (currentDuration < closestDuration) {
+                                        closestDuration = currentDuration;
+                                        closestIntersectingTime = intersectionStartTime;
+                                        closestGate = gate;
+                                        closestRunway = runway;
+                                        if(closestDuration == 0){
+                                            finished = true;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -190,8 +180,8 @@ public class FlightSchedulerService {
 
         if (closestIntersectingTime != null) {
             System.out.println("Closest intersecting time: " + closestIntersectingTime);
-            System.out.println("Gate: " + closestGate);
-            System.out.println("Runway: " + closestRunway);
+            System.out.println("Gate: " + closestGate.getTerminal().getNumber() + "-" + closestGate.getNumber());
+            System.out.println("Runway: " + closestRunway.getNumber());
             System.out.println();
             // if the flight is being reassigned - delete any old time slots for the flight
             if(reassigning){
@@ -210,7 +200,7 @@ public class FlightSchedulerService {
         LocalDateTime startOverlap = startTime1.isAfter(startTime2)? startTime1 : startTime2;
         LocalDateTime endOverlap = endTime1.isBefore(endTime2) ? endTime1 : endTime2;
 
-        if(startOverlap.isBefore(endOverlap)){
+        if(startOverlap.isBefore(endOverlap) || startOverlap.isEqual(endOverlap)){
             return new LocalDateTime[]{startOverlap, endOverlap};
         }
         // no overlap
@@ -222,13 +212,13 @@ public class FlightSchedulerService {
             boolean isDeparture = flight.isDeparture(airportCode);
 
             // add a new time slot to the gate schedule
-            TimeSlot gateTimeSlot = new TimeSlot(availableGate, flight, getGateSlotStartTime(isDeparture, flightTime), getGateSlotEndTime(isDeparture, flightTime), null);
+            TimeSlot gateTimeSlot = new TimeSlot(availableGate, flight, getGateSlotStartTime(isDeparture, flightTime), getGateSlotEndTime(isDeparture, flightTime), null, null);
             availableGate.addTimeSlot(gateTimeSlot);
             // add the new time slot to the database
             gateService.addGateSlot(gateTimeSlot);
 
             // add a new time slot to the runway schedule
-            TimeSlot runwayTimeSlot = new TimeSlot(availableRunway, flight, getRunwaySlotStartTime(isDeparture, flightTime), getRunwaySlotEndTime(isDeparture, flightTime), null);
+            TimeSlot runwayTimeSlot = new TimeSlot(null, flight, getRunwaySlotStartTime(isDeparture, flightTime), getRunwaySlotEndTime(isDeparture, flightTime), null, availableRunway);
             availableRunway.addTimeSlot(runwayTimeSlot);
             // add the new time slot to the database
             runwayService.addRunwaySlot(runwayTimeSlot);

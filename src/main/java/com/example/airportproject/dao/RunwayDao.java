@@ -15,7 +15,7 @@ public interface RunwayDao {
 
     Runway update(Runway runway);
 
-    Runway remove(UUID id);
+    void remove(UUID id);
 
     void addRunwaySlot(TimeSlot timeSlot);
 
@@ -27,5 +27,5 @@ public interface RunwayDao {
 
     void removeTimeSlotForRunway(UUID timeSlotId);
 
-    TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId);
+    void removeRunwayTimeSlotByFlightId(UUID flightId);
 }

@@ -42,8 +42,8 @@ public class GateRepoImpl implements GateRepo {
     }
 
     @Override
-    public Gate remove(UUID id) {
-        return gateMapper.remove(id);
+    public void remove(UUID id) {
+        gateMapper.remove(id);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class GateRepoImpl implements GateRepo {
 
     @Override
     public void addGateSlot(TimeSlot timeSlot){
-        timeSlotMapper.createTimeSlotForGate(timeSlot);
+        timeSlotMapper.createTimeSlot(timeSlot);
     }
 
     @Override
@@ -68,16 +68,16 @@ public class GateRepoImpl implements GateRepo {
 
     @Override
     public List<TimeSlot> getAllGatesTimeSlots() {
-        return timeSlotMapper.selectAllGatesTimeSlots();
+        return timeSlotMapper.getAllTimeSlots();
     }
 
     @Override
     public void removeTimeSlotForGate(UUID timeSlotId){
-        timeSlotMapper.removeTimeSlotForGate(timeSlotId);
+        timeSlotMapper.removeTimeSlot(timeSlotId);
     }
 
     @Override
-    public TimeSlot removeGateTimeSlotByFlightId(UUID flightId) {
-        return timeSlotMapper.removeGateTimeSlotByFlightId(flightId);
+    public void removeGateTimeSlotByFlightId(UUID flightId) {
+        timeSlotMapper.removeGateTimeSlotByFlightId(flightId);
     }
 }

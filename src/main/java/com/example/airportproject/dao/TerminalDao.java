@@ -10,5 +10,5 @@ public interface TerminalDao {
     Terminal get(UUID id);
     Terminal create(Terminal terminal, UUID terminalId);
     Terminal update(Terminal terminal);
-    Terminal remove(UUID id);
+    void remove(UUID id);
 }

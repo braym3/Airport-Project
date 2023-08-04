@@ -40,8 +40,8 @@ public class RunwayDaoImpl implements RunwayDao {
     }
 
     @Override
-    public Runway remove(UUID id) {
-        return runwayRepo.remove(id);
+    public void remove(UUID id) {
+        runwayRepo.remove(id);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class RunwayDaoImpl implements RunwayDao {
     }
 
     @Override
-    public TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId) {
-        return runwayRepo.removeRunwayTimeSlotByFlightId(flightId);
+    public void removeRunwayTimeSlotByFlightId(UUID flightId) {
+        runwayRepo.removeRunwayTimeSlotByFlightId(flightId);
     }
 }

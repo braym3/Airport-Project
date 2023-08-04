@@ -39,7 +39,7 @@ public class TerminalDaoImpl implements TerminalDao {
     }
 
     @Override
-    public Terminal remove(UUID id) {
-        return terminalRepo.remove(id);
+    public void remove(UUID id) {
+        terminalRepo.remove(id);
     }
 }

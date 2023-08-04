@@ -15,7 +15,7 @@ public interface RunwayRepo {
 
     Runway update(Runway runway);
 
-    Runway remove(UUID id);
+    void remove(UUID id);
 
     void clear();
 
@@ -29,7 +29,5 @@ public interface RunwayRepo {
 
     void removeTimeSlotForRunway(UUID timeSlotId);
 
-    TimeSlot removeRunwayTimeSlotByFlightId(UUID flightId);
-
-    void clearRunwayTimeSlots();
+    void removeRunwayTimeSlotByFlightId(UUID flightId);
 }

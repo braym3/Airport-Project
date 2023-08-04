@@ -198,10 +198,6 @@ public class Gate implements Schedulable{
         return true;
     }
 
-    public void printSchedule(){
-        System.out.println(getSchedule().toString());
-    }
-
     @Override
     public String toString() {
         return "Gate{" +

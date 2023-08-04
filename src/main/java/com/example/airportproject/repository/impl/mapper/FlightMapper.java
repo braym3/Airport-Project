@@ -30,14 +30,6 @@ public interface FlightMapper {
     })
     List<Flight> getAll();
 
-//    @Select("SELECT gates.id, gates.number FROM gates LEFT JOIN flights ON gates.id = flights.gate_id WHERE flights.id = #{flightId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
-//    @Results(value = {
-//            @Result(property = "id", column = "id", javaType = UUID.class),
-//            @Result(property = "number", column = "number"),
-//            //@Result(property = "terminalId", column = "terminal_id", javaType = UUID.class, typeHandler = UUIDTypeHandler.class)
-//    })
-//    Gate selectGateForFlight(@Param("flightId") UUID flightId);
-
     @ResultMap("flightResults")
     @Select("SELECT id, airline_iata, dep_iata, arr_iata, status, aircraft_icao, flight_iata, dep_time, arr_time, duration, gate_id, runway_id FROM flights WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     Flight get(@Param("id") UUID id);

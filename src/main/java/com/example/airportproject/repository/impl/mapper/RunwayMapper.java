@@ -35,7 +35,7 @@ public interface RunwayMapper {
     Runway update(Runway gate);
 
     @Delete("DELETE FROM runways WHERE id = #{id, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
-    Runway remove(@Param("id") UUID id);
+    void remove(@Param("id") UUID id);
 
     @Delete("DELETE FROM runways")
     void clear();

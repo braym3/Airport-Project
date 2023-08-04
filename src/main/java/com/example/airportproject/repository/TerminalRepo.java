@@ -16,7 +16,7 @@ public interface TerminalRepo{
     // terminal - updated terminal object to save the updated values of
     Terminal update(Terminal terminal);
 
-    Terminal remove(UUID id);
+    void remove(UUID id);
 
     // clear table
     void clear();

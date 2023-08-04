@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.util.List;
 import java.util.UUID;
 
@@ -93,5 +94,9 @@ public class GateServiceImpl implements GateService {
     }
 
     @Override
-    public TimeSlot removeGateTimeSlotByFlightId(UUID flightId){return gateDao.removeGateTimeSlotByFlightId(flightId);}
+    public TimeSlot removeGateTimeSlotByFlightId(UUID flightId){
+        TimeSlot removed = getGateTimeSlotByFlightId(flightId);
+        gateDao.removeGateTimeSlotByFlightId(flightId);
+        return removed;
+    }
 }

@@ -50,7 +50,7 @@ public class ImpactEventTimeSlotHandler{
         return eventStartTime.plusMinutes(randomDuration);
     }
 
-    public TimeSlot createImpactEventTimeSlot(Gate gate, ImpactEvent impactEvent){
+    public TimeSlot createImpactEventTimeSlot(Gate gate, ImpactEvent impactEvent, Runway runway){
         // event should happen in time period between first and last flight
         // get the time of the first flight
         LocalDateTime firstFlightTime = flightService.getFirstFlightTime(airportCode);
@@ -60,7 +60,7 @@ public class ImpactEventTimeSlotHandler{
         // generate random start and end time for the event (between these 2 flight times)
         LocalDateTime eventStartTime = createRandomStartTime(firstFlightTime, lastFlightTime);
         LocalDateTime eventEndTime = createRandomEndTime(eventStartTime, impactEvent);
-        return new TimeSlot(gate, null, eventStartTime, eventEndTime, impactEvent);
+        return new TimeSlot(gate, null, eventStartTime, eventEndTime, impactEvent, runway);
     }
 
     public TimeSlot closeRandomGate(ImpactEvent impactEvent){
@@ -72,7 +72,7 @@ public class ImpactEventTimeSlotHandler{
         Gate selectedGate = gates.get(randomIndex);
 
         // create impact event for gate closure
-        TimeSlot gateClosedSlot = createImpactEventTimeSlot(selectedGate, impactEvent);
+        TimeSlot gateClosedSlot = createImpactEventTimeSlot(selectedGate, impactEvent, null);
         // save the gate closed time slot to the gate slots table
         gateService.addGateSlot(gateClosedSlot);
 
