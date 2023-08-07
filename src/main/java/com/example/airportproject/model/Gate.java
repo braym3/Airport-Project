@@ -2,6 +2,7 @@ package com.example.airportproject.model;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import java.util.*;
 /**
 * Represents a gate in an airport
 */
+@JsonSerialize(using = GateSerializer.class)
 public class Gate implements Schedulable{
     private UUID id;
     @Min(0)

@@ -1,5 +1,8 @@
 package com.example.airportproject.service.gates;
 
+import com.example.airportproject.dto.GateDTO;
+import com.example.airportproject.dto.GateSlotDTO;
+import com.example.airportproject.dto.TimeSlotDTO;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
@@ -61,4 +64,13 @@ public interface GateService {
     void removeTimeSlotForGate(UUID timeSlotId);
 
     TimeSlot removeGateTimeSlotByFlightId(UUID flightId);
+
+    // convert a Gate object to a GateDTO
+    GateDTO convertToDTO(Gate gate);
+
+    List<GateDTO> convertToDTOList(List<Gate> gates);
+
+    GateSlotDTO convertTimeSlotToGateSlotDTO(TimeSlot timeSlot);
+
+    List<GateSlotDTO> convertTimeSlotsToGateSlotDTOList(List<TimeSlot> timeSlots);
 }

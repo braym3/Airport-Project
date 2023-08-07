@@ -1,5 +1,6 @@
 package com.example.airportproject.service.flights;
 
+import com.example.airportproject.dto.FlightDTO;
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.Gate;
 
@@ -91,4 +92,9 @@ public interface FlightService {
      * @return the time of the flight (departure time if the flight is departing, or arrival time if the flight is arriving)
      */
     LocalDateTime getLastFlightTime(String airportIata);
+
+    // convert a Flight object to a FlightDTO
+    FlightDTO convertToDTO(Flight flight);
+
+    List<FlightDTO> convertToDTOList(List<Flight> flights);
 }

@@ -1,5 +1,7 @@
 package com.example.airportproject.controller;
 
+import com.example.airportproject.dto.GateDTO;
+import com.example.airportproject.dto.GateSlotDTO;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
@@ -12,7 +14,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -30,90 +31,99 @@ public class GateController {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/")
-    public ResponseEntity<List<Gate>> getGates() {
+    public ResponseEntity<List<GateDTO>> getGates() {
         logger.debug("Controller getting all gates");
         List<Gate> gates = gateService.getAll();
+        List<GateDTO> gateDTOs = gateService.convertToDTOList(gates);
         return ResponseEntity.ok()
-                .body(gates);
+                .body(gateDTOs);
     }
 
     @CrossOrigin
     @GetMapping("/{id}")
-    public ResponseEntity<Gate> getGateById(@PathVariable UUID id){
+    public ResponseEntity<GateDTO> getGateById(@PathVariable UUID id){
         logger.debug("Controller getting gate with ID {}", id);
         Gate found = gateService.get(id);
+        GateDTO gateDTO = gateService.convertToDTO(found);
         return ResponseEntity.ok()
-                .body(found);
+                .body(gateDTO);
     }
 
     @CrossOrigin
     @PostMapping("/")
-    public ResponseEntity<Gate> createGate(@Valid @NotNull @RequestBody Gate gate){
+    public ResponseEntity<GateDTO> createGate(@Valid @NotNull @RequestBody Gate gate){
         logger.debug("Controller creating gate");
         Gate created = gateService.createGate(gate);
+        GateDTO gateDTO = gateService.convertToDTO(created);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(created.getId()).toUri();
 
         return ResponseEntity.created(location)
-                .body(created);
+                .body(gateDTO);
     }
 
     @CrossOrigin
     @PatchMapping("/{id}")
-    public ResponseEntity<Gate> update(@PathVariable UUID id,
+    public ResponseEntity<GateDTO> update(@PathVariable UUID id,
                                              @RequestParam(name = "number") int number,
                                              @RequestParam(name = "terminal", required = false) Terminal terminal,
                                              @RequestParam(name = "schedule", required = false) List<TimeSlot> schedule){
         logger.debug("Controller updating gate with ID {}", id);
         Gate updated = gateService.update(id, number, terminal, schedule);
+        GateDTO gateDTO = gateService.convertToDTO(updated);
         return ResponseEntity.ok()
-                .body(updated);
+                .body(gateDTO);
     }
 
     @CrossOrigin
     @DeleteMapping("/{id}")
-    public ResponseEntity<Gate> remove(@PathVariable UUID id){
+    public ResponseEntity<GateDTO> remove(@PathVariable UUID id){
         logger.debug("Controller removing gate with ID {}", id);
         Gate deleted = gateService.remove(id);
+        GateDTO gateDTO = gateService.convertToDTO(deleted);
         return ResponseEntity.ok()
-                .body(deleted);
+                .body(gateDTO);
     }
 
     @CrossOrigin
     @DeleteMapping("/flight/delete/{flightId}")
-    public ResponseEntity<TimeSlot> removeGateTimeSlotByFlightId(@PathVariable UUID flightId){
+    public ResponseEntity<GateSlotDTO> removeGateTimeSlotByFlightId(@PathVariable UUID flightId){
         logger.debug("Controller removing gate time slot for flight ID {}", flightId);
         TimeSlot deleted = gateService.removeGateTimeSlotByFlightId(flightId);
+        GateSlotDTO gateSlotDTO = gateService.convertTimeSlotToGateSlotDTO(deleted);
         return ResponseEntity.ok()
-                .body(deleted);
+                .body(gateSlotDTO);
     }
 
     @CrossOrigin
     @GetMapping("/flight/{flightId}")
-    public ResponseEntity<TimeSlot> getGateTimeSlotByFlightId(@PathVariable UUID flightId){
+    public ResponseEntity<GateSlotDTO> getGateTimeSlotByFlightId(@PathVariable UUID flightId){
         logger.debug("Controller getting gate time slot for flight ID {}", flightId);
         TimeSlot found = gateService.getGateTimeSlotByFlightId(flightId);
+        GateSlotDTO gateSlotDTO = gateService.convertTimeSlotToGateSlotDTO(found);
         return ResponseEntity.ok()
-                .body(found);
+                .body(gateSlotDTO);
     }
 
     @CrossOrigin
     @GetMapping("/schedule/{gateId}")
-    public ResponseEntity<List<TimeSlot>> getScheduleForGate(@PathVariable UUID gateId){
+    public ResponseEntity<List<GateSlotDTO>> getScheduleForGate(@PathVariable UUID gateId){
         logger.debug("Controller getting schedule for gate ID {}", gateId);
         List<TimeSlot> found = gateService.getScheduleForGate(gateId);
+        List<GateSlotDTO> gateSlotDTOs = gateService.convertTimeSlotsToGateSlotDTOList(found);
         return ResponseEntity.ok()
-                .body(found);
+                .body(gateSlotDTOs);
     }
 
     @CrossOrigin
     @GetMapping("/schedule/")
-    public ResponseEntity<List<TimeSlot>> getAllGatesTimeSlots(){
+    public ResponseEntity<List<GateSlotDTO>> getAllGatesTimeSlots(){
         logger.debug("Controller getting schedules for all gates");
         List<TimeSlot> found = gateService.getAllGatesTimeSlots();
+        List<GateSlotDTO> gateSlotDTOs = gateService.convertTimeSlotsToGateSlotDTOList(found);
         return ResponseEntity.ok()
-                .body(found);
+                .body(gateSlotDTOs);
     }
 }

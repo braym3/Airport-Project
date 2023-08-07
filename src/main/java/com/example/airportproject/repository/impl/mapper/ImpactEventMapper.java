@@ -44,10 +44,10 @@ public interface ImpactEventMapper {
 
     // insert new record into flight slots history table
     @Insert(
-            "INSERT INTO flight_slots_history (flight_id, old_gate_id, new_gate_id, old_dep_time, old_arr_time, new_dep_time, new_arr_time, impact_time_slot_id) VALUES (#{flight.id}, #{oldGateId}, #{newGateId}, #{oldDepTime}, #{oldArrTime}, #{newDepTime}, #{newArrTime}, #{impactTimeSlotId})")
-    void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId);
+            "INSERT INTO flight_slots_history (flight_id, old_gate_id, new_gate_id, old_dep_time, old_arr_time, new_dep_time, new_arr_time, impact_time_slot_id, old_runway_id, new_runway_id) VALUES (#{flight.id}, #{oldGateId}, #{newGateId}, #{oldDepTime}, #{oldArrTime}, #{newDepTime}, #{newArrTime}, #{impactTimeSlotId}, #{oldRunwayId}, #{newRunwayId})")
+    void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId, UUID oldRunwayId, UUID newRunwayId);
 
-    @Select("SELECT id, timestamp, flight_id, old_gate_id, new_gate_id, old_dep_time, old_arr_time, new_dep_time, new_arr_time, impact_time_slot_id FROM flight_slots_history")
+    @Select("SELECT id, timestamp, flight_id, old_gate_id, new_gate_id, old_dep_time, old_arr_time, new_dep_time, new_arr_time, impact_time_slot_id, old_runway_id, new_runway_id FROM flight_slots_history")
     @Results(id = "historySlotResults", value = {
             @Result(property = "id", column = "id", javaType = UUID.class),
             @Result(property = "timestamp", column = "timestamp", javaType = LocalDateTime.class),
@@ -59,10 +59,12 @@ public interface ImpactEventMapper {
             @Result(property = "newDepTime", column = "new_dep_time", javaType = LocalDateTime.class),
             @Result(property = "newArrTime", column = "new_arr_time", javaType = LocalDateTime.class),
             @Result(property = "impactEventTimeSlot", column = "impact_time_slot_id", javaType = UUID.class),
+            @Result(property = "oldRunway", column = "old_runway_id", javaType = UUID.class),
+            @Result(property = "newRunway", column = "new_runway_id", javaType = UUID.class)
     })
     List<Objects> getAllHistory();
 
-    @Select("SELECT id, timestamp, flight_id, old_gate_id, new_gate_id, old_dep_time, old_arr_time, new_dep_time, new_arr_time, impact_time_slot_id FROM flight_slots_history WHERE impact_time_slot_id = #{impactTimeSlotId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
+    @Select("SELECT id, timestamp, flight_id, old_gate_id, new_gate_id, old_dep_time, old_arr_time, new_dep_time, new_arr_time, impact_time_slot_id, old_runway_id, new_runway_id FROM flight_slots_history WHERE impact_time_slot_id = #{impactTimeSlotId, javaType=java.util.UUID, jdbcType=OTHER, typeHandler=UUIDTypeHandler}")
     @ResultMap("historySlotResults")
     List<Objects> getHistoryForImpactEventTimeSlotId(UUID impactTimeSlotId);
 }

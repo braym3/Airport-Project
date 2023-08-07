@@ -47,8 +47,8 @@ public class ImpactEventDaoImpl implements ImpactEventDao {
     }
 
     @Override
-    public void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId){
-        impactEventRepo.createHistorySlot(flight, oldGateId, newGateId, oldDepTime, newDepTime, oldArrTime, newArrTime, impactTimeSlotId);
+    public void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId, UUID oldRunwayId, UUID newRunwayId){
+        impactEventRepo.createHistorySlot(flight, oldGateId, newGateId, oldDepTime, newDepTime, oldArrTime, newArrTime, impactTimeSlotId, oldRunwayId, newRunwayId);
     }
 
     @Override

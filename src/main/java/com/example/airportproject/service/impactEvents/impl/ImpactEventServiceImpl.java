@@ -1,6 +1,7 @@
 package com.example.airportproject.service.impactEvents.impl;
 
 import com.example.airportproject.dao.ImpactEventDao;
+import com.example.airportproject.dto.ImpactEventDTO;
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.model.TimeSlot;
@@ -78,8 +79,8 @@ public class ImpactEventServiceImpl implements ImpactEventService {
     }
 
     @Override
-    public void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId){
-        impactEventDao.createHistorySlot(flight, oldGateId, newGateId, oldDepTime, newDepTime, oldArrTime, newArrTime, impactTimeSlotId);
+    public void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId, UUID oldRunwayId, UUID newRunwayId){
+        impactEventDao.createHistorySlot(flight, oldGateId, newGateId, oldDepTime, newDepTime, oldArrTime, newArrTime, impactTimeSlotId, oldRunwayId, newRunwayId);
     }
 
     @Override
@@ -90,5 +91,18 @@ public class ImpactEventServiceImpl implements ImpactEventService {
     @Override
     public List<Objects> getHistoryForImpactEventTimeSlotId(UUID impactTimeSlotId){
         return impactEventDao.getHistoryForImpactEventTimeSlotId(impactTimeSlotId);
+    }
+
+    @Override
+    public ImpactEventDTO convertToDTO(ImpactEvent impactEvent){
+        ImpactEventDTO impactEventDTO = new ImpactEventDTO();
+        impactEventDTO.setId(impactEvent.getId());
+        impactEventDTO.setType(impactEvent.getType());
+        impactEventDTO.setDescription(impactEvent.getDescription());
+        impactEventDTO.setProbability(impactEvent.getProbability());
+        impactEventDTO.setMinDuration(impactEvent.getMinDuration());
+        impactEventDTO.setMaxDuration(impactEvent.getMaxDuration());
+        impactEventDTO.setImpacts(impactEvent.getImpacts().getName());
+        return impactEventDTO;
     }
 }

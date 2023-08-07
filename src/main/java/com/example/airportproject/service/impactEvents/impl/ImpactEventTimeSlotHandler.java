@@ -5,6 +5,8 @@ import com.example.airportproject.service.flights.FlightService;
 import com.example.airportproject.service.gates.GateService;
 import com.example.airportproject.service.impactEvents.ImpactEventService;
 import com.example.airportproject.service.runways.impl.FlightSchedulerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,8 @@ public class ImpactEventTimeSlotHandler{
 
     @Value("${airportproject.airportcode}")
     String airportCode;
+
+    private final Logger logger = LoggerFactory.getLogger(ImpactEventTimeSlotHandler.class);
 
     public ImpactEventTimeSlotHandler(ImpactEventService impactEventService, FlightService flightService, GateService gateService, FlightSchedulerService flightSchedulerService) {
         this.impactEventService = impactEventService;
@@ -60,6 +64,7 @@ public class ImpactEventTimeSlotHandler{
         // generate random start and end time for the event (between these 2 flight times)
         LocalDateTime eventStartTime = createRandomStartTime(firstFlightTime, lastFlightTime);
         LocalDateTime eventEndTime = createRandomEndTime(eventStartTime, impactEvent);
+
         return new TimeSlot(gate, null, eventStartTime, eventEndTime, impactEvent, runway);
     }
 
@@ -73,7 +78,7 @@ public class ImpactEventTimeSlotHandler{
 
         // create impact event for gate closure
         TimeSlot gateClosedSlot = createImpactEventTimeSlot(selectedGate, impactEvent, null);
-        // save the gate closed time slot to the gate slots table
+        // save the gate closed time slot to the timeslots table
         gateService.addGateSlot(gateClosedSlot);
 
         // re-organise schedule and persist the updated gate with its new schedule
@@ -178,6 +183,7 @@ public class ImpactEventTimeSlotHandler{
     private void redoSchedules(Gate selectedGate, TimeSlot impactEventTimeSlot){
         // identify which flights are assigned to this gate in the affected time frame
         List<Flight> impactedFlights = getImpactedFlightsFromGate(selectedGate, impactEventTimeSlot);
+        logger.debug("ImpactEventTimeSlotHandler found {} impacted flights from impact event slot with id {}", impactedFlights.size(), impactEventTimeSlot.getId());
         // for each flight that needs to be re-assigned try to find the closest availability
         flightSchedulerService.scheduleFlights(impactedFlights, impactEventTimeSlot);
     }
@@ -186,6 +192,7 @@ public class ImpactEventTimeSlotHandler{
     private void redoSchedules(Runway selectedRunway, TimeSlot impactEventTimeSlot){
         // identify which flights are assigned to this gate in the affected time frame
         List<Flight> impactedFlights = getImpactedFlightsFromRunway(selectedRunway, impactEventTimeSlot);
+        logger.debug("ImpactEventTimeSlotHandler found {} impacted flights from impact event slot with id {}", impactedFlights.size(), impactEventTimeSlot.getId());
         // for each flight that needs to be re-assigned try to find the closest availability
         flightSchedulerService.scheduleFlights(impactedFlights, impactEventTimeSlot);
     }
@@ -194,6 +201,7 @@ public class ImpactEventTimeSlotHandler{
     private void redoSchedules(Flight selectedFlight, TimeSlot impactEventTimeSlot){
         // identify which flights are assigned to this gate in the affected time frame
         List<Flight> impactedFlights = new ArrayList<>(Arrays.asList(selectedFlight));
+        logger.debug("ImpactEventTimeSlotHandler found impacted flights with id {} from impact event slot with id {}", selectedFlight.getId(), impactEventTimeSlot.getId());
         // for each flight that needs to be re-assigned try to find the closest availability
         flightSchedulerService.scheduleFlights(impactedFlights, impactEventTimeSlot);
     }
@@ -210,9 +218,11 @@ public class ImpactEventTimeSlotHandler{
             if(randomValue <= event.getProbability().doubleValue()){
                 // carry out the triggered impact events - reassign schedule accordingly
                 // add that impact event to the list of triggered events
+                logger.debug("ImpactEventTimeSlotHandler triggering event {}", event.getType());
                 triggeredEvents.add(closeRandomGate(event));
             }
         }
+        System.out.println("triggered events successfully");
         return triggeredEvents;
     }
 }

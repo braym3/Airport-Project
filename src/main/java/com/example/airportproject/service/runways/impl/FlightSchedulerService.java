@@ -264,7 +264,7 @@ public class FlightSchedulerService {
 
         // if the flight is being reassigned - create a history slot for it
         if(reassigning){
-            impactEventService.createHistorySlot(flight, flight.getGate().getId(), newGate.getId(), oldDepTime, newDepTime, oldArrTime, newArrTime, impactEventTimeSlot.getId());
+            impactEventService.createHistorySlot(flight, flight.getGate().getId(), newGate.getId(), oldDepTime, newDepTime, oldArrTime, newArrTime, impactEventTimeSlot.getId(), flight.getRunway().getId(), newRunway.getId());
             // if a reassigned flight is pushed back - update the flight's status to delayed
             if(!oldFlightTime.isBefore(flightTime)){
                 flight.setStatus("Delayed");

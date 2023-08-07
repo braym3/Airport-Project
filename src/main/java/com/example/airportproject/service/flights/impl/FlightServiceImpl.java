@@ -1,6 +1,7 @@
 package com.example.airportproject.service.flights.impl;
 
 import com.example.airportproject.dao.FlightDao;
+import com.example.airportproject.dto.FlightDTO;
 import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.service.flights.FlightService;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Primary
 @Service
@@ -125,5 +127,30 @@ public class FlightServiceImpl implements FlightService {
         }else{
             return lastFlight.getArrTime();
         }
+    }
+
+    // convert a Flight object to a FlightDTO
+    @Override
+    public FlightDTO convertToDTO(Flight flight){
+        FlightDTO flightDTO = new FlightDTO();
+        flightDTO.setId(flight.getId());
+        flightDTO.setFlightIata(flight.getFlightIata());
+        flightDTO.setDepIata(flight.getDepIata());
+        flightDTO.setArrIata(flight.getArrIata());
+        flightDTO.setStatus(flight.getStatus());
+        flightDTO.setAirlineIata(flight.getAirlineIata());
+        flightDTO.setAircraftIcao(flight.getAircraftIcao());
+        flightDTO.setDuration(flight.getDuration());
+        flightDTO.setDepTime(flight.getDepTime());
+        flightDTO.setArrTime(flight.getArrTime());
+        flightDTO.setGateNumber(flight.getGate().getNumber());
+        flightDTO.setTerminalNumber(flight.getGate().getTerminal().getNumber());
+        flightDTO.setRunwayNumber(flight.getRunway().getNumber());
+        return flightDTO;
+    }
+
+    @Override
+    public List<FlightDTO> convertToDTOList(List<Flight> flights){
+        return flights.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 }

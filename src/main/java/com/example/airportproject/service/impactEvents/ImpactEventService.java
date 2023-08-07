@@ -1,5 +1,6 @@
 package com.example.airportproject.service.impactEvents;
 
+import com.example.airportproject.dto.ImpactEventDTO;
 import com.example.airportproject.model.*;
 import com.example.airportproject.model.enums.Entity;
 
@@ -53,9 +54,11 @@ public interface ImpactEventService {
 
     List<TimeSlot> triggerImpactEvents();
 
-    void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId);
+    void createHistorySlot(Flight flight, UUID oldGateId, UUID newGateId, LocalDateTime oldDepTime, LocalDateTime newDepTime, LocalDateTime oldArrTime, LocalDateTime newArrTime, UUID impactTimeSlotId, UUID oldRunwayId, UUID newRunwayId);
 
     List<Objects> getAllHistory();
 
     List<Objects> getHistoryForImpactEventTimeSlotId(UUID impactTimeSlotId);
+
+    ImpactEventDTO convertToDTO(ImpactEvent impactEvent);
 }

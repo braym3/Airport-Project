@@ -1,25 +1,35 @@
 package com.example.airportproject.service.gates.impl;
 
 import com.example.airportproject.dao.GateDao;
+import com.example.airportproject.dto.FlightDTO;
+import com.example.airportproject.dto.GateDTO;
+import com.example.airportproject.dto.GateSlotDTO;
+import com.example.airportproject.dto.TimeSlotDTO;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
+import com.example.airportproject.service.flights.FlightService;
 import com.example.airportproject.service.gates.GateService;
+import com.example.airportproject.service.impactEvents.ImpactEventService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Time;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Primary
 @Service
 public class GateServiceImpl implements GateService {
     private final GateDao gateDao;
+    private final ImpactEventService impactEventService;
+    private final FlightService flightService;
 
-    public GateServiceImpl(GateDao gateDao) {
+    public GateServiceImpl(GateDao gateDao, ImpactEventService impactEventService, FlightService flightService) {
         this.gateDao = gateDao;
+        this.impactEventService = impactEventService;
+        this.flightService = flightService;
     }
 
     @Override
@@ -98,5 +108,45 @@ public class GateServiceImpl implements GateService {
         TimeSlot removed = getGateTimeSlotByFlightId(flightId);
         gateDao.removeGateTimeSlotByFlightId(flightId);
         return removed;
+    }
+
+    // convert a Gate object to a GateDTO
+    @Override
+    public GateDTO convertToDTO(Gate gate){
+        GateDTO gateDTO = new GateDTO();
+        gateDTO.setId(gate.getId());
+        gateDTO.setNumber(gate.getNumber());
+        gateDTO.setTerminalNumber(gate.getTerminal().getNumber());
+        gateDTO.setSchedule(gate.getSchedule().stream().map(this::convertTimeSlotToGateSlotDTO).collect(Collectors.toList()));
+        return gateDTO;
+    }
+
+    @Override
+    public List<GateDTO> convertToDTOList(List<Gate> gates){
+        return gates.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public GateSlotDTO convertTimeSlotToGateSlotDTO(TimeSlot timeSlot){
+        GateSlotDTO timeSlotDTO = new GateSlotDTO();
+        timeSlotDTO.setId(timeSlot.getId());
+        timeSlotDTO.setStartTime(timeSlot.getStartTime());
+        timeSlotDTO.setEndTime(timeSlot.getEndTime());
+        if(timeSlot.getRunway() != null){
+            timeSlotDTO.setRunwayNumber(timeSlot.getRunway().getNumber());
+        }
+        if(timeSlot.getImpactEvent() != null){
+            timeSlotDTO.setImpactEvent(impactEventService.convertToDTO(timeSlot.getImpactEvent()));
+        }
+        if(timeSlot.getFlight() != null){
+            timeSlotDTO.setFlight(flightService.convertToDTO(timeSlot.getFlight()));
+
+        }
+        return timeSlotDTO;
+    }
+
+    @Override
+    public List<GateSlotDTO> convertTimeSlotsToGateSlotDTOList(List<TimeSlot> timeSlots){
+        return timeSlots.stream().map(this::convertTimeSlotToGateSlotDTO).collect(Collectors.toList());
     }
 }
