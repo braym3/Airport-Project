@@ -2,6 +2,7 @@ package com.example.airportproject.controller;
 
 import com.example.airportproject.dto.GateDTO;
 import com.example.airportproject.dto.GateSlotDTO;
+import com.example.airportproject.dto.TimeSlotDTO;
 import com.example.airportproject.model.Gate;
 import com.example.airportproject.model.Terminal;
 import com.example.airportproject.model.TimeSlot;
@@ -119,11 +120,11 @@ public class GateController {
 
     @CrossOrigin
     @GetMapping("/schedule/")
-    public ResponseEntity<List<GateSlotDTO>> getAllGatesTimeSlots(){
+    public ResponseEntity<List<TimeSlotDTO>> getAllGatesTimeSlots(){
         logger.debug("Controller getting schedules for all gates");
         List<TimeSlot> found = gateService.getAllGatesTimeSlots();
-        List<GateSlotDTO> gateSlotDTOs = gateService.convertTimeSlotsToGateSlotDTOList(found);
+        List<TimeSlotDTO> timeSlotDTOs = gateService.convertTimeSlotsToTimeSlotDTOList(found);
         return ResponseEntity.ok()
-                .body(gateSlotDTOs);
+                .body(timeSlotDTOs);
     }
 }
