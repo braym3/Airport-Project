@@ -1,7 +1,6 @@
 package com.example.airportproject.service.gates.impl;
 
 import com.example.airportproject.dao.GateDao;
-import com.example.airportproject.dto.FlightDTO;
 import com.example.airportproject.dto.GateDTO;
 import com.example.airportproject.dto.GateSlotDTO;
 import com.example.airportproject.dto.TimeSlotDTO;
@@ -128,11 +127,35 @@ public class GateServiceImpl implements GateService {
 
     @Override
     public GateSlotDTO convertTimeSlotToGateSlotDTO(TimeSlot timeSlot){
-        GateSlotDTO timeSlotDTO = new GateSlotDTO();
+        GateSlotDTO gateSlotDTO = new GateSlotDTO();
+        gateSlotDTO.setId(timeSlot.getId());
+        gateSlotDTO.setStartTime(timeSlot.getStartTime());
+        gateSlotDTO.setEndTime(timeSlot.getEndTime());
+        if(timeSlot.getRunway() != null){
+            gateSlotDTO.setRunwayNumber(timeSlot.getRunway().getNumber());
+        }
+        if(timeSlot.getImpactEvent() != null){
+            gateSlotDTO.setImpactEvent(impactEventService.convertToDTO(timeSlot.getImpactEvent()));
+        }
+        if(timeSlot.getFlight() != null){
+            gateSlotDTO.setFlight(flightService.convertToDTO(timeSlot.getFlight()));
+
+        }
+        return gateSlotDTO;
+    }
+
+    @Override
+    public TimeSlotDTO convertTimeSlotToTimeSlotDTO(TimeSlot timeSlot){
+        TimeSlotDTO timeSlotDTO = new TimeSlotDTO();
         timeSlotDTO.setId(timeSlot.getId());
         timeSlotDTO.setStartTime(timeSlot.getStartTime());
         timeSlotDTO.setEndTime(timeSlot.getEndTime());
+        if(timeSlot.getGate() != null){
+            timeSlotDTO.setGateId(timeSlot.getGate().getId());
+            timeSlotDTO.setGateNumber(timeSlot.getGate().getNumber());
+        }
         if(timeSlot.getRunway() != null){
+            timeSlotDTO.setRunwayId(timeSlot.getRunway().getId());
             timeSlotDTO.setRunwayNumber(timeSlot.getRunway().getNumber());
         }
         if(timeSlot.getImpactEvent() != null){
@@ -148,5 +171,10 @@ public class GateServiceImpl implements GateService {
     @Override
     public List<GateSlotDTO> convertTimeSlotsToGateSlotDTOList(List<TimeSlot> timeSlots){
         return timeSlots.stream().map(this::convertTimeSlotToGateSlotDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TimeSlotDTO> convertTimeSlotsToTimeSlotDTOList(List<TimeSlot> timeSlots){
+        return timeSlots.stream().map(this::convertTimeSlotToTimeSlotDTO).collect(Collectors.toList());
     }
 }

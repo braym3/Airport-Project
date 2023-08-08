@@ -1,6 +1,5 @@
 package com.example.airportproject.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Duration;
@@ -22,9 +21,7 @@ public class TimeSlot {
     private Runway runway;
 
     // time slot can be occupied by a flight (using a gate/runway), impact event (closing a gate/runway)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Flight flight;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ImpactEvent impactEvent;
 
 
@@ -127,6 +124,7 @@ public class TimeSlot {
      * @param impactEvent the ImpactEvent object occupying the time slot
      */
     public TimeSlot(Gate gate, Flight flight, @NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime, ImpactEvent impactEvent, Runway runway) {
+        this.id = UUID.randomUUID();
         this.gate = gate;
         this.startTime = startTime;
         this.endTime = endTime;
