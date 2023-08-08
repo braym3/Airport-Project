@@ -72,5 +72,9 @@ public interface GateService {
 
     GateSlotDTO convertTimeSlotToGateSlotDTO(TimeSlot timeSlot);
 
+    TimeSlotDTO convertTimeSlotToTimeSlotDTO(TimeSlot timeSlot);
+
     List<GateSlotDTO> convertTimeSlotsToGateSlotDTOList(List<TimeSlot> timeSlots);
+
+    List<TimeSlotDTO> convertTimeSlotsToTimeSlotDTOList(List<TimeSlot> timeSlots);
 }
