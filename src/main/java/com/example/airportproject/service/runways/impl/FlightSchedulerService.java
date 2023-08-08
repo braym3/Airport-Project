@@ -9,7 +9,6 @@ import com.example.airportproject.service.runways.RunwayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -58,7 +57,7 @@ public class FlightSchedulerService {
 
     public void scheduleFlights(List<Flight> flights, TimeSlot impactEventTimeSlot){
         // set a flag to show if the flight is being reassigned - true if an impact event time-slot was provided
-        boolean reassigning = impactEventTimeSlot == null ? false : true;
+        boolean reassigning = impactEventTimeSlot != null;
 
         // Get the list of runways at the airport
         logger.debug("FlightSchedulerService getting all runways");

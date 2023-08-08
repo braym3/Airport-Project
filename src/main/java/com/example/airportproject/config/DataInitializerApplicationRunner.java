@@ -1,7 +1,6 @@
 package com.example.airportproject.config;
 
 import com.example.airportproject.service.flights.FlightFetchService;
-import com.example.airportproject.service.gates.impl.GateAssigner;
 import com.example.airportproject.service.gates.impl.GateInitializer;
 import com.example.airportproject.service.runways.impl.FlightSchedulerService;
 import com.example.airportproject.service.runways.impl.RunwayInitializer;

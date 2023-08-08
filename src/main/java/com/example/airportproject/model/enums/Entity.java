@@ -6,7 +6,7 @@ public enum Entity {
     TERMINAL("Terminal"),
     RUNWAY("Runway");
 
-    private String name;
+    private final String name;
 
     Entity(String name) {
         this.name = name;

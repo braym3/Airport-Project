@@ -1,6 +1,5 @@
 package com.example.airportproject.model;
 
-import com.example.airportproject.model.Gate;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;

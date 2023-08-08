@@ -138,10 +138,6 @@ public class Runway implements Schedulable{
         return availableTimes;
     }
 
-    public void printSchedule(){
-        System.out.println(getSchedule().toString());
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

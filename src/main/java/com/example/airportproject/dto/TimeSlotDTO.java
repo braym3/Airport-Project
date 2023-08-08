@@ -1,10 +1,6 @@
 package com.example.airportproject.dto;
 
-import com.example.airportproject.model.Flight;
-import com.example.airportproject.model.Gate;
-import com.example.airportproject.model.ImpactEvent;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

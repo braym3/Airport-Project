@@ -1,12 +1,7 @@
-import React, {useState} from "react";
+import React, from "react";
 import "./styles.css";
 import { Epg, Layout } from "planby";
-import InfoModal from "./components/InfoModal";
-
-// Import hooks
 import { useApp } from "./useApp";
-
-// Import components
 import { Timeline, ChannelItem, ProgramItem } from "./components";
 
 function GateSchedule({timeJumpTriggered}) {

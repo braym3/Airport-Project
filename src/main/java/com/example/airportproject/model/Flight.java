@@ -3,7 +3,6 @@ package com.example.airportproject.model;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

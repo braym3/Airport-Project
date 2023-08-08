@@ -1,6 +1,5 @@
 package com.example.airportproject.controller;
 
-import com.example.airportproject.model.Flight;
 import com.example.airportproject.model.ImpactEvent;
 import com.example.airportproject.model.TimeSlot;
 import com.example.airportproject.service.impactEvents.ImpactEventService;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;

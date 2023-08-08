@@ -48,7 +48,7 @@ export const fetchLastFlightTime = async () => {
     }
 };
 
-const initializeTimeSlots = (schedulesData, gateId) => {
+const initializeTimeSlots = (schedulesData) => {
     return schedulesData.map(timeSlot => {
         let title = '';
         let description = '';

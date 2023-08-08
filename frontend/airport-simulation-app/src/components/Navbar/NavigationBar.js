@@ -3,7 +3,7 @@ import {handleTimeJumpEvents} from "../../utils/timeJumpUtils";
 import axios from "axios";
 import {Navbar, Nav, Button, NavDropdown, Badge} from 'react-bootstrap';
 import './navbar.css'
-import {formatSimulationTime, formatTime} from "../../utils/formatDateTime";
+import {formatSimulationTime} from "../../utils/formatDateTime";
 
 
 const NavigationBar = ({onTimeJump, currentTime}) => {
