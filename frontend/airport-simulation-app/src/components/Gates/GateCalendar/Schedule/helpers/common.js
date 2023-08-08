@@ -48,7 +48,7 @@ export const fetchLastFlightTime = async () => {
     }
 };
 
-const initializeTimeSlots = (schedulesData) => {
+const initializeTimeSlots = (schedulesData, gateId) => {
     return schedulesData.map(timeSlot => {
         let title = '';
         let description = '';
@@ -64,7 +64,7 @@ const initializeTimeSlots = (schedulesData) => {
         }
         return {
             id: timeSlot.id,
-            channelUuid: timeSlot.gate.id,
+            channelUuid: timeSlot.gateId,
             title: title,
             description: description,
             since: timeSlot.startTime,
@@ -79,7 +79,7 @@ const initializeGates = (gatesData) => {
         return {
             uuid: gate.id,
             type: "channel",
-            title: `T${gate.terminal.number} - ${gate.number}`,
+            title: `T${gate.terminalNumber} - ${gate.number}`,
             logo: '',
         };
     });

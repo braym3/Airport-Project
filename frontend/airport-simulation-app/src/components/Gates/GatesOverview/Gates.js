@@ -31,7 +31,7 @@ const Gates = ({timeJumpTriggered}) => {
 
     const displayGates = gates.map(gate => (
             <div key={gate.id} className='gate-card'>
-                <h5 className='gate-header' onClick={() => toggleGateExpansion(gate.id)}>{`T${gate.terminal.number} gate ${gate.number}`}</h5>
+                <h5 className='gate-header' onClick={() => toggleGateExpansion(gate.id)}>{`T${gate.terminalNumber} gate ${gate.number}`}</h5>
                 {expandedGates[gate.id] && (
                     <>
                         <h6 className='schedule-header'>Schedule:</h6>
