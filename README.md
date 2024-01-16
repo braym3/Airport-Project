@@ -34,12 +34,6 @@ The project also includes a React frontend, offering an interactive web applicat
 
 **Impact Event Visualization:** Displays impact events on the schedule and provides visualizations and statistics regarding event types, flight cancellations, and delays.
 
-## Getting Started
-To run the Flight Scheduling Simulator locally, follow these steps:
-
-**Clone the repository:** git clone https://github.com/braym3/Airport-Project/tree/master
-
-Navigate to the backend and frontend directories and follow the respective README files for setup instructions.
 
 ## Acknowledgments
 [FlightLabs](https://www.goflightlabs.com/) for providing the 'flight' API.
