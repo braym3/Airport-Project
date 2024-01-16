@@ -1,0 +1,28 @@
+.home-container{
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+h2{
+    margin-bottom: 20px;
+}
+
+p{
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.content{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: justify;
+}
+
+/*spacing between paragraphs*/
+p + p{
+    margin-top: 30px;
+}
