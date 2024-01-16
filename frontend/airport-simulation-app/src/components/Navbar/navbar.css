@@ -1,0 +1,9 @@
+#time-jump-button{
+    margin-left: auto !important;
+    /*position: absolute !important;*/
+    float: right !important;
+}
+
+.nav-link{
+    text-align: left;
+}

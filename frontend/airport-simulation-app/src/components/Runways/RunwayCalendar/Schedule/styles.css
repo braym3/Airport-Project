@@ -1,0 +1,21 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+#sidebar-gate-block{
+    position: absolute;
+    width: 200px;
+    height: 81%;
+    background: #009a9a;
+    left: -195px;
+}
+
+#sidebar-gate-header{
+    color: whitesmoke;
+}
+
+#time-slot-icon{
+    height: 15px;
+    vertical-align: middle;
+}
