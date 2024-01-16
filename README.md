@@ -1,6 +1,10 @@
 # Flight Scheduling Simulator
 ## Overview
-Welcome to the Flight Scheduling Simulator, a dynamic application for simulating and visualizing flight schedules at airports. This project consists of a Java Spring Boot backend that interfaces with the FlightLabs 'flight' API to retrieve real-world flight data, and a React frontend that offers an interactive web application for users to view, analyze, and simulate flight schedules.
+Welcome to the Flight Scheduling Simulator, a dynamic application for simulating and visualizing flight schedules at airports. This project provides an abstracted and simplified view of flight scheduling, offering a basic simulation of airport activities. 
+
+It consists of a Java Spring Boot backend that interfaces with the FlightLabs 'flight' API to retrieve real-world flight data and extensively models and manipulates this data to create a dynamic flight schedule. The backend is designed to respond dynamically to impact events, such as closures, weather conditions, and delays, reshuffling the schedule to simulate real-world challenges. 
+
+The project also includes a React frontend, offering an interactive web application for users to explore and analyze the dynamically generated flight schedules.
 
 ## Features
 **Dynamic Flight Scheduling:** The backend processes real-world flight data from the FlightLabs 'flight' API, mapping it into a detailed flight schedule based on the airport's terminal, gate, and runway structure. The application is currently configured for Manchester Airport but can easily be adapted to other airports via the properties file.
@@ -11,7 +15,7 @@ Welcome to the Flight Scheduling Simulator, a dynamic application for simulating
 
 **Departure and Arrival Tables:** Easily accessible tables provide clear views of departure and arrival schedules, offering a quick reference for specific flights.
 
-**Time Simulation:** The application allows users to fast-forward time in hourly increments, triggering random 'impact events' that can affect the flight schedule. The backend dynamically reshuffles the schedule, reassigning flights affected by closures, weather conditions, or delays.
+**Time Simulation:** The application allows users to fast-forward time in hourly increments, triggering random 'impact events' (e.g., gate/terminal closures, weather conditions, flight delays, etc.). These events simulate real-world disruptions to the flight schedule. In response, the backend dynamically reshuffles the schedule, attempting to reassign affected flights to the closest available time slot to their initial schedule, aiming for a more realistic simulation of adaptive scheduling.
 
 **Impact Event Visualizations:** The frontend displays 'impact events' and provides statistics and visualizations about the types and frequency of these events, as well as information on flight cancellations and delays.
 
